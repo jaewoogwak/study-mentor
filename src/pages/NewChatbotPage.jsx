@@ -1,14 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 // import './NewChatbotPage.css';
-import {
-    addDoc,
-    collection,
-    doc,
-    getDocs,
-    updateDoc,
-} from 'firebase/firestore';
+
 import { auth, db } from '../services/firebase';
-import { v4 as uuidv4 } from 'uuid'; // ES Modules
 
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {
@@ -34,14 +27,6 @@ import { set } from 'firebase/database';
 
 const API_KEY = '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';
 
-// "Explain things like you would to a 10 year old learning how to code."
-const systemMessage = {
-    //  Explain things like you're talking to a software professional with 5 years of experience.
-    role: 'system',
-    content:
-        "Explain things like you're talking to a software professional with 2 years of experience.",
-};
-
 const NewChatbotPage = () => {
     const [messages, setMessages] = useState([
         {
@@ -51,8 +36,6 @@ const NewChatbotPage = () => {
         },
     ]);
     const [isTyping, setIsTyping] = useState(false);
-    const [chats, setChats] = useState([]);
-    const [chatId, setChatId] = useState('');
     const { user, login, logout } = useAuth();
 
     const handleSend = async (message) => {
@@ -62,147 +45,43 @@ const NewChatbotPage = () => {
             sender: 'user',
         };
 
-        const newMessages = [...messages, newMessage];
+        setMessages([...messages, newMessage]);
 
-        // 유저의 메시지를 firestore 채팅 db에 추가
-        // const ref = doc(db, 'chats', chatId);
-        // console.log('ref', ref);
-        // await updateDoc(ref, {
-        //     messages: newMessages,
-        //     sender: 'user',
-        //     direction: 'outgoing',
-        // });
-
-        // Initial system message to determine ChatGPT functionality
-        // How it responds, how it talks, etc.
         setIsTyping(true);
-        await processMessageToChatGPT(newMessages);
+        // await processMessageToChatGPT(newMessages);
+        await sendTextToServer(message);
     };
 
-    async function processMessageToChatGPT(chatMessages) {
-        let apiMessages = chatMessages.map((messageObject) => {
-            let role = '';
-            if (messageObject.sender === 'ChatGPT') {
-                role = 'assistant';
-            } else {
-                role = 'user';
-            }
-            return { role: role, content: messageObject.message };
-        });
+    // 파이썬 플라스크 서버 주소: http://127.0.0.1:5000/upload/test
+    // 해당 주소 api는 프론트엔드에서 텍스트를 보내면 서버에서 해당 텍스트를 잘 받았다면 "Test 입니다"를 반환함. 추후 서버에서 openai api를 사용하여 챗봇을 구현할 예정
+    // 해당 주소로 요청을 보내는 코드 작성
 
-        // Add the user's message to Firestore
-        // await addChatToFirestore(apiMessages);
+    async function sendTextToServer(text) {
+        const address = 'http://127.0.0.1:5000/upload/test';
 
-        const apiRequestBody = {
-            model: 'gpt-3.5-turbo',
-            messages: [
-                systemMessage, // The system message DEFINES the logic of our chatGPT
-                ...apiMessages, // The messages from our chat with ChatGPT
-            ],
-        };
-
-        await fetch('https://api.openai.com/v1/chat/completions', {
+        await fetch(address, {
             method: 'POST',
             headers: {
                 Authorization: 'Bearer ' + API_KEY,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(apiRequestBody),
+            body: JSON.stringify({
+                message: text,
+            }),
         })
+            .then((response) => response.json())
             .then((data) => {
-                return data.json();
-            })
-            .then(async (data) => {
-                console.log('datadaaaa', data);
-                setMessages([
-                    ...chatMessages,
+                setMessages((prevMessages) => [
+                    ...prevMessages,
                     {
-                        message: data.choices[0].message.content,
+                        message: data.message,
                         sender: 'ChatGPT',
                     },
                 ]);
                 setIsTyping(false);
-
-                // Add ChatGPT's message to Firestore
-                // await addChatToFirestore(data.choices[0].message.content);
-            });
+            })
+            .catch((error) => console.error('Error:', error));
     }
-
-    async function addChatToFirestore(message) {
-        console.log('Adding chat to firestore');
-
-        // const docRef = await addDoc(collection(db, 'chats'), message);
-        // const washingtonRef = doc(db, 'chat', );
-
-        const ref = doc(db, 'chats', chatId);
-        console.log('ref', ref);
-        await updateDoc(ref, {
-            messages: message,
-            sender: 'ChatGPT',
-        });
-
-        console.log('Document written with ID: ', docRef.id);
-    }
-
-    async function getChatsFromFirestore() {
-        const querySnapshot = await getDocs(collection(db, 'chats'));
-        console.log('getChatsFromFirestore:');
-
-        querySnapshot.forEach((doc) => {
-            console.log(`${doc.id}`, doc.data());
-            // user_id가 현재 로그인한 유저의 id와 같은 경우에만 chat을 가져옴
-
-            if (doc.data().user_id === user.uid) {
-                setMessages(doc.data().messages);
-                setChatId(doc.id);
-            }
-        });
-    }
-    // firebase chats collection에 채팅내역이 없는지 확인
-    const checkChats = async () => {
-        const querySnapshot = await getDocs(collection(db, 'userChats'));
-        // querySnampshot의 데이터를 Array.some으로 확인해야함
-        // querySnampShot은 array가 아니라서 Array.prototype.some을 사용할 수 없음
-
-        const arr = querySnapshot.docs.map((doc) => doc.data());
-
-        // arr에 user_id가 현재 로그인한 유저의 id와 같은 데이터가 있는지 확인
-        const result = arr.some((data) => data.user_id === user.uid);
-        return result;
-    };
-
-    // 채팅내역이 없을 때 초기 채팅내역을 firestore에 저장
-    const initialChat = async () => {
-        const chat = {
-            user_id: user.uid,
-            messages: [
-                {
-                    message: '안녕하세요! 어떤 문제가 궁금하신가요?',
-                    sentTime: 'just now',
-                    sender: 'ChatGPT',
-                },
-            ],
-        };
-
-        // firestore에 채팅을 추가하기 전에 채팅 내역이 있는지 확인
-        const hasChats = await checkChats();
-        console.log('hasChats: ', hasChats);
-
-        if (!hasChats) {
-            const docRef = await addDoc(collection(db, 'chats'), chat);
-            console.log('Document written with ID: ', docRef.id);
-
-            const userChat = {
-                user_id: user.uid,
-            };
-
-            const userChatRef = await addDoc(
-                collection(db, 'userChats'),
-                userChat
-            );
-            console.log('Document written with ID: ', userChatRef.id);
-        }
-    };
 
     useEffect(() => {
         auth.onAuthStateChanged((usr) => {
@@ -213,17 +92,8 @@ const NewChatbotPage = () => {
             }
         });
 
-        // // user 정보가 있을 때만 초기 채팅을 저장하거나 가져옴
-        // if (user) {
-        //     checkChats().then((result) => {
-        //         if (result) {
-        //             getChatsFromFirestore();
-        //         } else {
-        //             initialChat();
-        //         }
-        //     });
-        // }
-    }, [user]);
+        console.log('messages', messages);
+    }, [user, messages]);
 
     return (
         <Wrapper>

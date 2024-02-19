@@ -22,9 +22,7 @@ const Wrapper = styled.input`
 const SearchBar = ({ placeholder, onSend }) => {
     const [search, setSearch] = useState('');
 
-    useEffect(() => {
-        console.log(search);
-    }, [search]);
+    // useEffect(() => {}, [search]);
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
