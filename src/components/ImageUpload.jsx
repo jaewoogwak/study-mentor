@@ -2,11 +2,16 @@ import React, { useEffect } from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
+import { Document, Page } from 'react-pdf';
+
 import styled from 'styled-components';
+
+
 
 const ImageUpload = () => {
     const [fileState, setFileState] = React.useState(null);
     const [data, setData] = React.useState(null);
+    const [pdfFile, setPdfFile] = React.useState(null);
 
     useEffect(() => {
         console.log('fileState', fileState);
@@ -44,6 +49,8 @@ const ImageUpload = () => {
             const formData = new FormData();
             // const address = 'http://172.30.1.50:5000/';
             const address = 'http://127.0.0.1:5000/upload/image';
+            // 해당 경로로 pdf를 전송하면, 응답으로 pdf 파일을 받음.
+            
             formData.append('file', file);
 
             // Perform your API call with the FormData
@@ -63,6 +70,11 @@ const ImageUpload = () => {
 
             return false; // Prevent default upload behavior
         },
+ 
+            
+
+
+            
     };
 
     return fileState === 'uploading' ? (
@@ -111,4 +123,12 @@ const OCRResult = styled.div`
     flex-direction: column;
     justify-content: center;
     font-size: 16px;
+`;
+
+
+
+const PDFViewerWrapper = styled.div`
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 `;

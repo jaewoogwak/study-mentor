@@ -7,6 +7,7 @@ import Info2Svg from '../assets/info2.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
+import PDFUpload from '../components/PDFUpload';
 
 // 파이썬 플라스크 서버를 aws ec2에 올려서 사용중임
 // 해당 주소는 http://13.124.221.128:5000/
@@ -83,7 +84,8 @@ const HomePage = () => {
                             </QuestionList>
                         </InfoWrapper>
                     </InfoList>
-                    <ImageUpload />
+                    {/* <ImageUpload /> */}
+                    <PDFUpload/>
                 </Main>
             </MainWrapper>
         </Wrapper>
