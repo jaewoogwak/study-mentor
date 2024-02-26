@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import PDFUpload from '../components/PDFUpload';
+import Header from '../components/Header';
 
 // 파이썬 플라스크 서버를 aws ec2에 올려서 사용중임
 // 해당 주소는 http://13.124.221.128:5000/
@@ -31,24 +32,7 @@ const HomePage = () => {
 
     return (
         <Wrapper>
-            <Header>
-                <HeaderItemWrapper>
-                    <Logo>
-                        <img src={LogoSvg} alt='logo' />
-                    </Logo>
-                    <Title>스터디 멘토</Title>
-                    <FileUploadLink to='/'>파일 업로드</FileUploadLink>
-                    <ChatbotLink to='/chatbot'>챗봇</ChatbotLink>
-                </HeaderItemWrapper>
-                <Logout
-                    onClick={() => {
-                        auth.signOut();
-                        logout();
-                    }}
-                >
-                    logout
-                </Logout>
-            </Header>
+            <Header />
             <MainWrapper>
                 <Main>
                     <InfoList>
@@ -85,7 +69,7 @@ const HomePage = () => {
                         </InfoWrapper>
                     </InfoList>
                     {/* <ImageUpload /> */}
-                    <PDFUpload/>
+                    <PDFUpload />
                 </Main>
             </MainWrapper>
         </Wrapper>
@@ -106,18 +90,6 @@ const HeaderItemWrapper = styled.div`
     justify-content: center;
     align-items: center;
     gap: 50px;
-`;
-
-const Header = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-
-    height: 80px;
-    border-bottom: 1px solid #aecfff;
-
-    padding-right: 30px;
 `;
 
 const Sidebar = styled.aside`

@@ -15,7 +15,7 @@ import {
     useQuery,
 } from '@tanstack/react-query';
 import HomePage from './pages/HomePage.jsx';
-import NewChatbotPage from './pages/NewChatbotPage.jsx';
+import NewChatbotPage from './pages/ChatbotPage.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ChatbotPage from './pages/ChatbotPage.jsx';
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/chatbot',
-        element: <NewChatbotPage />,
+        element: <ChatbotPage />,
         errorElement: <ErrorPage />,
     },
     {

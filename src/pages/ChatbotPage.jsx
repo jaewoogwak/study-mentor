@@ -1,37 +1,193 @@
-import React from 'react';
-import styled from 'styled-components';
-import ImageUpload from '../components/ImageUpload';
-import LogoSvg from '../assets/logo.svg';
+import { useContext, useEffect, useState } from 'react';
+// import './NewChatbotPage.css';
+
+import { auth, db } from '../services/firebase';
+
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import {
+    MainContainer,
+    ChatContainer,
+    MessageList,
+    Message,
+    MessageInput,
+    TypingIndicator,
+} from '@chatscope/chat-ui-kit-react';
+import { Link } from 'react-router-dom';
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
-import { Link } from 'react-router-dom';
+import LogoSvg from '../assets/logo.svg';
+
+import styled from 'styled-components';
 import SearchBar from '../components/SearchBar';
-import NewChatbotPage from './NewChatbotPage';
+
+import '../styles/ChatBotCustom.css';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from '../contexts/AuthContext';
+import { set } from 'firebase/database';
+import Header from '../components/Header';
+
+const API_KEY = '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';
+
+const NewChatbotPage = () => {
+    const [messages, setMessages] = useState([
+        {
+            message: '안녕하세요! 어떤 문제가 궁금하신가요?',
+            sentTime: 'just now',
+            sender: 'ChatGPT',
+        },
+    ]);
+    const [isTyping, setIsTyping] = useState(false);
+    const { user, login, logout } = useAuth();
+
+    const handleSend = async (message) => {
+        const newMessage = {
+            message,
+            direction: 'outgoing',
+            sender: 'user',
+        };
+
+        setMessages([...messages, newMessage]);
+
+        setIsTyping(true);
+        // await processMessageToChatGPT(newMessages);
+        await sendTextToServer(message);
+    };
+
+    // 파이썬 플라스크 서버 주소: http://127.0.0.1:5000/upload/test
+    // 해당 주소 api는 프론트엔드에서 텍스트를 보내면 서버에서 해당 텍스트를 잘 받았다면 "Test 입니다"를 반환함. 추후 서버에서 openai api를 사용하여 챗봇을 구현할 예정
+    // 해당 주소로 요청을 보내는 코드 작성
+
+    async function sendTextToServer(text) {
+        const address = 'http://127.0.0.1:5000/upload/test';
+
+        await fetch(address, {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + API_KEY,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: text,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    {
+                        message: data.message,
+                        sender: 'ChatGPT',
+                    },
+                ]);
+                setIsTyping(false);
+            })
+            .catch((error) => console.error('Error:', error));
+    }
+
+    useEffect(() => {
+        auth.onAuthStateChanged((usr) => {
+            login(usr);
+
+            if (!usr) {
+                navigate('/login');
+            }
+        });
+
+        console.log('messages', messages);
+    }, [user, messages]);
+
+    return (
+        <Wrapper>
+            <Header />
+            <Main>
+                {messages.length === 1 ? (
+                    <ChatListWraper>
+                        <InfoList>
+                            <InfoWrapper>
+                                <InfoBox src={Info1Svg} alt='info1' />
+                                <InfoText>이런 문제를 만들 수 있어요</InfoText>
+                                <QuestionList>
+                                    <QuestionWrapper>
+                                        <InfoText>객관식 문제</InfoText>
+                                    </QuestionWrapper>
+                                    <QuestionWrapper>
+                                        <InfoText>주관식 문제</InfoText>
+                                    </QuestionWrapper>
+                                    <QuestionWrapper>
+                                        <InfoText>서술형 문제</InfoText>
+                                    </QuestionWrapper>
+                                </QuestionList>
+                            </InfoWrapper>
+
+                            <InfoWrapper>
+                                <InfoBox src={Info2Svg} alt='info2' />
+                                <InfoText>이런 방식으로 질문해요</InfoText>
+                                <QuestionList>
+                                    <ImageTypeWrapper>
+                                        <InfoText>
+                                            Python class의 개념에 대해
+                                            <br /> 객관식 문제를 만들어줘
+                                        </InfoText>
+                                    </ImageTypeWrapper>
+                                    <ImageTypeWrapper>
+                                        <InfoText>
+                                            내가 입력한 파일에서 <br />
+                                            주관식 문제를 만들어줘
+                                        </InfoText>
+                                    </ImageTypeWrapper>
+                                    <ImageTypeWrapper>
+                                        <InfoText>
+                                            CNN 모델의 개념에 대한
+                                            <br /> 서술형 문제를 만들어줘
+                                        </InfoText>
+                                    </ImageTypeWrapper>
+                                </QuestionList>
+                            </InfoWrapper>
+                        </InfoList>
+                        <SearchBar
+                            placeholder={'챗봇에게 물어볼 질문을 작성해주세요'}
+                            onSend={handleSend}
+                        />
+                    </ChatListWraper>
+                ) : (
+                    <Container>
+                        <MainContainerWrapper>
+                            <ChatContainer>
+                                <MessageList
+                                    scrollBehavior='smooth'
+                                    typingIndicator={
+                                        isTyping ? (
+                                            <TypingIndicator content='ChatGPT is typing' />
+                                        ) : null
+                                    }
+                                >
+                                    {messages.map((message, i) => {
+                                        console.log(message);
+                                        return (
+                                            <Message key={i} model={message} />
+                                        );
+                                    })}
+                                </MessageList>
+                            </ChatContainer>
+                        </MainContainerWrapper>
+                        <SearchBar
+                            placeholder={'챗봇에게 물어볼 질문을 작성해주세요'}
+                            onSend={handleSend}
+                        />
+                    </Container>
+                )}
+            </Main>
+        </Wrapper>
+    );
+};
+
+const Test = styled.div``;
+
+export default NewChatbotPage;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-`;
-
-const Header = styled.header`
-    display: flex;
-    /* justify-content: center; */
-    align-items: center;
-    height: 80px;
-    border-bottom: 1px solid #aecfff;
-`;
-
-const Sidebar = styled.aside`
-    width: 250px;
-    height: calc(100vh - 74px);
-    border-right: 1px solid #eaeaea;
-    background-color: rgb(242, 247, 255);
-`;
-
-const MainWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    height: calc(100vh - 74px);
 `;
 
 const Logo = styled.div`
@@ -44,6 +200,26 @@ const Title = styled.div`
     line-height: 18px 18px;
 `;
 
+const FileUploadLink = styled(Link)`
+    margin-left: 125px;
+    font-size: 24px;
+    color: #ab41ff;
+    text-decoration: none;
+`;
+
+const ChatbotLink = styled(Link)`
+    margin-left: 42px;
+    font-size: 24px;
+    text-decoration: none;
+    color: black;
+`;
+
+const MainWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 74px);
+`;
+
 const Main = styled.main`
     display: flex;
     flex-direction: column;
@@ -52,13 +228,20 @@ const Main = styled.main`
     height: calc(100vh - 74px);
 `;
 
+const ChatListWraper = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
 const InfoList = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+
     gap: 20px;
     margin-top: 30px;
+    margin-bottom: 40px;
 `;
 
 const InfoWrapper = styled.div`
@@ -109,86 +292,20 @@ const ImageTypeWrapper = styled.div`
     border-radius: 10px;
 `;
 
-const FileUploadLink = styled(Link)`
-    margin-left: 125px;
-    font-size: 24px;
-    color: #ab41ff;
-    text-decoration: none;
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 `;
 
-const ChatbotLink = styled(Link)`
-    margin-left: 42px;
-    font-size: 24px;
-    text-decoration: none;
-    color: black;
+const MainContainerWrapper = styled(MainContainer)`
+    width: 700px;
+    // 높이는 화면에 따라 조절해야함. 바닥에서 20px 떨어지게 하기
+    height: 75vh;
+    margin: 0 auto;
+    border: none;
 `;
-
-// 파이썬 플라스크 서버를 aws ec2에 올려서 사용중임
-// 해당 주소는 http://13.124.221.128:5000/
-// react-query로 해당 주소로 요청을 보내는 코드 작성
-
-const ChatbotPage = () => {
-    return (
-        <Wrapper>
-            <Header>
-                <Logo>
-                    <img src={LogoSvg} alt='logo' />
-                </Logo>
-                <Title>스터디 멘토</Title>
-                <FileUploadLink to='/'>파일 업로드</FileUploadLink>
-                <ChatbotLink to='/chatbot'>챗봇</ChatbotLink>
-            </Header>
-            <MainWrapper>
-                <Main>
-                    {/* <ImageUpload /> */}
-                    <InfoList>
-                        <InfoWrapper>
-                            <InfoBox src={Info1Svg} alt='info1' />
-                            <InfoText>이런 문제를 만들 수 있어요</InfoText>
-                            <QuestionList>
-                                <QuestionWrapper>
-                                    <InfoText>객관식 문제</InfoText>
-                                </QuestionWrapper>
-                                <QuestionWrapper>
-                                    <InfoText>주관식 문제</InfoText>
-                                </QuestionWrapper>
-                                <QuestionWrapper>
-                                    <InfoText>서술형 문제</InfoText>
-                                </QuestionWrapper>
-                            </QuestionList>
-                        </InfoWrapper>
-
-                        <InfoWrapper>
-                            <InfoBox src={Info2Svg} alt='info2' />
-                            <InfoText>이런 방식으로 질문해요</InfoText>
-                            <QuestionList>
-                                <ImageTypeWrapper>
-                                    <InfoText>
-                                        Python class의 개념에 대해
-                                        <br /> 객관식 문제를 만들어줘
-                                    </InfoText>
-                                </ImageTypeWrapper>
-                                <ImageTypeWrapper>
-                                    <InfoText>
-                                        내가 입력한 파일에서 <br />
-                                        주관식 문제를 만들어줘
-                                    </InfoText>
-                                </ImageTypeWrapper>
-                                <ImageTypeWrapper>
-                                    <InfoText>
-                                        CNN 모델의 개념에 대한
-                                        <br /> 서술형 문제를 만들어줘
-                                    </InfoText>
-                                </ImageTypeWrapper>
-                            </QuestionList>
-                        </InfoWrapper>
-                    </InfoList>
-                    <NewChatbotPage />
-                    {/* <SearchBar placeholder='챗봇에게 물어볼 질문을 작성해주세요' /> */}
-                </Main>
-            </MainWrapper>
-        </Wrapper>
-    );
-};
-
-export default ChatbotPage;
