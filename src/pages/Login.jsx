@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { auth } from '../services/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import title from '../assets/title.png';
+import google from '../assets/google.png';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const Login = () => {
-    const [err, setErr] = useState(false);
+const provider = new GoogleAuthProvider();
+
+const NewLogin = () => {
+    const auth = getAuth();
     const navigate = useNavigate();
     const { user, login, logout } = useAuth();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(e.target[0].value, e.target[1].value);
-        const email = e.target[0].value;
-        const password = e.target[1].value;
+    const handleGoogleLogin = () => {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                navigate('/');
 
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-
-            navigate('/');
-        } catch (err) {
-            setErr(true);
-        }
+                console.log(result);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     useEffect(() => {
@@ -32,23 +33,80 @@ const Login = () => {
     }, []);
 
     return (
-        <div className='formContainer'>
-            <div className='formWrapper'>
-                <span className='logo'>Lama Chat</span>
-                <span className='title'>Login</span>
-                <form onSubmit={handleSubmit}>
-                    <input type='email' placeholder='email' />
-                    <input type='password' placeholder='password' />
-                    <button>Sign in</button>
-                    {err && <span>Something went wrong</span>}
-                </form>
-                <p>
-                    You don't have an account?{' '}
-                    <Link to='/register'>Register</Link>
-                </p>
-            </div>
-        </div>
+        <Wrapper>
+            <LogoContainer>
+                <LogoImage src={title} />
+            </LogoContainer>
+            <LoginContainer>
+                나만의 학습 어시스턴트 지금 시작하기
+                <GoogleLoginButton
+                    onClick={() => {
+                        handleGoogleLogin();
+                    }}
+                >
+                    <GoogleIcon src={google} alt='' />
+                    Google 로그인
+                </GoogleLoginButton>
+            </LoginContainer>
+        </Wrapper>
     );
 };
 
-export default Login;
+export default NewLogin;
+
+const Wrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: rgb(253, 253, 253);
+`;
+
+const LogoContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+`;
+
+const LoginContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 34px;
+    font-stretch: narrower;
+    font-weight: bold;
+`;
+
+const LogoImage = styled.img`
+    width: 700px;
+    margin-left: 80px;
+`;
+
+const GoogleLoginButton = styled.button`
+    width: 300px;
+    height: 50px;
+    background-color: #fff;
+    border: 0.5px solid #000000bb;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+`;
+
+const GoogleIcon = styled.img`
+    width: 30px;
+    height: 30px;
+    margin-right: 30px;
+`;
