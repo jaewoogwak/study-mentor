@@ -10,10 +10,6 @@ import { useAuth } from '../contexts/AuthContext';
 import PDFUpload from '../components/PDFUpload';
 import Header from '../components/Header';
 
-// 파이썬 플라스크 서버를 aws ec2에 올려서 사용중임
-// 해당 주소는 http://13.124.221.128:5000/
-// react-query로 해당 주소로 요청을 보내는 코드 작성
-
 const HomePage = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();

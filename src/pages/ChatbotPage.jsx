@@ -26,7 +26,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { set } from 'firebase/database';
 import Header from '../components/Header';
 
-const API_KEY = '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';
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const NewChatbotPage = () => {
     const [messages, setMessages] = useState([
@@ -52,10 +52,6 @@ const NewChatbotPage = () => {
         // await processMessageToChatGPT(newMessages);
         await sendTextToServer(message);
     };
-
-    // 파이썬 플라스크 서버 주소: http://127.0.0.1:5000/upload/test
-    // 해당 주소 api는 프론트엔드에서 텍스트를 보내면 서버에서 해당 텍스트를 잘 받았다면 "Test 입니다"를 반환함. 추후 서버에서 openai api를 사용하여 챗봇을 구현할 예정
-    // 해당 주소로 요청을 보내는 코드 작성
 
     async function sendTextToServer(text) {
         const address = 'http://127.0.0.1:5000/upload/test';

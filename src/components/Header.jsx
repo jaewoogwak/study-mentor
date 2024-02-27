@@ -12,19 +12,19 @@ const Header = () => {
             <HeaderItemWrapper>
                 <Logo
                     onClick={() => {
-                        window.location.href = '/';
+                        window.location.href = '/study-mentor/';
                     }}
                 >
                     <LogoImage src={title} alt='logo' />
                 </Logo>
 
-                <FileUploadLink to='/'>파일 업로드</FileUploadLink>
-                <ChatbotLink to='/chatbot'>챗봇</ChatbotLink>
+                <FileUploadLink to='/study-mentor'>파일 업로드</FileUploadLink>
+                <ChatbotLink to='/study-mentor/chatbot'>챗봇</ChatbotLink>
             </HeaderItemWrapper>
             <Logout
                 onClick={() => {
                     auth.signOut();
-                    logout();
+                    auth.logout();
                 }}
             >
                 logout
