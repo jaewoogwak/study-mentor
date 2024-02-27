@@ -16,7 +16,7 @@ const NewLogin = () => {
     const handleGoogleLogin = () => {
         signInWithPopup(auth, provider)
             .then((result) => {
-                navigate('/');
+                navigate('/study-mentor/');
 
                 console.log(result);
             })
@@ -28,7 +28,7 @@ const NewLogin = () => {
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
             login(user);
-            user && navigate('/');
+            user && navigate('/study-mentor/');
         });
     }, []);
 

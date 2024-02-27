@@ -23,7 +23,7 @@ const HomePage = () => {
             login(usr);
 
             if (!usr) {
-                navigate('/login');
+                navigate('/study-mentor/login');
             }
         });
 
