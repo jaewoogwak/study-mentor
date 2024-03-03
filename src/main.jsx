@@ -50,22 +50,22 @@ function Example() {
 
 const router = createBrowserRouter([
     {
-        path: '/study-mentor/',
+        path: '/',
         element: <HomePage />,
         errorElement: <ErrorPage />,
     },
     {
-        path: '/study-mentor/chatbot',
+        path: '/chatbot',
         element: <ChatbotPage />,
         errorElement: <ErrorPage />,
     },
     {
-        path: '/study-mentor/login',
+        path: '/login',
         element: <Login />,
         errorElement: <ErrorPage />,
     },
     {
-        path: '/study-mentor/register',
+        path: '/register',
         element: <Register />,
         errorElement: <ErrorPage />,
     },

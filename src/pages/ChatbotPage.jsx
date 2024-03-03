@@ -26,7 +26,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { set } from 'firebase/database';
 import Header from '../components/Header';
 
-const API_KEY = process.env.REACT_APP_API_KEY;
+const API_KEY = import.meta.env.VITE_APP_API_KEY;
 
 const NewChatbotPage = () => {
     const [messages, setMessages] = useState([
@@ -54,7 +54,7 @@ const NewChatbotPage = () => {
     };
 
     async function sendTextToServer(text) {
-        const address = 'http://127.0.0.1:5000/upload/test';
+        const address = 'http://127.0.0.1:5000/chatbot/question-answer';
 
         await fetch(address, {
             method: 'POST',
@@ -63,7 +63,7 @@ const NewChatbotPage = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                message: text,
+                question: text,
             }),
         })
             .then((response) => response.json())
@@ -71,7 +71,7 @@ const NewChatbotPage = () => {
                 setMessages((prevMessages) => [
                     ...prevMessages,
                     {
-                        message: data.message,
+                        message: data.answer,
                         sender: 'ChatGPT',
                     },
                 ]);

@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import ImageUpload from '../components/ImageUpload';
-import LogoSvg from '../assets/logo.svg';
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
 import { Link, useNavigate } from 'react-router-dom';
@@ -19,7 +17,7 @@ const HomePage = () => {
             login(usr);
 
             if (!usr) {
-                navigate('/study-mentor/login');
+                navigate('/login');
             }
         });
 
@@ -64,7 +62,7 @@ const HomePage = () => {
                             </QuestionList>
                         </InfoWrapper>
                     </InfoList>
-                    {/* <ImageUpload /> */}
+
                     <PDFUpload />
                 </Main>
             </MainWrapper>

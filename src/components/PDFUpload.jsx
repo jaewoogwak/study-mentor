@@ -48,16 +48,15 @@ const PDFUpload = () => {
         beforeUpload(file) {
             console.log("beforeUpload's file", file, file.type);
             const formData = new FormData();
-            // const address = 'http://172.30.1.50:5000/';
-
             // 해당 경로로 pdf를 전송하면, 응답으로 pdf 파일을 받음.
 
             formData.append('file', file);
 
             if (file.type == 'application/pdf') {
                 // 업로드에 성공하면 true, 실패하면 false를 반환합니다.
-                const address = 'http://127.0.0.1:5000/upload/pdf';
-                fetch(address, {
+                // const address = import.meta.env.VITE_APP_LOCAL_API_UPLOAD_PDF;
+                // console.log('address', address);
+                fetch('http://127.0.0.1:5000/upload/pdf', {
                     method: 'POST',
                     body: formData,
                 })
@@ -72,8 +71,8 @@ const PDFUpload = () => {
                         message.error('Failed to upload PDF file.');
                     });
             } else if (file.type != 'application/image') {
-                const address = 'http://127.0.0.1:5000/upload/image';
-                fetch(address, {
+                // const address = import.meta.env.VITE_APP_LOCAL_API_UPLOAD_IMAGE;
+                fetch('http://127.0.0.1:5000/upload/image', {
                     method: 'POST',
                     body: formData,
                 })

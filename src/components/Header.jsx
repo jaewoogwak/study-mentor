@@ -12,14 +12,14 @@ const Header = () => {
             <HeaderItemWrapper>
                 <Logo
                     onClick={() => {
-                        window.location.href = '/study-mentor/';
+                        window.location.href = '/';
                     }}
                 >
                     <LogoImage src={title} alt='logo' />
                 </Logo>
 
-                <FileUploadLink to='/study-mentor'>파일 업로드</FileUploadLink>
-                <ChatbotLink to='/study-mentor/chatbot'>챗봇</ChatbotLink>
+                <FileUploadLink to='/'>파일 업로드</FileUploadLink>
+                <ChatbotLink to='/chatbot'>챗봇</ChatbotLink>
             </HeaderItemWrapper>
             <Logout
                 onClick={() => {
