@@ -54,8 +54,9 @@ const NewChatbotPage = () => {
     };
 
     async function sendTextToServer(text) {
-        const address = 'http://127.0.0.1:5000/chatbot/question-answer';
+        const address = `${import.meta.env.VITE_APP_API_URL}/chatbot/question-answer`;
 
+        console.log('address', address, import.meta.env.VITE_APP_API_URL);
         await fetch(address, {
             method: 'POST',
             headers: {
