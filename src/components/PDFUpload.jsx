@@ -48,15 +48,12 @@ const PDFUpload = () => {
         beforeUpload(file) {
             console.log("beforeUpload's file", file, file.type);
             const formData = new FormData();
-            // 해당 경로로 pdf를 전송하면, 응답으로 pdf 파일을 받음.
 
             formData.append('file', file);
 
             if (file.type == 'application/pdf') {
-                // 업로드에 성공하면 true, 실패하면 false를 반환합니다.
-                // const address = import.meta.env.VITE_APP_LOCAL_API_UPLOAD_PDF;
-                // console.log('address', address);
-                fetch('http://127.0.0.1:5000/upload/pdf', {
+                console.log("url", import.meta.env.VITE_APP_API_URL);
+                fetch(`${import.meta.env.VITE_APP_API_URL}/upload/pdf`, {
                     method: 'POST',
                     body: formData,
                 })
@@ -71,17 +68,17 @@ const PDFUpload = () => {
                         message.error('Failed to upload PDF file.');
                     });
             } else if (file.type != 'application/image') {
-                // const address = import.meta.env.VITE_APP_LOCAL_API_UPLOAD_IMAGE;
-                fetch('http://127.0.0.1:5000/upload/image', {
+                console.log("url", import.meta.env.VITE_APP_API_URL);
+
+                fetch(`${import.meta.env.VITE_APP_API_URL}/upload/image`, {
                     method: 'POST',
                     body: formData,
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        console.log('data', data);
+                    .then((response) => response.blob())
+                    .then((blob) => {
                         setFileState('done');
                         setFileType('image');
-                        setData(data.extracted_text);
+                        setPdfFile(blob);
                     })
                     .catch((error) => {
                         console.error('Error:', error);
@@ -104,14 +101,9 @@ const PDFUpload = () => {
         </StatusWrapper>
     ) : fileState === 'done' ? (
         <StatusWrapper>
-            {fileType === 'pdf' ? (
+           
                 <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
-            ) : (
-                <StatusWrapper>
-                    이미지 분석 완료!
-                    <OCRResult>{data}</OCRResult>
-                </StatusWrapper>
-            )}
+           
         </StatusWrapper>
     ) : (
         <Dragger
