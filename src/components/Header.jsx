@@ -24,7 +24,7 @@ const Header = () => {
             <Logout
                 onClick={() => {
                     auth.signOut();
-                    auth.logout();
+                    // auth.logout();
                 }}
             >
                 logout

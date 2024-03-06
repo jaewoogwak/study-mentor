@@ -2,7 +2,14 @@ import { useContext, useEffect, useState } from 'react';
 // import './NewChatbotPage.css';
 
 import { auth, db } from '../services/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import {
+    collection,
+    addDoc,
+    getDocs,
+    updateDoc,
+    doc,
+    getDoc,
+} from 'firebase/firestore';
 
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {
@@ -13,7 +20,7 @@ import {
     MessageInput,
     TypingIndicator,
 } from '@chatscope/chat-ui-kit-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
 import LogoSvg from '../assets/logo.svg';
@@ -39,6 +46,7 @@ const NewChatbotPage = () => {
     ]);
     const [isTyping, setIsTyping] = useState(false);
     const { user, login, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleSend = async (message) => {
         const newMessage = {
@@ -52,6 +60,23 @@ const NewChatbotPage = () => {
         setIsTyping(true);
         // await processMessageToChatGPT(newMessages);
         await sendTextToServer(message);
+    };
+
+    // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
+    const findChatId = async () => {
+        // console.log('user', user.email);
+        const currentUser = user.email;
+        const chats = [];
+        const messageSnapshot = await getDocs(collection(db, 'chats'));
+        messageSnapshot.forEach((doc) => {
+            console.log(`e ${doc.id} => ${doc.data()?.email}`);
+
+            if (doc.data().email === currentUser) {
+                chats.push(doc.id);
+            }
+        });
+        console.log('chats id ', chats[0]);
+        return chats[0];
     };
 
     async function sendTextToServer(text) {
@@ -80,38 +105,33 @@ const NewChatbotPage = () => {
                     },
                 ]);
 
-                await getMessages();
+                // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾기
+                const id = await findChatId();
+
+                // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션에 메시지 추가하기
+                const currentUserMessage = {
+                    message: text,
+                    sender: 'user',
+                    direction: 'outgoing',
+                };
+
+                const chatRef = doc(db, 'chats', id);
+                updateDoc(chatRef, {
+                    messages: [
+                        ...messages,
+                        currentUserMessage,
+                        {
+                            message: data.answer,
+                            sender: 'ChatGPT',
+                        },
+                    ],
+                });
 
                 setIsTyping(false);
             })
+
             .catch((error) => console.error('Error:', error));
     }
-
-    const getMessages = async () => {
-        // 존재하는 유저 가져오기
-        const users = [];
-        const querySnapshot = await getDocs(collection(db, 'users'));
-        querySnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data()}`);
-            users.push(doc.data().email);
-        });
-
-        // 현재 로그인한 유저 가져오기
-        const currentUser = user.email;
-
-        // 유저의 메시지 가져오기
-        const messages = [];
-        const messageSnapshot = await getDocs(collection(db, 'messages'));
-        messageSnapshot.forEach((doc) => {
-            console.log(`${doc.id} => ${doc.data().email}`);
-
-            if (doc.data().email === currentUser) {
-                messages.push(doc.data().messages);
-            }
-
-            console.log('messages', messages);
-        });
-    };
 
     useEffect(() => {
         auth.onAuthStateChanged((usr) => {
@@ -122,8 +142,40 @@ const NewChatbotPage = () => {
             }
         });
 
-        console.log('messages', messages);
-    }, [user, messages]);
+        const getMessages = async () => {
+            const currentUserFBId = await findChatId();
+
+            // chats에 유저 채팅 정보가 없으면 새로 생성
+            if (!currentUserFBId) {
+                console.log('유저정보없더');
+                const docRef = await addDoc(collection(db, 'chats'), {
+                    email: user.email,
+                    messages: [
+                        {
+                            message: '안녕하세요! 어떤 문제가 궁금하신가요?',
+                            sentTime: 'just now',
+                            sender: 'ChatGPT',
+                        },
+                    ],
+                });
+                console.log('Document written with ID: ', docRef.id);
+            }
+
+            // 유저의 메시지 가져오기
+            const chatRef = doc(db, 'chats', currentUserFBId);
+            const chatSnapshot = await getDoc(chatRef);
+
+            if (chatSnapshot.exists()) {
+                const chatData = chatSnapshot.data();
+                setMessages(chatData.messages);
+            } else {
+                console.log('No such document!');
+            }
+        };
+        getMessages();
+
+        // console.log('messages', messages);
+    }, [user]);
 
     return (
         <Wrapper>
