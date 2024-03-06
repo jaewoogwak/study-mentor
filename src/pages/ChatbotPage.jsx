@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 // import './NewChatbotPage.css';
 
 import { auth, db } from '../services/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {
@@ -53,8 +54,25 @@ const NewChatbotPage = () => {
         await sendTextToServer(message);
     };
 
+    const saveMessage = async (message) => {
+        try {
+            const docRef = await addDoc(collection(db, 'users'), {
+                first: 'Alan',
+                middle: 'Mathison',
+                last: 'Turing',
+                born: 1912,
+            });
+
+            console.log('Document written with ID: ', docRef.id);
+        } catch (e) {
+            console.error('Error adding document: ', e);
+        }
+    };
+
     async function sendTextToServer(text) {
-        const address = `${import.meta.env.VITE_APP_API_URL}/chatbot/question-answer`;
+        const address = `${
+            import.meta.env.VITE_APP_API_URL
+        }/chatbot/question-answer`;
 
         console.log('address', address, import.meta.env.VITE_APP_API_URL);
         await fetch(address, {
@@ -76,6 +94,7 @@ const NewChatbotPage = () => {
                         sender: 'ChatGPT',
                     },
                 ]);
+
                 setIsTyping(false);
             })
             .catch((error) => console.error('Error:', error));

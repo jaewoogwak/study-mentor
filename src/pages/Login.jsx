@@ -2,9 +2,16 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import title from '../assets/title.png';
 import google from '../assets/google.png';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    createUserWithEmailAndPassword,
+} from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { db } from '../services/firebase';
 
 const provider = new GoogleAuthProvider();
 
@@ -15,8 +22,29 @@ const NewLogin = () => {
 
     const handleGoogleLogin = () => {
         signInWithPopup(auth, provider)
-            .then((result) => {
-                navigate('/');
+            .then(async (result) => {
+                console.log(result.user.email);
+                try {
+                    const querySnapshot = await getDocs(
+                        collection(db, 'users')
+                    );
+                    const users = [];
+                    querySnapshot.forEach((doc) => {
+                        console.log(`${doc.id} => ${doc.data().email}`);
+                        users.push(doc.data().email);
+                    });
+
+                    if (!users.includes(result.user.email)) {
+                        const docRef = await addDoc(collection(db, 'users'), {
+                            email: result.user.email,
+                            uid: result.user.uid,
+                        });
+                    }
+
+                    navigate('/');
+                } catch (err) {
+                    console.log('[Err]', err);
+                }
 
                 console.log(result);
             })
@@ -28,7 +56,7 @@ const NewLogin = () => {
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
             login(user);
-            user && navigate('/');
+            // user && navigate('/');
         });
     }, []);
 
