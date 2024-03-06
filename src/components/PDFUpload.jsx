@@ -52,7 +52,7 @@ const PDFUpload = () => {
             formData.append('file', file);
 
             if (file.type == 'application/pdf') {
-                console.log("url", import.meta.env.VITE_APP_API_URL);
+                console.log('url', import.meta.env.VITE_APP_API_URL);
                 fetch(`${import.meta.env.VITE_APP_API_URL}/upload/pdf`, {
                     method: 'POST',
                     body: formData,
@@ -68,7 +68,7 @@ const PDFUpload = () => {
                         message.error('Failed to upload PDF file.');
                     });
             } else if (file.type != 'application/image') {
-                console.log("url", import.meta.env.VITE_APP_API_URL);
+                console.log('url', import.meta.env.VITE_APP_API_URL);
 
                 fetch(`${import.meta.env.VITE_APP_API_URL}/upload/image`, {
                     method: 'POST',
@@ -101,9 +101,7 @@ const PDFUpload = () => {
         </StatusWrapper>
     ) : fileState === 'done' ? (
         <StatusWrapper>
-           
-                <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
-           
+            <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
         </StatusWrapper>
     ) : (
         <Dragger

@@ -54,21 +54,6 @@ const NewChatbotPage = () => {
         await sendTextToServer(message);
     };
 
-    const saveMessage = async (message) => {
-        try {
-            const docRef = await addDoc(collection(db, 'users'), {
-                first: 'Alan',
-                middle: 'Mathison',
-                last: 'Turing',
-                born: 1912,
-            });
-
-            console.log('Document written with ID: ', docRef.id);
-        } catch (e) {
-            console.error('Error adding document: ', e);
-        }
-    };
-
     async function sendTextToServer(text) {
         const address = `${
             import.meta.env.VITE_APP_API_URL
@@ -86,7 +71,7 @@ const NewChatbotPage = () => {
             }),
         })
             .then((response) => response.json())
-            .then((data) => {
+            .then(async (data) => {
                 setMessages((prevMessages) => [
                     ...prevMessages,
                     {
@@ -95,10 +80,38 @@ const NewChatbotPage = () => {
                     },
                 ]);
 
+                await getMessages();
+
                 setIsTyping(false);
             })
             .catch((error) => console.error('Error:', error));
     }
+
+    const getMessages = async () => {
+        // 존재하는 유저 가져오기
+        const users = [];
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        querySnapshot.forEach((doc) => {
+            console.log(`${doc.id} => ${doc.data()}`);
+            users.push(doc.data().email);
+        });
+
+        // 현재 로그인한 유저 가져오기
+        const currentUser = user.email;
+
+        // 유저의 메시지 가져오기
+        const messages = [];
+        const messageSnapshot = await getDocs(collection(db, 'messages'));
+        messageSnapshot.forEach((doc) => {
+            console.log(`${doc.id} => ${doc.data().email}`);
+
+            if (doc.data().email === currentUser) {
+                messages.push(doc.data().messages);
+            }
+
+            console.log('messages', messages);
+        });
+    };
 
     useEffect(() => {
         auth.onAuthStateChanged((usr) => {
