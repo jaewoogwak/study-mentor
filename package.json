@@ -14,6 +14,7 @@
         "@chatscope/chat-ui-kit-react": "^1.10.1",
         "@tanstack/react-query": "^5.14.1",
         "antd": "^5.12.5",
+        "axios": "^1.6.7",
         "firebase": "^10.7.2",
         "localforage": "^1.10.0",
         "match-sorter": "^6.3.1",

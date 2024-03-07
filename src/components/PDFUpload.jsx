@@ -7,6 +7,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import styled from 'styled-components';
 import { set } from 'firebase/database';
 import PDFViewer from './PDFViewer';
+import PDFDownload from './PDFDownload';
 
 const PDFUpload = () => {
     const [fileState, setFileState] = React.useState(null);
@@ -100,9 +101,12 @@ const PDFUpload = () => {
                 : '이미지 분석 중이에요. 잠시만 기다려 주세요'}
         </StatusWrapper>
     ) : fileState === 'done' ? (
-        <StatusWrapper>
-            <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
-        </StatusWrapper>
+        <PDFViewerWrapper>
+            <PDFDownload />
+            <StatusWrapper>
+                <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
+            </StatusWrapper>
+        </PDFViewerWrapper>
     ) : (
         <Dragger
             height={144}
@@ -126,6 +130,15 @@ const PDFUpload = () => {
 
 export default PDFUpload;
 
+const PDFViewerWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+`;
+
 const StatusWrapper = styled.div`
     margin-top: 40px;
     width: 100%;
@@ -133,18 +146,4 @@ const StatusWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     font-size: 24px;
-`;
-
-const OCRResult = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 16px;
-`;
-
-const PDFViewerWrapper = styled.div`
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
 `;
