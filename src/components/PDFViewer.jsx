@@ -36,6 +36,7 @@ const PDFViewer = ({ path, scale }) => {
                             width={700}
                             renderAnnotationLayer={false}
                             scale={scale}
+                            renderTextLayer={false}
                         />
                     );
                 })}

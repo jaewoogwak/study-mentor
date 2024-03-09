@@ -7,6 +7,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import styled from 'styled-components';
 import { set } from 'firebase/database';
 import PDFViewer from './PDFViewer';
+import PDFDownload from './PDFDownload';
 
 const PDFUpload = () => {
     const [fileState, setFileState] = React.useState(null);
@@ -52,7 +53,7 @@ const PDFUpload = () => {
             formData.append('file', file);
 
             if (file.type == 'application/pdf') {
-                console.log("url", import.meta.env.VITE_APP_API_URL);
+                console.log('url', import.meta.env.VITE_APP_API_URL);
                 fetch(`${import.meta.env.VITE_APP_API_URL}/upload/pdf`, {
                     method: 'POST',
                     body: formData,
@@ -68,7 +69,7 @@ const PDFUpload = () => {
                         message.error('Failed to upload PDF file.');
                     });
             } else if (file.type != 'application/image') {
-                console.log("url", import.meta.env.VITE_APP_API_URL);
+                console.log('url', import.meta.env.VITE_APP_API_URL);
 
                 fetch(`${import.meta.env.VITE_APP_API_URL}/upload/image`, {
                     method: 'POST',
@@ -100,11 +101,27 @@ const PDFUpload = () => {
                 : '이미지 분석 중이에요. 잠시만 기다려 주세요'}
         </StatusWrapper>
     ) : fileState === 'done' ? (
-        <StatusWrapper>
-           
+        <PDFViewerWrapper>
+            <DownloadBtn
+                onClick={() => {
+                    const downloadUrl = window.URL.createObjectURL(
+                        new Blob([pdfFile])
+                    );
+
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.setAttribute('download', 'study-mentor.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                }}
+            >
+                문제 저장하기
+            </DownloadBtn>
+            <StatusWrapper>
                 <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
-           
-        </StatusWrapper>
+            </StatusWrapper>
+        </PDFViewerWrapper>
     ) : (
         <Dragger
             height={144}
@@ -128,6 +145,15 @@ const PDFUpload = () => {
 
 export default PDFUpload;
 
+const PDFViewerWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+`;
+
 const StatusWrapper = styled.div`
     margin-top: 40px;
     width: 100%;
@@ -137,16 +163,17 @@ const StatusWrapper = styled.div`
     font-size: 24px;
 `;
 
-const OCRResult = styled.div`
+const DownloadBtn = styled.button`
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 16px;
-`;
-
-const PDFViewerWrapper = styled.div`
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    height: 100%;
+    font-size: 24px;
+    color: #ab41ff;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    margin-top: 20px;
+    &:hover {
+        color: #ff6b6b;
+    }
 `;
