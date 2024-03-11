@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import title from '../assets/title.png';
+import login_main from '../assets/login_main.png';
+import login_left_circle from '../assets/login_left_circle.png';
+import login_right_circle from '../assets/login_right_circle.png';
+
 import google from '../assets/google.png';
 import {
     getAuth,
@@ -15,7 +18,7 @@ import { db } from '../services/firebase';
 
 const provider = new GoogleAuthProvider();
 
-const NewLogin = () => {
+const NewLoginPage = () => {
     const auth = getAuth();
     const navigate = useNavigate();
     const { user, login, logout } = useAuth();
@@ -61,29 +64,36 @@ const NewLogin = () => {
     }, []);
 
     return (
-        <Wrapper>
-            <LogoContainer>
-                <LogoImage src={title} />
-            </LogoContainer>
-            <LoginContainer>
-                나만의 학습 어시스턴트 지금 시작하기
-                <GoogleLoginButton
-                    onClick={() => {
-                        handleGoogleLogin();
-                    }}
-                >
-                    <GoogleIcon src={google} alt='' />
-                    Google 로그인
-                </GoogleLoginButton>
-            </LoginContainer>
-        </Wrapper>
+        <Container>
+            <Title>Study Mentor</Title>
+            <Description>ChatGPT 기반 스터디 멘토 플랫폼</Description>
+            <LoginButton
+                onClick={() => {
+                    handleGoogleLogin();
+                }}
+            >
+                로그인
+            </LoginButton>
+            <LoginImageContainer>
+                <LoginLeftCircle
+                    src={login_left_circle}
+                    alt='login_left_circle'
+                />
+                <LoginImage src={login_main} alt='login_main' />
+                <LoginRightCircle
+                    src={login_right_circle}
+                    alt='login_right_circle'
+                />
+            </LoginImageContainer>
+        </Container>
     );
 };
 
-export default NewLogin;
+export default NewLoginPage;
 
-const Wrapper = styled.div`
+const Container = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -91,50 +101,91 @@ const Wrapper = styled.div`
     background-color: rgb(253, 253, 253);
 `;
 
-const LogoContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    height: 100%;
+const Title = styled.div`
+    color: #fd9f28;
+    padding: 0;
+    text-align: center;
+    margin-top: 41px;
+
+    font-size: 100px;
+    font-style: normal;
+    font-weight: 900;
+    font-family: 'Passion One';
 `;
 
-const LoginContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    height: 100%;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 34px;
-    font-stretch: narrower;
-    font-weight: bold;
+const Description = styled.div`
+    margin-top: 10px;
+    color: #000;
+
+    text-align: center;
+    font-family: 'Anek Kannada';
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
 `;
 
-const LogoImage = styled.img`
-    width: 700px;
-    margin-left: 80px;
-`;
+const LoginButton = styled.button`
+    width: 168px;
+    height: 62px;
+    margin-top: 38px;
+    flex-shrink: 0;
+    border-radius: 60px;
+    border: 1px solid #fd9f28;
+    background: rgba(253, 159, 40, 0.5);
 
-const GoogleLoginButton = styled.button`
-    width: 300px;
-    height: 50px;
-    background-color: #fff;
-    border: 0.5px solid #000000bb;
-    border-radius: 10px;
-    font-size: 20px;
-    font-weight: bold;
+    text-align: center;
+    font-family: Abel;
+    font-size: 24px;
+    font-style: normal;
+
     cursor: pointer;
+    &:hover {
+        background: #fd9f28;
+        color: #fff;
+    }
+`;
+
+const LoginFont = styled.div`
+    color: #000;
+
+    text-align: center;
+    font-family: Abel;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`;
+
+const LoginImageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
+    width: 50%;
+    height: 100%;
 `;
 
-const GoogleIcon = styled.img`
-    width: 30px;
-    height: 30px;
-    margin-right: 30px;
+const LoginImage = styled.img`
+    margin-top: 38px;
+    width: 550px;
+    object-fit: contain;
+    z-index: 3;
+    top: 20px;
+    position: relative;
+`;
+
+const LoginLeftCircle = styled.img`
+    position: relative;
+    top: 80px;
+    left: 40px;
+    z-index: 1;
+    width: 300px;
+`;
+
+const LoginRightCircle = styled.img`
+    width: 300px;
+    position: relative;
+    top: 20px;
+    right: 40px;
+    z-index: 1;
 `;

@@ -20,7 +20,6 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ChatbotPage from './pages/ChatbotPage.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
-import NewLoginPage from './pages/NewLoginPage.jsx';
 
 const queryClient = new QueryClient();
 const address = 'http://13.124.221.128:5000/';
@@ -62,7 +61,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/login',
-        element: <NewLoginPage />,
+        element: <Login />,
         errorElement: <ErrorPage />,
     },
     {
