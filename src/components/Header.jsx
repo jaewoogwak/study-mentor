@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import LogoSvg from '../assets/logo.svg';
+import logo2 from '../assets/logo2.png';
 import title from '../assets/title.png';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,13 +11,15 @@ const Header = () => {
     return (
         <HeaderWrapper>
             <HeaderItemWrapper>
-                <Logo
+                <TitleWrapper
                     onClick={() => {
                         window.location.href = '/';
                     }}
                 >
-                    <LogoImage src={title} alt='logo' />
-                </Logo>
+                    <LogoSvgWrapper src={logo2} alt='logo' />
+
+                    <Title>Study Mentor</Title>
+                </TitleWrapper>
 
                 <FileUploadLink to='/'>파일 업로드</FileUploadLink>
                 <ChatbotLink to='/chatbot'>챗봇</ChatbotLink>
@@ -27,7 +30,7 @@ const Header = () => {
                     // auth.logout();
                 }}
             >
-                logout
+                로그아웃
             </Logout>
         </HeaderWrapper>
     );
@@ -39,6 +42,10 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     padding-bottom: 50px;
+`;
+
+const LogoSvgWrapper = styled.img`
+    width: 60px;
 `;
 
 const HeaderItemWrapper = styled.div`
@@ -56,7 +63,7 @@ const HeaderWrapper = styled.div`
     flex-wrap: wrap;
 
     height: 80px;
-    border-bottom: 1px solid #aecfff;
+    border-bottom: 1px solid #e0e0e0;
 
     padding-right: 30px;
 `;
@@ -70,12 +77,32 @@ const LogoImage = styled.img`
     width: 230px;
     height: 50px;
 `;
+const TitleWrapper = styled.div`
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 45px;
+`;
+
+const Title = styled.div`
+    color: #fd9f28;
+
+    text-align: center;
+    font-family: 'Passion One';
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+`;
 
 const FileUploadLink = styled(Link)`
     margin-left: 125px;
     font-size: 24px;
-    color: #ab41ff;
+    color: black;
     text-decoration: none;
+    font-family: 'Red Hat Text';
+    font-weight: 600;
 `;
 
 const ChatbotLink = styled(Link)`
@@ -83,6 +110,8 @@ const ChatbotLink = styled(Link)`
     font-size: 24px;
     text-decoration: none;
     color: black;
+    font-family: 'Red Hat Text';
+    font-weight: 600;
 `;
 
 const Logout = styled.div`
@@ -95,4 +124,6 @@ const Logout = styled.div`
     text-decoration: none;
     color: black;
     cursor: pointer;
+    font-family: 'Red Hat Text';
+    font-weight: 600;
 `;
