@@ -4,10 +4,16 @@ import LogoSvg from '../assets/logo.svg';
 import logo2 from '../assets/logo2.png';
 import title from '../assets/title.png';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { auth } from '../services/firebase';
 
+
+
 const Header = () => {
+    const activeStyle = {
+        color: "#6392ff",
+      };
+    
     return (
         <HeaderWrapper>
             <HeaderItemWrapper>
@@ -21,8 +27,16 @@ const Header = () => {
                     <Title>Study Mentor</Title>
                 </TitleWrapper>
 
-                <FileUploadLink to='/'>파일 업로드</FileUploadLink>
-                <ChatbotLink to='/chatbot'>챗봇</ChatbotLink>
+                <FileUploadLink to='/'
+                    activeClassName='activeLink'
+                    style={({ isActive }) => (isActive ? activeStyle : {})}
+                >파일 업로드</FileUploadLink>
+                <ChatbotLink to='/chatbot'
+                    activeClassName='activeLink'
+                    style={({ isActive }) => (isActive ? activeStyle : {})}
+                
+                    
+                >챗봇</ChatbotLink>
             </HeaderItemWrapper>
             <Logout
                 onClick={() => {
@@ -83,6 +97,8 @@ const TitleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     margin-left: 45px;
+
+    cursor: pointer;
 `;
 
 const Title = styled.div`
@@ -96,22 +112,25 @@ const Title = styled.div`
     line-height: normal;
 `;
 
-const FileUploadLink = styled(Link)`
+const FileUploadLink = styled(NavLink)`
     margin-left: 125px;
     font-size: 24px;
     color: black;
     text-decoration: none;
     font-family: 'Red Hat Text';
     font-weight: 600;
+
 `;
 
-const ChatbotLink = styled(Link)`
+const ChatbotLink = styled(NavLink)`
     /* margin-left: 42px; */
     font-size: 24px;
     text-decoration: none;
     color: black;
     font-family: 'Red Hat Text';
     font-weight: 600;
+
+
 `;
 
 const Logout = styled.div`
