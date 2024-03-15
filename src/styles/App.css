@@ -25,10 +25,10 @@ p {
     text-align: center;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'Dovemayo_gothic';
     font-weight: 400;
     font-display: swap;
     src: local('Dovemayo_gothic'),
         url('./fonts/Dovemayo_gothic.ttf') format('truetype');
-}
+} */

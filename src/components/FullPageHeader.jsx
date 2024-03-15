@@ -7,7 +7,7 @@ import title from '../assets/title.png';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { auth } from '../services/firebase';
 
-const Header = () => {
+const FullPageHeader = () => {
     const activeStyle = {
         color: '#6392ff',
     };
@@ -52,7 +52,7 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default FullPageHeader;
 
 const Wrapper = styled.div`
     display: flex;
@@ -74,8 +74,8 @@ const HeaderItemWrapper = styled.div`
 
 const HeaderWrapper = styled.div`
     width: 100vw;
-    /* z-index: 100; */
-    /* position: fixed; */
+    z-index: 100;
+    position: fixed;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

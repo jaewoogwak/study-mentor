@@ -1,0 +1,161 @@
+import React from 'react';
+import Fullpage, {
+    FullPageSections,
+    FullpageSection,
+} from '@ap.cx/react-fullpage';
+import styled from 'styled-components';
+
+import study_two_people from '../assets/study_two_people.png';
+import example from '../assets/example.svg';
+import { NavLink } from 'react-router-dom';
+
+const FullPageScroll = () => {
+    return (
+        <Wrapper>
+            <Fullpage>
+                <FullPageSections>
+                    <FullpageSection
+                        style={{
+                            // backgroundColor: 'lime',
+                            height: '100vh',
+                            padding: '1em',
+                        }}
+                    >
+                        <PageWrapper>
+                            <FirstContainer>
+                                <Text
+                                    fontsize='32px'
+                                    style={{ fontWeight: 'bold' }}
+                                >
+                                    시험 문제는 스터디 멘토와 함께!<br></br>{' '}
+                                    방금 공부한 내용을 시험해보세요.
+                                </Text>
+
+                                <Image
+                                    src={study_two_people}
+                                    alt='study'
+                                    width='50%'
+                                    height='50%'
+                                />
+                            </FirstContainer>
+                        </PageWrapper>
+                    </FullpageSection>
+                    <FullpageSection
+                        style={{
+                            backgroundColor: '#FFF9E8',
+                            padding: '1em',
+                        }}
+                    >
+                        <SecondContainer>
+                            <Image
+                                src={example}
+                                alt='example'
+                                width='611px'
+                                height='421px'
+                            />
+                            <div>
+                                <Text
+                                    fontsize='40px'
+                                    style={{ fontWeight: 'bold' }}
+                                >
+                                    시험 문제 만들기
+                                </Text>
+                                <Text
+                                    fontsize='30px'
+                                    style={{
+                                        fontWeight: '300',
+                                        marginTop: '39px',
+                                    }}
+                                >
+                                    자신이 학습한 내용이 담긴 이미지 혹은 PDF
+                                    파일을 업로드하여 시험 문제를 만들어보세요!
+                                </Text>
+                                <FileUploadLink
+                                    onClick={() => {
+                                        window.location.href = '/upload';
+                                    }}
+                                    style={{
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    파일 업로드
+                                </FileUploadLink>
+                            </div>
+                        </SecondContainer>
+                    </FullpageSection>
+                    <FullpageSection
+                        style={{
+                            // backgroundColor: 'firebrick',
+                            padding: '1em',
+                        }}
+                    >
+                        3
+                    </FullpageSection>
+                </FullPageSections>
+            </Fullpage>
+        </Wrapper>
+    );
+};
+
+export default FullPageScroll;
+
+const Wrapper = styled.div`
+    /* display: flex; */
+
+    /* z-index: 10; */
+`;
+
+/**********************************/
+/*      공용 스타일       */
+const Image = styled.img`
+    width: ${(props) => props.width || '100%'};
+    height: ${(props) => props.height || '100%'};
+`;
+
+const Text = styled.div`
+    font-size: ${(props) => props.fontsize || '16px'};
+`;
+
+/**********************************/
+/*      첫 번째 페이지 스타일       */
+const PageWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding-bottom: 50px; */
+`;
+
+const FirstContainer = styled.div`
+    margin-top: 218px;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: center;
+    gap: 96px;
+`;
+
+/**********************************/
+
+/**********************************/
+/*      두 번째 페이지 스타일       */
+
+const SecondContainer = styled.div`
+    margin-top: 218px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 96px;
+`;
+
+const FileUploadLink = styled.button`
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 32px;
+    cursor: pointer;
+    border: none;
+    background-color: #ffa500;
+    padding: 10px 20px;
+    border-radius: 10px;
+`;

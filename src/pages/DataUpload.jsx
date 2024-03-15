@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import PDFUpload from '../components/PDFUpload';
 import Header from '../components/Header';
 
-const HomePage = () => {
+const DataUpload = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();
 
@@ -70,7 +70,7 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default DataUpload;
 
 const Wrapper = styled.div`
     display: flex;
