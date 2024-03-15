@@ -70,7 +70,14 @@ const FullPageScroll = () => {
                                     자신이 학습한 내용이 담긴 이미지 혹은 PDF
                                     파일을 업로드하여 시험 문제를 만들어보세요!
                                 </Text>
-                                <FileUploadLink to='/upload'>
+                                <FileUploadLink
+                                    onClick={() => {
+                                        window.location.href = '/upload';
+                                    }}
+                                    style={{
+                                        textDecoration: 'none',
+                                    }}
+                                >
                                     파일 업로드
                                 </FileUploadLink>
                             </div>

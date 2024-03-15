@@ -14,13 +14,13 @@ import {
     QueryClientProvider,
     useQuery,
 } from '@tanstack/react-query';
-import HomePage from './pages/HomePage.jsx';
 import NewChatbotPage from './pages/ChatbotPage.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ChatbotPage from './pages/ChatbotPage.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import MainPage from './pages/MainPage.jsx';
+import DataUpload from './pages/DataUpload.jsx';
 
 const queryClient = new QueryClient();
 const address = 'http://13.124.221.128:5000/';
@@ -52,12 +52,12 @@ function Example() {
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <HomePage />,
+        element: <MainPage />,
         errorElement: <ErrorPage />,
     },
     {
-        path: '/main',
-        element: <MainPage />,
+        path: '/upload',
+        element: <DataUpload />,
         errorElement: <ErrorPage />,
     },
     {

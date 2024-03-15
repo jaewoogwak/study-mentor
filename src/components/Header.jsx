@@ -26,7 +26,7 @@ const Header = () => {
                 </TitleWrapper>
 
                 <FileUploadLink
-                    to='/'
+                    to='/upload'
                     activeClassName='activeLink'
                     style={({ isActive }) => (isActive ? activeStyle : {})}
                 >
@@ -148,4 +148,5 @@ const Logout = styled.div`
     cursor: pointer;
     font-family: 'Red Hat Text';
     font-weight: 600;
+    margin-right: 30px;
 `;
