@@ -11,6 +11,7 @@ import {
     getDownloadURL,
     uploadBytes,
     uploadBytesResumable,
+    deleteObject,
 } from 'firebase/storage';
 import PDFViewer from './PDFViewer';
 import PDFDownload from './PDFDownload';
@@ -203,6 +204,30 @@ const PDFUpload = () => {
             >
                 문제 저장하기
             </DownloadBtn>
+            <GeneratePDFBtn
+                onClick={() => {
+                    // firebase에 저장된 파일 삭제
+                    const storage = getStorage();
+                    const fileNames = user.email.split('@')[0];
+                    const storageRef = ref(
+                        storage,
+                        'pdfs/' + fileNames + '.pdf'
+                    );
+                    deleteObject(storageRef)
+                        .then(() => {
+                            console.log('File deleted successfully');
+                            setFileState(null);
+                            setPdfFile(null);
+                            setFileType(null);
+                            setData(null);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                }}
+            >
+                문제 새로 생성하기
+            </GeneratePDFBtn>
             <StatusWrapper>
                 <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
             </StatusWrapper>
@@ -252,6 +277,21 @@ const StatusWrapper = styled.div`
 `;
 
 const DownloadBtn = styled.button`
+    width: 100%;
+    height: 100%;
+    font-size: 24px;
+    color: #ab41ff;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    margin-top: 20px;
+    &:hover {
+        color: #ff6b6b;
+    }
+`;
+
+const GeneratePDFBtn = styled.button`
     width: 100%;
     height: 100%;
     font-size: 24px;
