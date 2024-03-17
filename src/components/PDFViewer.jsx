@@ -4,6 +4,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const PDFViewer = ({ path, scale }) => {
+    console.log('path', path);
+
     const [numPages, setNumPages] = useState(0);
 
     const onDocumentLoadSuccess = ({ numPages }) => {

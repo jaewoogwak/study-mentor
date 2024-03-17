@@ -6,26 +6,64 @@ import { Document, Page, pdfjs } from 'react-pdf';
 
 import styled from 'styled-components';
 import { set } from 'firebase/database';
+import { getStorage, ref } from 'firebase/storage';
+import {
+    getDownloadURL,
+    uploadBytes,
+    uploadBytesResumable,
+} from 'firebase/storage';
 import PDFViewer from './PDFViewer';
 import PDFDownload from './PDFDownload';
+import { useAuth } from '../contexts/AuthContext';
 
 const PDFUpload = () => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
     const [data, setData] = React.useState(null);
     const [pdfFile, setPdfFile] = React.useState(null);
+    const { user, login, logout } = useAuth();
 
     useEffect(() => {
-        console.log('fileState', fileState);
-    }, [fileState, data, fileType]);
+        console.log('useEffect');
+        const downloadFile = async () => {
+            try {
+                const storage = getStorage();
+
+                // 유저 이름으로 파일 이름을 만들어서 저장
+
+                if (user) {
+                    const fileNames = user.email.split('@')[0];
+                    const storageRef = ref(
+                        storage,
+                        'pdfs/' + fileNames + '.pdf'
+                    );
+                    console.log('storageRef', storageRef);
+
+                    if (storageRef) {
+                        const url = await getDownloadURL(storageRef);
+                        console.log('url', url);
+                        const response = await fetch(url);
+                        const blob = await response.blob();
+                        console.log('blob', blob);
+                        setPdfFile(blob);
+                        setFileState('done');
+                    }
+                }
+            } catch (error) {
+                console.error('error', error);
+            }
+        };
+
+        downloadFile();
+    }, [fileState, data, fileType, user]);
 
     const styles = {
         width: '100%',
         display: 'flex',
-
         flexDirection: 'column',
         justifyContent: 'center',
     };
+
     const props = {
         name: 'file',
         multiple: true,
@@ -44,6 +82,7 @@ const PDFUpload = () => {
                 );
             } else if (status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
+                setFileState('error');
             }
         },
         beforeUpload(file) {
@@ -63,10 +102,12 @@ const PDFUpload = () => {
                         setFileState('done');
                         setFileType('pdf');
                         setPdfFile(blob);
+                        uploadFileToFirebase(blob);
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                         message.error('Failed to upload PDF file.');
+                        setFileState('error');
                     });
             } else if (file.type != 'application/image') {
                 console.log('url', import.meta.env.VITE_APP_API_URL);
@@ -80,10 +121,12 @@ const PDFUpload = () => {
                         setFileState('done');
                         setFileType('image');
                         setPdfFile(blob);
+                        uploadFileToFirebase(blob);
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                         message.error('Failed to upload image file.');
+                        setFileState('error');
                     });
             } else {
                 message.error('지원하지 않는 파일 형식입니다.');
@@ -92,6 +135,46 @@ const PDFUpload = () => {
 
             // return false; // Prevent default upload behavior
         },
+    };
+
+    const uploadFileToFirebase = async (blob) => {
+        try {
+            const storage = getStorage();
+
+            const fileNames = user.email.split('@')[0];
+            const storageRef = ref(storage, 'pdfs/' + fileNames + '.pdf');
+
+            const uploadTask = uploadBytesResumable(storageRef, blob);
+
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                        case 'running':
+                            console.log('Upload is running');
+                            break;
+                    }
+                },
+                (error) => {
+                    console.error('error', error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(
+                        (downloadURL) => {
+                            console.log('File available at', downloadURL);
+                        }
+                    );
+                }
+            );
+        } catch (error) {
+            console.error('error', error);
+        }
     };
 
     return fileState === 'uploading' ? (
@@ -108,6 +191,8 @@ const PDFUpload = () => {
                         new Blob([pdfFile])
                     );
 
+                    console.log('downloadUrl', downloadUrl, pdfFile);
+
                     const link = document.createElement('a');
                     link.href = downloadUrl;
                     link.setAttribute('download', 'study-mentor.pdf');
@@ -122,6 +207,10 @@ const PDFUpload = () => {
                 <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
             </StatusWrapper>
         </PDFViewerWrapper>
+    ) : fileState === 'error' ? (
+        <StatusWrapper>
+            파일 업로드에 실패했어요. 다시 시도해 주세요.
+        </StatusWrapper>
     ) : (
         <Dragger
             height={144}
@@ -140,7 +229,6 @@ const PDFUpload = () => {
             </p>
         </Dragger>
     );
-    // </Wrapper>
 };
 
 export default PDFUpload;
