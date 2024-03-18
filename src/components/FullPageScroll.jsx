@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Fullpage, {
     FullPageSections,
     FullpageSection,
@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import study_two_people from '../assets/study_two_people.png';
 import example from '../assets/example.svg';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../services/firebase';
 
 const FullPageScroll = () => {
     return (

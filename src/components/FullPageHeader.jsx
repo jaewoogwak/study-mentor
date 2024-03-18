@@ -6,11 +6,14 @@ import title from '../assets/title.png';
 
 import { Link, useNavigate, NavLink } from 'react-router-dom';
 import { auth } from '../services/firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 const FullPageHeader = () => {
     const activeStyle = {
         color: '#6392ff',
     };
+
+    const { user, login, logout } = useAuth();
 
     return (
         <HeaderWrapper>
@@ -43,7 +46,8 @@ const FullPageHeader = () => {
             <Logout
                 onClick={() => {
                     auth.signOut();
-                    // auth.logout();
+                    logout();
+                    window.location.href = '/login';
                 }}
             >
                 로그아웃
