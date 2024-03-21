@@ -92,47 +92,27 @@ const PDFUpload = () => {
 
             formData.append('file', file);
 
-            if (file.type == 'application/pdf') {
-                console.log('url', import.meta.env.VITE_APP_API_URL);
-                fetch(`${import.meta.env.VITE_APP_API_URL}/upload/pdf`, {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then((response) => response.blob())
-                    .then((blob) => {
-                        setFileState('done');
-                        setFileType('pdf');
-                        setPdfFile(blob);
-                        uploadFileToFirebase(blob);
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                        message.error('Failed to upload PDF file.');
-                        setFileState('error');
-                    });
-            } else if (file.type != 'application/image') {
-                console.log('url', import.meta.env.VITE_APP_API_URL);
+            const type =
+                file.type === 'application/pdf'
+                    ? '/upload/pdf'
+                    : '/upload/image';
 
-                fetch(`${import.meta.env.VITE_APP_API_URL}/upload/image`, {
-                    method: 'POST',
-                    body: formData,
+            fetch(`${import.meta.env.VITE_APP_API_URL}${type}`, {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.blob())
+                .then((blob) => {
+                    setFileState('done');
+                    setFileType('pdf');
+                    setPdfFile(blob);
+                    uploadFileToFirebase(blob);
                 })
-                    .then((response) => response.blob())
-                    .then((blob) => {
-                        setFileState('done');
-                        setFileType('image');
-                        setPdfFile(blob);
-                        uploadFileToFirebase(blob);
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                        message.error('Failed to upload image file.');
-                        setFileState('error');
-                    });
-            } else {
-                message.error('지원하지 않는 파일 형식입니다.');
-                return false;
-            }
+                .catch((error) => {
+                    console.error('Error:', error);
+                    message.error('Failed to upload PDF file.');
+                    setFileState('error');
+                });
 
             // return false; // Prevent default upload behavior
         },
