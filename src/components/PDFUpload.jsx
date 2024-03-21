@@ -16,6 +16,8 @@ import {
 import PDFViewer from './PDFViewer';
 import PDFDownload from './PDFDownload';
 import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
+import ProgressBar from './ProgressBar';
 
 const PDFUpload = () => {
     const [fileState, setFileState] = React.useState(null);
@@ -23,6 +25,7 @@ const PDFUpload = () => {
     const [data, setData] = React.useState(null);
     const [pdfFile, setPdfFile] = React.useState(null);
     const { user, login, logout } = useAuth();
+    const [percent, setPercent] = React.useState(0);
 
     useEffect(() => {
         console.log('useEffect');
@@ -97,16 +100,32 @@ const PDFUpload = () => {
                     ? '/upload/pdf'
                     : '/upload/image';
 
-            fetch(`${import.meta.env.VITE_APP_API_URL}${type}`, {
+            axios({
+                url: `${import.meta.env.VITE_APP_API_URL}${type}`,
                 method: 'POST',
-                body: formData,
+                responseType: 'blob',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data: formData,
+                onDownloadProgress: (progressEvent) => {
+                    // const { loaded, total } = progressEvent;
+                    // let percent = Math.floor((loaded * 100) / total);
+                    // console.log('percent', percent);
+                    // setPercent(percent);
+                },
+                onUploadProgress: (progressEvent) => {
+                    // const { loaded, total } = progressEvent;
+                    // let percent = Math.floor((loaded * 100) / total);
+                    // console.log('percent', percent);
+                    // setPercent(percent);
+                },
             })
-                .then((response) => response.blob())
-                .then((blob) => {
+                .then((response) => {
                     setFileState('done');
                     setFileType('pdf');
-                    setPdfFile(blob);
-                    uploadFileToFirebase(blob);
+                    setPdfFile(response.data);
+                    uploadFileToFirebase(response.data);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
@@ -160,20 +179,21 @@ const PDFUpload = () => {
 
     return fileState === 'uploading' ? (
         <StatusWrapper>
-            {fileType === 'pdf'
-                ? 'PDF 분석 중이에요. 잠시만 기다려 주세요'
-                : '이미지 분석 중이에요. 잠시만 기다려 주세요'}
+            {fileType === 'pdf' ? (
+                <div> 'PDF 분석 중이에요. 잠시만 기다려 주세요'</div>
+            ) : (
+                <div>
+                    '이미지 분석 중이에요. 잠시만 기다려 주세요'
+                    <ProgressBar percent={percent} />
+                </div>
+            )}
         </StatusWrapper>
     ) : fileState === 'done' ? (
         <PDFViewerWrapper>
             <DownloadBtn
                 onClick={() => {
-                    const downloadUrl = window.URL.createObjectURL(
-                        new Blob([pdfFile])
-                    );
-
+                    const downloadUrl = window.URL.createObjectURL(pdfFile);
                     console.log('downloadUrl', downloadUrl, pdfFile);
-
                     const link = document.createElement('a');
                     link.href = downloadUrl;
                     link.setAttribute('download', 'study-mentor.pdf');
@@ -209,7 +229,7 @@ const PDFUpload = () => {
                 문제 새로 생성하기
             </GeneratePDFBtn>
             <StatusWrapper>
-                <PDFViewer path={URL.createObjectURL(pdfFile)} scale={1.5} />
+                <PDFViewer path={pdfFile} scale={1.5} />
             </StatusWrapper>
         </PDFViewerWrapper>
     ) : fileState === 'error' ? (
