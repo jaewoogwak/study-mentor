@@ -17,7 +17,7 @@ import PDFViewer from './PDFViewer';
 import PDFDownload from './PDFDownload';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
-import ProgressBar from './ProgressBar';
+import ProgressViewer from './ProgressViewer';
 
 const PDFUpload = () => {
     const [fileState, setFileState] = React.useState(null);
@@ -62,7 +62,7 @@ const PDFUpload = () => {
     }, [fileState, data, fileType, user]);
 
     const styles = {
-        width: '100%',
+        width: '700px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -108,18 +108,6 @@ const PDFUpload = () => {
                     'Content-Type': 'multipart/form-data',
                 },
                 data: formData,
-                onDownloadProgress: (progressEvent) => {
-                    // const { loaded, total } = progressEvent;
-                    // let percent = Math.floor((loaded * 100) / total);
-                    // console.log('percent', percent);
-                    // setPercent(percent);
-                },
-                onUploadProgress: (progressEvent) => {
-                    // const { loaded, total } = progressEvent;
-                    // let percent = Math.floor((loaded * 100) / total);
-                    // console.log('percent', percent);
-                    // setPercent(percent);
-                },
             })
                 .then((response) => {
                     setFileState('done');
@@ -184,7 +172,7 @@ const PDFUpload = () => {
             ) : (
                 <div>
                     '이미지 분석 중이에요. 잠시만 기다려 주세요'
-                    <ProgressBar percent={percent} />
+                    <ProgressViewer />
                 </div>
             )}
         </StatusWrapper>
@@ -240,6 +228,7 @@ const PDFUpload = () => {
         <Dragger
             height={144}
             {...props}
+            style={styles}
             // action='http://
         >
             <p className='ant-upload-drag-icon'>
@@ -264,12 +253,10 @@ const PDFViewerWrapper = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
 `;
 
 const StatusWrapper = styled.div`
-    margin-top: 40px;
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
