@@ -32,3 +32,8 @@ p {
     src: local('Dovemayo_gothic'),
         url('./fonts/Dovemayo_gothic.ttf') format('truetype');
 } */
+
+/* Assuming you're using a class named 'custom-switch' to style your Switch component */
+.custom-switch .ant-switch-inner {
+    font-size: 24px; /* Adjust the font size according to your preference */
+}

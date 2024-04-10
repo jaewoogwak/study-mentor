@@ -25,7 +25,8 @@ const PDFUpload = () => {
     const [data, setData] = React.useState(null);
     const [pdfFile, setPdfFile] = React.useState(null);
     const { user, login, logout } = useAuth();
-    const [percent, setPercent] = React.useState(0);
+    const [processState, setProcessState] =
+        React.useState('파일을 업로드 하고 있어요');
 
     useEffect(() => {
         console.log('useEffect');
@@ -59,7 +60,7 @@ const PDFUpload = () => {
         };
 
         downloadFile();
-    }, [fileState, data, fileType, user]);
+    }, [fileState, data, fileType, user, processState]);
 
     const styles = {
         width: '700px',
@@ -89,7 +90,7 @@ const PDFUpload = () => {
                 setFileState('error');
             }
         },
-        beforeUpload(file) {
+        async beforeUpload(file) {
             console.log("beforeUpload's file", file, file.type);
             const formData = new FormData();
 
@@ -100,26 +101,67 @@ const PDFUpload = () => {
                     ? '/upload/pdf'
                     : '/upload/image';
 
-            axios({
-                url: `${import.meta.env.VITE_APP_API_URL}${type}`,
-                method: 'POST',
-                responseType: 'blob',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                data: formData,
-            })
-                .then((response) => {
-                    setFileState('done');
-                    setFileType('pdf');
-                    setPdfFile(response.data);
-                    uploadFileToFirebase(response.data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    message.error('Failed to upload PDF file.');
-                    setFileState('error');
+            try {
+                setFileState('uploading');
+
+                // 1. /upload/pdf or /upload/image로 파일 업로드 [POST]
+                const response = await axios({
+                    url: `${import.meta.env.VITE_APP_API_URL}${type}`,
+                    method: 'POST',
+                    responseType: 'text',
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+
+                    data: formData,
                 });
+                console.log('Res', response);
+
+                if (response.status !== 200) {
+                    message.error('Failed to upload file.');
+                    setFileState('error');
+                    return false;
+                }
+
+                if (response.status === 200) {
+                    // setProcessState(response.data);
+                }
+
+                console.log('###2');
+                const dataResponse = await axios({
+                    url: `${import.meta.env.VITE_APP_API_URL}${type}`,
+                    method: 'GET',
+                });
+
+                console.log('dataResponse', dataResponse);
+
+                // setProcessState('파일 다운로드 중..');
+
+                // 3. /get 경로에서 데이터 받기 [POST]
+                // 이벤트스트림으로 데이터 받기
+
+                const data = await axios({
+                    url: `${import.meta.env.VITE_APP_API_URL}/upload/get`,
+                    method: 'POST',
+                    responseType: 'blob',
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                console.log('pdf data', data);
+                setFileState('done');
+                // setProcessState('파일 다운로드 완료');
+                setFileType('pdf');
+                setPdfFile(data.data);
+                uploadFileToFirebase(data.data);
+
+                console.log('#### end');
+            } catch (error) {
+                console.error('Error:', error);
+                message.error('Failed to upload PDF file.');
+                setFileState('error');
+            }
 
             // return false; // Prevent default upload behavior
         },
@@ -168,12 +210,9 @@ const PDFUpload = () => {
     return fileState === 'uploading' ? (
         <StatusWrapper>
             {fileType === 'pdf' ? (
-                <div> 'PDF 분석 중이에요. 잠시만 기다려 주세요'</div>
+                <div> {processState}</div>
             ) : (
-                <div>
-                    '이미지 분석 중이에요. 잠시만 기다려 주세요'
-                    <ProgressViewer />
-                </div>
+                <div>{[processState]}</div>
             )}
         </StatusWrapper>
     ) : fileState === 'done' ? (

@@ -10,6 +10,7 @@ import Header from '../components/Header';
 import ExamNumberInput from '../components/ExamNumberInput';
 import { Switch } from 'antd';
 import ProgressViewer from '../components/ProgressViewer';
+import SwitchWithText from '../components/SwitchWithText';
 
 const DataUpload = () => {
     const navigate = useNavigate();
@@ -48,18 +49,13 @@ const DataUpload = () => {
                                 <Switch defaultChecked />
                             </SwitchWrapper>
                             <SwitchWrapper>
-                                생성할 문제 수
-                                <ExamNumberInput
-                                    min={1}
-                                    max={10}
-                                    defaultValue={3}
-                                />
+                                <SwitchWithText defaultChecked />
                             </SwitchWrapper>
                         </SettingWrapper>
                     </UploadInfoContainer>
                 </DescriptionWrapper>
                 <PDFUpload />
-                {/* <ProgressViewer /> */}
+                <ProgressViewer />
             </MainWrapper>
         </Wrapper>
     );
