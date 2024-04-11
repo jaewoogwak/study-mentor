@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 import study_two_people from '../assets/study_two_people.png';
 import example from '../assets/example.svg';
+import question from '../assets/question.svg';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../services/firebase';
@@ -91,7 +92,42 @@ const FullPageScroll = () => {
                             padding: '1em',
                         }}
                     >
-                        3
+                        <SecondContainer>
+                            <div>
+                                <Text
+                                    fontsize='40px'
+                                    style={{ fontWeight: 'bold' }}
+                                >
+                                    1:1 질문하기
+                                </Text>
+                                <Text
+                                    fontsize='30px'
+                                    style={{
+                                        fontWeight: '300',
+                                        marginTop: '39px',
+                                    }}
+                                >
+                                    학습한 내용이 헷갈릴 때, <br />
+                                    스터디멘토에게 질문할 수 있어요
+                                </Text>
+                                <FileUploadLink
+                                    onClick={() => {
+                                        window.location.href = '/chatbot';
+                                    }}
+                                    style={{
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    질문하기
+                                </FileUploadLink>
+                            </div>
+                            <Image
+                                src={question}
+                                alt='example'
+                                width='611px'
+                                height='421px'
+                            />
+                        </SecondContainer>
                     </FullpageSection>
                 </FullPageSections>
             </Fullpage>
