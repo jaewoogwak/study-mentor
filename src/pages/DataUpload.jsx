@@ -52,7 +52,7 @@ const DataUpload = () => {
                                 <Switch defaultChecked />
                             </SwitchWrapper>
                             <SwitchWrapper>
-                                생성할 문제 수
+                                생성할 문제 수 
                                 <ExamNumberInput
                                     min={1}
                                     max={10}
