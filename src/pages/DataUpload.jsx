@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+// usestate : 상태 업데이트
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
@@ -10,7 +12,8 @@ import Header from '../components/Header';
 import ExamNumberInput from '../components/ExamNumberInput';
 import { Switch } from 'antd';
 import ProgressViewer from '../components/ProgressViewer';
-import SwitchWithText from '../components/SwitchWithText';
+import CreateExam from '../components/CreateExam';
+import jsonData from '../chatgpt_json.json';
 
 const DataUpload = () => {
     const navigate = useNavigate();
@@ -49,13 +52,18 @@ const DataUpload = () => {
                                 <Switch defaultChecked />
                             </SwitchWrapper>
                             <SwitchWrapper>
-                                <SwitchWithText defaultChecked />
+                                생성할 문제 수
+                                <ExamNumberInput
+                                    min={1}
+                                    max={10}
+                                    defaultValue={3}
+                                />
                             </SwitchWrapper>
                         </SettingWrapper>
                     </UploadInfoContainer>
                 </DescriptionWrapper>
                 <PDFUpload />
-                <ProgressViewer />
+                {/* <ProgressViewer /> */}
             </MainWrapper>
         </Wrapper>
     );
