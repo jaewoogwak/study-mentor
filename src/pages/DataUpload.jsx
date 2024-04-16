@@ -19,6 +19,10 @@ const DataUpload = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();
 
+    const [data, setData] = useState(null);
+
+    console.log('#######data', data);
+
     useEffect(() => {
         auth.onAuthStateChanged((usr) => {
             login(usr);
@@ -27,6 +31,12 @@ const DataUpload = () => {
                 navigate('/login');
             }
         });
+
+        // 로컬 스토리지에서 데이터 가져오기
+        const localData = localStorage.getItem('examData');
+        if (localData) {
+            setData(JSON.parse(localData));
+        }
 
         console.log('[user info]: ', user);
     }, [user]);
@@ -62,8 +72,21 @@ const DataUpload = () => {
                         </SettingWrapper>
                     </UploadInfoContainer>
                 </DescriptionWrapper>
-                <PDFUpload />
+                <PDFUpload examData={data} setExamData={setData} />
                 {/* <ProgressViewer /> */}
+                {data && (
+                    <button
+                        onClick={() => {
+                            setData(null);
+                            localStorage.removeItem('examData');
+                            // refresh
+                            window.location.reload();
+                        }}
+                    >
+                        문제 새로 생성하기
+                    </button>
+                )}
+                <CreateExam data={data} />
             </MainWrapper>
         </Wrapper>
     );
