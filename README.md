@@ -50,6 +50,7 @@ npm run dev
 | 김건우 | Server, AI |
 | 김준곤 | Server, AI |
 | 전경호 | AI         |
+| 윤아현 | Web, AI    |
 
 ## 🧑🏻‍🔧 Technology Stack
 
