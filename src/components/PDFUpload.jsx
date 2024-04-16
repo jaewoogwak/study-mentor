@@ -19,10 +19,10 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import ProgressViewer from './ProgressViewer';
 
-const PDFUpload = () => {
+const PDFUpload = ({ examData, setExamData }) => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
-    const [data, setData] = React.useState(null);
+    // const [data, setData] = React.useState(null);
     const [pdfFile, setPdfFile] = React.useState(null);
     const { user, login, logout } = useAuth();
     const [processState, setProcessState] =
@@ -60,7 +60,7 @@ const PDFUpload = () => {
         };
 
         downloadFile();
-    }, [fileState, data, fileType, user, processState]);
+    }, [fileState, examData, fileType, user, processState]);
 
     const styles = {
         width: '700px',
@@ -101,67 +101,34 @@ const PDFUpload = () => {
                     ? '/upload/pdf'
                     : '/upload/image';
 
-            try {
-                setFileState('uploading');
-
-                // 1. /upload/pdf or /upload/image로 파일 업로드 [POST]
-                const response = await axios({
-                    url: `${import.meta.env.VITE_APP_API_URL}${type}`,
-                    method: 'POST',
-                    responseType: 'text',
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-
-                    data: formData,
-                });
-                console.log('Res', response);
-
-                if (response.status !== 200) {
-                    message.error('Failed to upload file.');
+            axios({
+                url: `${import.meta.env.VITE_APP_API_URL}${type}`,
+                method: 'POST',
+                responseType: 'json',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data: formData,
+            })
+                .then((response) => {
+                    setFileState('done');
+                    setFileType('pdf');
+                    console.log('response', response.data);
+                    console.log('setExamdata', setExamData);
+                    setExamData(response.data);
+                    // 로컬 스토리지에 data 저장
+                    localStorage.setItem(
+                        'examData',
+                        JSON.stringify(response.data)
+                    );
+                    // setPdfFile(response.data);
+                    // uploadFileToFirebase(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    message.error('Failed to upload PDF file.');
                     setFileState('error');
-                    return false;
-                }
-
-                if (response.status === 200) {
-                    // setProcessState(response.data);
-                }
-
-                console.log('###2');
-                const dataResponse = await axios({
-                    url: `${import.meta.env.VITE_APP_API_URL}${type}`,
-                    method: 'GET',
                 });
-
-                console.log('dataResponse', dataResponse);
-
-                // setProcessState('파일 다운로드 중..');
-
-                // 3. /get 경로에서 데이터 받기 [POST]
-                // 이벤트스트림으로 데이터 받기
-
-                const data = await axios({
-                    url: `${import.meta.env.VITE_APP_API_URL}/upload/get`,
-                    method: 'POST',
-                    responseType: 'blob',
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                console.log('pdf data', data);
-                setFileState('done');
-                // setProcessState('파일 다운로드 완료');
-                setFileType('pdf');
-                setPdfFile(data.data);
-                uploadFileToFirebase(data.data);
-
-                console.log('#### end');
-            } catch (error) {
-                console.error('Error:', error);
-                message.error('Failed to upload PDF file.');
-                setFileState('error');
-            }
 
             // return false; // Prevent default upload behavior
         },
@@ -251,6 +218,9 @@ const PDFUpload = () => {
                         .catch((error) => {
                             console.error('Error:', error);
                         });
+
+                    // 로컬 스토리지에 저장된 데이터 삭제
+                    localStorage.removeItem('examData');
                 }}
             >
                 문제 새로 생성하기
