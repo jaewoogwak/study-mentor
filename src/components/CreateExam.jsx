@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components';
 import correctImage from '../assets/correct.png';
 import incorrectImage from '../assets/incorrect.png';
 import logo from '../assets/logo.png';
-import jsonData from '../chatgpt_json.json';
+
+import axios from 'axios';
 
 const CreateExam = ({ data }) => {
     const [questions, setQuestions] = useState([]);
     const [radioAnswers, setRadioAnswers] = useState({});
     const [textAnswers, setTextAnswers] = useState({});
-    const [results, setResults] = useState({}); // 정답 확인
-    const [showExplanations, setShowExplanations] = useState(false); // 해설 보기 상태
-    const [showExplanationButton, setShowExplanationButton] = useState(false); // 해설보기 버튼 상태
+    const [results, setResults] = useState({}); 
+    const [showExplanations, setShowExplanations] = useState(false); 
+    const [showExplanationButton, setShowExplanationButton] = useState(false); 
     const [showQuestionButton, setshowQuestionButton] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submitHovering, setSubmitHovering] = useState(false);
+
     const navigate = useNavigate();
     const {
         register,
@@ -73,12 +78,22 @@ const CreateExam = ({ data }) => {
     };
 
     const onSubmit = (data) => {
+        setIsSubmitted(true);
+
         let score = 0;
-        const newResults = {};
+        const newResults = {}; // 점수 출력
+        const feedbackResults = [];
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             const isCorrect = answer === question.correct_answer;
             newResults[question.id] = isCorrect ? 'correct' : 'incorrect';
+            const questionInfo = {
+                index: index,
+                question: question.question,
+                userAnswer: answer,
+                isCorrect: isCorrect 
+            }
+            feedbackResults.push(questionInfo);
             if (isCorrect) {
                 score += 5;
             }
@@ -87,6 +102,32 @@ const CreateExam = ({ data }) => {
         alert(`점수는 ${score}/100점입니다.`);
         setShowExplanationButton(true);
         setshowQuestionButton(true);
+        console.log('FeedBackResults:', JSON.stringify(feedbackResults) );
+        
+        // axios를 사용해 server로 data 전달
+        
+        const type = "/api/feedback";  // 경로 정의 알 수 없음 (임의로 추가)
+
+        axios({
+            url: `${import.meta.env.VITE_APP_API_URL}${type}`,
+            method: 'POST',
+            responseType: 'json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(feedbackResults) 
+        })
+        .then(response => {
+            console.log('Server response:', response.data); 
+            // localStorage.setItem(
+            //     'feedbackData', 
+            //     JSON.stringify(response.data)
+            // ); 
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting feedback.');
+        })
     };
 
     // 해설 및 정답 보기 함수
@@ -149,6 +190,7 @@ const CreateExam = ({ data }) => {
                                                     type='radio'
                                                     name={`question_${index}`}
                                                     value={choice}
+                                                    disabled={isSubmitted}
                                                     {...register(
                                                         `question_${index}`,
                                                         {
@@ -167,11 +209,12 @@ const CreateExam = ({ data }) => {
                                             required: '정답을 입력하세요.',
                                         })}
                                         placeholder='정답을 입력하시오.'
+                                        disabled={isSubmitted}
                                     />
                                 )}
                                 {showExplanations && (
                                     <ExplainHelp>
-                                        <p>
+                                        <p style = {{color : 'red'}}>
                                             <strong>
                                                 정답: {question.correct_answer}
                                             </strong>
@@ -182,8 +225,22 @@ const CreateExam = ({ data }) => {
                             </QuestionBlock>
                         ))}
                         <ButtonContainer>
-                            <SubmitButton type='submit'>제출하기</SubmitButton>
-                            {/* 설명 보기 버튼 */}
+                            {/* 제출하기 버튼 해결 못함!! */}
+                            <div style={{ position: 'relative' }}>
+                            <SubmitButton
+                                type="submit"
+                                disabled={isSubmitted} // 버튼을 비활성화 상태로 만드는 속성
+                                onMouseEnter={() => setSubmitHovering(true)}
+                                onMouseLeave={() => setSubmitHovering(false)}
+                            >
+                                제출하기
+                            </SubmitButton>
+                            {submitHovering && !isSubmitted && (
+                                <WarningMessage style={{ display: 'block' }}>
+                                    ※ 제출은 한 번만 가능합니다.
+                                </WarningMessage>
+                            )}
+                            </div>
                             {showExplanationButton && (
                                 <AnswerButton
                                     type='button'
@@ -192,7 +249,6 @@ const CreateExam = ({ data }) => {
                                     해설보기
                                 </AnswerButton>
                             )}
-                            {/* 질문 하기 버튼 */}
                             {showQuestionButton && (
                                 <QuestButton
                                     type='button'
@@ -308,6 +364,7 @@ const QuestionText = styled.a`
     flex: 1;
     text-align: left;
     font-weight: bold;
+    font-size: 18px;
 `;
 
 const QuestionDetails = styled.div`
@@ -329,7 +386,7 @@ const RadioLabel = styled.label`
 
 const TextInput = styled.input`
     width: 50%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -362,6 +419,26 @@ const SubmitButton = styled.button`
         background: rgba(133, 193, 255, 0.75);
     }
 `;
+
+// 호버 메시지 컴포넌트
+const WarningMessage = styled.div`
+    display: none;          
+    position: absolute;    
+    bottom: 100%;         
+    left: 50%;              
+    transform: translateX(-50%); 
+    background-color: #DDECCA;  
+    padding: 10px 20px;        
+    margin-bottom: 10px;       
+    border: 3px solid #AFD485;  
+    border-radius: 10px;        
+    font-size: 15px;
+    font-weight: bold;          
+    white-space: nowrap;      
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+    z-index: 10;              
+`;
+
 
 const AnswerButton = styled.button`
     width: 100px;
@@ -406,9 +483,9 @@ const QuestButton = styled.button`
 const ExplainHelp = styled.p`
     font-size: 15px;
     text-align: left;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ffd700;
-    background-color: #ffffe0;
+    padding: 10px;
+    margin: 15px 0;
+    border: 2px solid red;
+    background-color: white;
     border-radius: 5px;
 `;
