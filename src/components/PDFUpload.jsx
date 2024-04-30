@@ -184,7 +184,7 @@ const PDFUpload = ({ examData, setExamData }) => {
         </StatusWrapper>
     ) : fileState === 'done' ? (
         <PDFViewerWrapper>
-            <DownloadBtn
+            {/* <DownloadBtn
                 onClick={() => {
                     const downloadUrl = window.URL.createObjectURL(pdfFile);
                     console.log('downloadUrl', downloadUrl, pdfFile);
@@ -197,7 +197,7 @@ const PDFUpload = ({ examData, setExamData }) => {
                 }}
             >
                 문제 저장하기
-            </DownloadBtn>
+            </DownloadBtn> */}
             <GeneratePDFBtn
                 onClick={() => {
                     // firebase에 저장된 파일 삭제

@@ -14,6 +14,7 @@ import { Switch } from 'antd';
 import ProgressViewer from '../components/ProgressViewer';
 import CreateExam from '../components/CreateExam';
 import jsonData from '../chatgpt_json.json';
+import axios from 'axios';
 
 const DataUpload = () => {
     const navigate = useNavigate();
@@ -72,10 +73,13 @@ const DataUpload = () => {
                         </SettingWrapper>
                     </UploadInfoContainer>
                 </DescriptionWrapper>
-                <PDFUpload examData={data} setExamData={setData} />
+                {/*
+                    데이터가 없으면 PDF 업로드 컴포넌트를 보여줍니다.
+                 */}
+                {!data && <PDFUpload examData={data} setExamData={setData} />}
                 {/* <ProgressViewer /> */}
                 {data && (
-                    <button
+                    <GeneratePDFBtn
                         onClick={() => {
                             setData(null);
                             localStorage.removeItem('examData');
@@ -84,7 +88,45 @@ const DataUpload = () => {
                         }}
                     >
                         문제 새로 생성하기
-                    </button>
+                    </GeneratePDFBtn>
+                )}
+                {data && (
+                    <DownloadBtn
+                        onClick={async () => {
+                            console.log('click');
+                            axios({
+                                url: `${
+                                    import.meta.env.VITE_APP_API_URL
+                                }/upload/download`,
+                                method: 'GET',
+                                responseType: 'blob',
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                },
+                            }).then((pdfFile) => {
+                                console.log('pdfFile', pdfFile);
+                                const downloadUrl = window.URL.createObjectURL(
+                                    pdfFile.data
+                                );
+                                console.log(
+                                    'downloadUrl',
+                                    downloadUrl,
+                                    pdfFile
+                                );
+                                const link = document.createElement('a');
+                                link.href = downloadUrl;
+                                link.setAttribute(
+                                    'download',
+                                    'study-mentor.pdf'
+                                );
+                                document.body.appendChild(link);
+                                link.click();
+                                link.remove();
+                            });
+                        }}
+                    >
+                        문제 저장하기
+                    </DownloadBtn>
                 )}
                 <CreateExam data={data} />
             </MainWrapper>
@@ -139,4 +181,34 @@ const SwitchWrapper = styled.div`
     flex-direction: row;
     gap: 10px;
     align-items: center;
+`;
+
+const GeneratePDFBtn = styled.button`
+    width: 50%;
+    height: 100%;
+    font-size: 24px;
+    color: #ab41ff;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    margin-top: 20px;
+    &:hover {
+        color: #ff6b6b;
+    }
+`;
+
+const DownloadBtn = styled.button`
+    width: 50%;
+    height: 100%;
+    font-size: 24px;
+    color: #ab41ff;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    margin-top: 20px;
+    &:hover {
+        color: #ff6b6b;
+    }
 `;
