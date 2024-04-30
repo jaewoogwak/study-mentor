@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import Modal from 'react-modal';
 
 import styled from 'styled-components';
 import correctImage from '../assets/correct.png';
@@ -12,15 +13,22 @@ import generatePDF from 'react-to-pdf';
 
 const CreateExam = ({ data }) => {
     const [questions, setQuestions] = useState([]);
-    const [radioAnswers, setRadioAnswers] = useState({});
-    const [textAnswers, setTextAnswers] = useState({});
-    const [results, setResults] = useState({});
+    const [radioAnswers, setRadioAnswers] = useState(JSON.parse(sessionStorage.getItem('radioAnswers')) || {});
+    const [textAnswers, setTextAnswers] = useState(JSON.parse(sessionStorage.getItem('textAnswers')) || {});
+
+    const [results, setResults] = useState(JSON.parse(sessionStorage.getItem('results')) || {});
+    const [score, setScore] = useState(0);
+
+    const [warnings, setWarnings] = useState({});
+
     const [showExplanations, setShowExplanations] = useState(false);
     const [showExplanationButton, setShowExplanationButton] = useState(false);
+
     const [showQuestionButton, setshowQuestionButton] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(JSON.parse(sessionStorage.getItem('isSubmitted')) || false);
     const [submitHovering, setSubmitHovering] = useState(false);
-    const targetRef = useRef();
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
     const {
@@ -31,6 +39,7 @@ const CreateExam = ({ data }) => {
 
     useEffect(() => {
         console.log('#### EXAM DATA', data, data?.length);
+        
         if (data?.length > 0) {
             const filteredQuestions = data.map((item, index) => ({
                 id: index,
@@ -59,32 +68,15 @@ const CreateExam = ({ data }) => {
         }
     }, [data]);
 
-    const handleRadioChange = (id, value) => {
-        setRadioAnswers((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
-        if (warnings[id]) {
-            setWarnings((prev) => ({ ...prev, [id]: false }));
-        }
-    };
-
-    const handleTextChange = (id, value) => {
-        setTextAnswers((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
-        if (warnings[id]) {
-            setWarnings((prev) => ({ ...prev, [id]: false }));
-        }
-    };
-
     const onSubmit = (data) => {
+
         setIsSubmitted(true);
 
         let score = 0;
-        const newResults = {}; // 점수 출력
+
+        const newResults = {};
         const feedbackResults = [];
+
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             const isCorrect = answer === question.correct_answer;
@@ -100,15 +92,19 @@ const CreateExam = ({ data }) => {
                 score += 5;
             }
         });
+
         setResults(newResults);
-        alert(`점수는 ${score}/100점입니다.`);
+
         setShowExplanationButton(true);
         setshowQuestionButton(true);
+
+        setScore(score); 
+        setIsModalOpen(true);
+        
+        // jSON 전달
         console.log('FeedBackResults:', JSON.stringify(feedbackResults));
 
-        // axios를 사용해 server로 data 전달
-
-        const type = '/api/feedback'; // 경로 정의 알 수 없음 (임의로 추가)
+        type = "TEST_example"; 
 
         axios({
             url: `${import.meta.env.VITE_APP_API_URL}${type}`,
@@ -117,42 +113,54 @@ const CreateExam = ({ data }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            data: JSON.stringify(feedbackResults),
+            data: JSON.stringify(feedbackResults) 
+        }).then(response => {
+            console.log('Server response:', response.data);
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting feedback.');
         })
-            .then((response) => {
-                console.log('Server response:', response.data);
-                // localStorage.setItem(
-                //     'feedbackData',
-                //     JSON.stringify(response.data)
-                // );
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting feedback.');
-            });
-    };
 
-    // 해설 및 정답 보기 함수
+        };
+    
     const toggleExplanations = () => {
         setShowExplanations((prev) => !prev);
     };
-
+    
     const handleGoToChatBot = () => {
-        navigate('/chatbot'); // navigate 함수를 사용하여 페이지 이동
+        navigate('/chatbot');
     };
 
+    const closeAlertModal = () => {
+        setIsModalOpen(false);
+    };
+    
     return (
         <div>
-            {data?.length > 0 && (
-                <DownloadBtn
-                    onClick={() =>
-                        generatePDF(targetRef, { filename: 'study-mentor.pdf' })
+            <Modal
+                isOpen={isModalOpen}
+                onRequestClose={() => setIsModalOpen(false)}
+                contentLabel="Score Information"
+                style={{
+                    content: {
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '300px', 
+                        height: '250px',
+                        textAlign: 'center',
+                        border: '2px solid'
                     }
-                >
-                    문제 저장하기
-                </DownloadBtn>
-            )}
-
+                }}                
+            >
+                <ModalTitle>시험 점수</ModalTitle>
+                <ModalScore>{score}점 / 100점</ModalScore>
+                <ModalButton onClick={() => setIsModalOpen(false)}>닫기</ModalButton>
+            </Modal>
+            
             {data?.length == 0 && <div>Loading...</div>}
             {data?.length > 0 && (
                 <MakeTest ref={targetRef}>
@@ -180,7 +188,6 @@ const CreateExam = ({ data }) => {
                                             </span>
                                         )}
                                     </QuestionText>
-                                    {/* 이미지 오버레이 */}
                                     {results[question.id] === 'correct' && (
                                         <ImageOverlay
                                             src={correctImage}
@@ -197,12 +204,19 @@ const CreateExam = ({ data }) => {
                                 {Array.isArray(question.choices) ? (
                                     <QuestionDetails>
                                         {question.choices.map((choice, idx) => (
-                                            <RadioLabel key={idx}>
+                                            <RadioLabel 
+                                                key={idx} 
+                                                style={{ 
+                                                    fontWeight: (isSubmitted && results[question.id] === 'incorrect' && showQuestionButton && choice === question.correct_answer) || (isSubmitted && results[question.id] === 'correct' && choice === question.correct_answer) ? 'bold' : 'normal',
+                                                    color: isSubmitted && results[question.id] === 'incorrect' && showQuestionButton && choice === question.correct_answer ? 'red' : (isSubmitted && results[question.id] === 'correct' && choice === question.correct_answer) ? '#1187CF' : 'black'
+                                                }}
+                                            >                                       
                                                 <input
                                                     type='radio'
                                                     name={`question_${index}`}
                                                     value={choice}
                                                     disabled={isSubmitted}
+                                                    onChange={(e) => handleRadioChange(question.id, e.target.value)}
                                                     {...register(
                                                         `question_${index}`,
                                                         {
@@ -211,12 +225,13 @@ const CreateExam = ({ data }) => {
                                                     )}
                                                 />
                                                 {choice}
-                                            </RadioLabel>
+                                            </RadioLabel>       
                                         ))}
                                     </QuestionDetails>
                                 ) : (
                                     <TextInput
                                         type='text'
+                                        onChange={(e) => handleTextChange(question.id, e.target.value)}
                                         {...register(`question_${index}`, {
                                             required: '정답을 입력하세요.',
                                         })}
@@ -237,25 +252,20 @@ const CreateExam = ({ data }) => {
                             </QuestionBlock>
                         ))}
                         <ButtonContainer>
-                            {/* 제출하기 버튼 해결 못함!! */}
                             <div style={{ position: 'relative' }}>
-                                <SubmitButton
-                                    type='submit'
-                                    disabled={isSubmitted} // 버튼을 비활성화 상태로 만드는 속성
-                                    onMouseEnter={() => setSubmitHovering(true)}
-                                    onMouseLeave={() =>
-                                        setSubmitHovering(false)
-                                    }
-                                >
-                                    제출하기
-                                </SubmitButton>
-                                {submitHovering && !isSubmitted && (
-                                    <WarningMessage
-                                        style={{ display: 'block' }}
-                                    >
-                                        ※ 제출은 한 번만 가능합니다.
-                                    </WarningMessage>
-                                )}
+                            <SubmitButton
+                                type="submit"
+                                disabled={isSubmitted} 
+                                onMouseEnter={() => setSubmitHovering(true)}
+                                onMouseLeave={() => setSubmitHovering(false)}
+                            >
+                                제출하기
+                            </SubmitButton>
+                            {submitHovering && !isSubmitted && (
+                                <WarningMessage style={{ display: 'block' }}>
+                                    ※ 제출은 한 번만 가능합니다.
+                                </WarningMessage>
+                            )}
                             </div>
                             {showExplanationButton && (
                                 <AnswerButton
@@ -277,7 +287,8 @@ const CreateExam = ({ data }) => {
                     </StyledTest>
                 </MakeTest>
             )}
-        </div>
+            {/* <ClearText onClick={clearAllLocalStorage}>※ 데이터 초기화하기</ClearText> */}
+        </div>   
     );
 };
 
@@ -391,7 +402,7 @@ const QuestionDetails = styled.div`
 const RadioLabel = styled.label`
     margin-bottom: 5px;
     text-align: left;
-    font-size: 16px;
+    font-size: 17px;
     cursor: pointer;
 
     input[type='radio'] {
@@ -416,52 +427,51 @@ const ButtonContainer = styled.div`
 `;
 
 const SubmitButton = styled.button`
-    width: 100px;
-    height: 40px;
+    width: 120px;
+    height: 50px;
     border-radius: 10px;
-    border: 3px solid rgba(105, 179, 253, 0.5);
-    background: rgba(174, 216, 255, 0.5);
-    font-size: 15px;
+    border: 3px solid #787878;
+    background: #EEEEEE;
+    font-size: 17px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
     margin-right: 10px;
 
     &:hover {
-        background: rgba(145, 204, 255, 0.75);
+        background: #C2C2C2;
     }
 
     &:active {
-        background: rgba(133, 193, 255, 0.75);
+        background: #9E9E9E;
     }
 `;
 
-// 호버 메시지 컴포넌트
 const WarningMessage = styled.div`
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ddecca;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    border: 3px solid #afd485;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    white-space: nowrap;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    display: none;          
+    position: absolute;    
+    bottom: 100%;         
+    left: 50%;              
+    transform: translateX(-50%); 
+    background: #F9FFF1;  
+    padding: 10px 20px;        
+    margin-bottom: 10px;       
+    border: 5px dotted #AFD485;  
+    border-radius: 10px;        
+    font-size: 17px;
+    font-weight: bold;          
+    white-space: nowrap;      
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+    z-index: 10;              
 `;
 
 const AnswerButton = styled.button`
-    width: 100px;
-    height: 40px;
+    width: 120px;
+    height: 50px;
     border-radius: 10px;
     border: 3px solid rgba(47, 165, 153, 0.5);
     background: rgba(184, 230, 225, 0.5);
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
 
@@ -475,12 +485,12 @@ const AnswerButton = styled.button`
 `;
 
 const QuestButton = styled.button`
-    width: 100px;
-    height: 40px;
+    width: 120px;
+    height: 50px;
     border-radius: 10px;
     border: 3px solid rgba(253, 138, 105, 0.5);
     background: rgba(254, 204, 190, 0.5);
-    font-size: 15px;
+    font-size: 17px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -505,17 +515,28 @@ const ExplainHelp = styled.p`
     border-radius: 5px;
 `;
 
-const DownloadBtn = styled.button`
-    width: 300px;
-    height: 20px;
-    font-size: 24px;
-    color: #ab41ff;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    background-color: white;
-    margin-top: 20px;
-    &:hover {
-        color: #ff6b6b;
-    }
+const ClearText = styled.p`
+    font-size: 20px;
+    text-align: right;
+    margin-bottom: 50px;
+`;
+
+const ModalTitle = styled.h2`
+    margin: 20px;
+    font-size: 40px;
+`;
+
+const ModalScore = styled.p`
+    margin: 40px;
+    font-size: 30px;
+`;
+
+const ModalButton = styled.button`
+    width: 100px;
+    height: 40px;
+    font-size: 18px;
+    background: #DDECCA;
+    border: 2px #7DB249 solid;
+    border-radius: 10px;
+    font-weight: bold;
 `;
