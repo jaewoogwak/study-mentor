@@ -15,6 +15,7 @@ import ProgressViewer from '../components/ProgressViewer';
 import CreateExam from '../components/CreateExam';
 import jsonData from '../chatgpt_json.json';
 import axios from 'axios';
+import { usePDF } from 'react-to-pdf';
 
 const DataUpload = () => {
     const navigate = useNavigate();
@@ -90,44 +91,7 @@ const DataUpload = () => {
                         문제 새로 생성하기
                     </GeneratePDFBtn>
                 )}
-                {data && (
-                    <DownloadBtn
-                        onClick={async () => {
-                            console.log('click');
-                            axios({
-                                url: `${
-                                    import.meta.env.VITE_APP_API_URL
-                                }/upload/download`,
-                                method: 'GET',
-                                responseType: 'blob',
-                                headers: {
-                                    'Content-Type': 'multipart/form-data',
-                                },
-                            }).then((pdfFile) => {
-                                console.log('pdfFile', pdfFile);
-                                const downloadUrl = window.URL.createObjectURL(
-                                    pdfFile.data
-                                );
-                                console.log(
-                                    'downloadUrl',
-                                    downloadUrl,
-                                    pdfFile
-                                );
-                                const link = document.createElement('a');
-                                link.href = downloadUrl;
-                                link.setAttribute(
-                                    'download',
-                                    'study-mentor.pdf'
-                                );
-                                document.body.appendChild(link);
-                                link.click();
-                                link.remove();
-                            });
-                        }}
-                    >
-                        문제 저장하기
-                    </DownloadBtn>
-                )}
+
                 <CreateExam data={data} />
             </MainWrapper>
         </Wrapper>

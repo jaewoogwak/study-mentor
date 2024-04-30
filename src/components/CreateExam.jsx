@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,17 +8,19 @@ import incorrectImage from '../assets/incorrect.png';
 import logo from '../assets/logo.png';
 
 import axios from 'axios';
+import generatePDF from 'react-to-pdf';
 
 const CreateExam = ({ data }) => {
     const [questions, setQuestions] = useState([]);
     const [radioAnswers, setRadioAnswers] = useState({});
     const [textAnswers, setTextAnswers] = useState({});
-    const [results, setResults] = useState({}); 
-    const [showExplanations, setShowExplanations] = useState(false); 
-    const [showExplanationButton, setShowExplanationButton] = useState(false); 
+    const [results, setResults] = useState({});
+    const [showExplanations, setShowExplanations] = useState(false);
+    const [showExplanationButton, setShowExplanationButton] = useState(false);
     const [showQuestionButton, setshowQuestionButton] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submitHovering, setSubmitHovering] = useState(false);
+    const targetRef = useRef();
 
     const navigate = useNavigate();
     const {
@@ -91,8 +93,8 @@ const CreateExam = ({ data }) => {
                 index: index,
                 question: question.question,
                 userAnswer: answer,
-                isCorrect: isCorrect 
-            }
+                isCorrect: isCorrect,
+            };
             feedbackResults.push(questionInfo);
             if (isCorrect) {
                 score += 5;
@@ -102,32 +104,32 @@ const CreateExam = ({ data }) => {
         alert(`점수는 ${score}/100점입니다.`);
         setShowExplanationButton(true);
         setshowQuestionButton(true);
-        console.log('FeedBackResults:', JSON.stringify(feedbackResults) );
-        
+        console.log('FeedBackResults:', JSON.stringify(feedbackResults));
+
         // axios를 사용해 server로 data 전달
-        
-        const type = "/api/feedback";  // 경로 정의 알 수 없음 (임의로 추가)
+
+        const type = '/api/feedback'; // 경로 정의 알 수 없음 (임의로 추가)
 
         axios({
             url: `${import.meta.env.VITE_APP_API_URL}${type}`,
             method: 'POST',
             responseType: 'json',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            data: JSON.stringify(feedbackResults) 
+            data: JSON.stringify(feedbackResults),
         })
-        .then(response => {
-            console.log('Server response:', response.data); 
-            // localStorage.setItem(
-            //     'feedbackData', 
-            //     JSON.stringify(response.data)
-            // ); 
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while submitting feedback.');
-        })
+            .then((response) => {
+                console.log('Server response:', response.data);
+                // localStorage.setItem(
+                //     'feedbackData',
+                //     JSON.stringify(response.data)
+                // );
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting feedback.');
+            });
     };
 
     // 해설 및 정답 보기 함수
@@ -141,9 +143,19 @@ const CreateExam = ({ data }) => {
 
     return (
         <div>
+            {data?.length > 0 && (
+                <DownloadBtn
+                    onClick={() =>
+                        generatePDF(targetRef, { filename: 'study-mentor.pdf' })
+                    }
+                >
+                    문제 저장하기
+                </DownloadBtn>
+            )}
+
             {data?.length == 0 && <div>Loading...</div>}
             {data?.length > 0 && (
-                <MakeTest>
+                <MakeTest ref={targetRef}>
                     <ExamTitle>
                         <LogoImg src={logo} alt='logo' />
                         <Title>Study Mentor Exam</Title>
@@ -214,7 +226,7 @@ const CreateExam = ({ data }) => {
                                 )}
                                 {showExplanations && (
                                     <ExplainHelp>
-                                        <p style = {{color : 'red'}}>
+                                        <p style={{ color: 'red' }}>
                                             <strong>
                                                 정답: {question.correct_answer}
                                             </strong>
@@ -227,19 +239,23 @@ const CreateExam = ({ data }) => {
                         <ButtonContainer>
                             {/* 제출하기 버튼 해결 못함!! */}
                             <div style={{ position: 'relative' }}>
-                            <SubmitButton
-                                type="submit"
-                                disabled={isSubmitted} // 버튼을 비활성화 상태로 만드는 속성
-                                onMouseEnter={() => setSubmitHovering(true)}
-                                onMouseLeave={() => setSubmitHovering(false)}
-                            >
-                                제출하기
-                            </SubmitButton>
-                            {submitHovering && !isSubmitted && (
-                                <WarningMessage style={{ display: 'block' }}>
-                                    ※ 제출은 한 번만 가능합니다.
-                                </WarningMessage>
-                            )}
+                                <SubmitButton
+                                    type='submit'
+                                    disabled={isSubmitted} // 버튼을 비활성화 상태로 만드는 속성
+                                    onMouseEnter={() => setSubmitHovering(true)}
+                                    onMouseLeave={() =>
+                                        setSubmitHovering(false)
+                                    }
+                                >
+                                    제출하기
+                                </SubmitButton>
+                                {submitHovering && !isSubmitted && (
+                                    <WarningMessage
+                                        style={{ display: 'block' }}
+                                    >
+                                        ※ 제출은 한 번만 가능합니다.
+                                    </WarningMessage>
+                                )}
                             </div>
                             {showExplanationButton && (
                                 <AnswerButton
@@ -422,23 +438,22 @@ const SubmitButton = styled.button`
 
 // 호버 메시지 컴포넌트
 const WarningMessage = styled.div`
-    display: none;          
-    position: absolute;    
-    bottom: 100%;         
-    left: 50%;              
-    transform: translateX(-50%); 
-    background-color: #DDECCA;  
-    padding: 10px 20px;        
-    margin-bottom: 10px;       
-    border: 3px solid #AFD485;  
-    border-radius: 10px;        
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ddecca;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border: 3px solid #afd485;
+    border-radius: 10px;
     font-size: 15px;
-    font-weight: bold;          
-    white-space: nowrap;      
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-    z-index: 10;              
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 `;
-
 
 const AnswerButton = styled.button`
     width: 100px;
@@ -488,4 +503,19 @@ const ExplainHelp = styled.p`
     border: 2px solid red;
     background-color: white;
     border-radius: 5px;
+`;
+
+const DownloadBtn = styled.button`
+    width: 300px;
+    height: 20px;
+    font-size: 24px;
+    color: #ab41ff;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    margin-top: 20px;
+    &:hover {
+        color: #ff6b6b;
+    }
 `;
