@@ -13,30 +13,32 @@ import generatePDF from 'react-to-pdf';
 
 const CreateExam = ({ data }) => {
     const [questions, setQuestions] = useState([]);
-    const [radioAnswers, setRadioAnswers] = useState(JSON.parse(sessionStorage.getItem('radioAnswers')) || {});
-    const [textAnswers, setTextAnswers] = useState(JSON.parse(sessionStorage.getItem('textAnswers')) || {});
+    const [radioAnswers, setRadioAnswers] = useState(JSON.parse(localStorage.getItem('radioAnswers')) || {});
+    const [textAnswers, setTextAnswers] = useState(JSON.parse(localStorage.getItem('textAnswers')) || {});
 
-    const [results, setResults] = useState(JSON.parse(sessionStorage.getItem('results')) || {});
+    const [results, setResults] = useState(JSON.parse(localStorage.getItem('results')) || {});
     const [score, setScore] = useState(0);
 
     const [warnings, setWarnings] = useState({});
 
-    const [showExplanations, setShowExplanations] = useState(false);
-    const [showExplanationButton, setShowExplanationButton] = useState(false);
+    const [showExplanations, setShowExplanations] = useState(JSON.parse(localStorage.getItem('showExplanations')) || false);
+    const [showExplanationButton, setShowExplanationButton] = useState(JSON.parse(localStorage.getItem('showExplanationButton')) || false);
 
-    const [showQuestionButton, setshowQuestionButton] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(JSON.parse(sessionStorage.getItem('isSubmitted')) || false);
+    const [showQuestionButton, setshowQuestionButton] = useState(JSON.parse(localStorage.getItem('showQuestionButton')) || false); 
+    const [isSubmitted, setIsSubmitted] = useState(JSON.parse(localStorage.getItem('isSubmitted')) || false); 
     const [submitHovering, setSubmitHovering] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const targetRef = useRef();
 
     const navigate = useNavigate();
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm(); // 입력에 대한 관리
+    } = useForm(); 
 
+    // Exam Data 가져오기
     useEffect(() => {
         console.log('#### EXAM DATA', data, data?.length);
         
@@ -68,6 +70,31 @@ const CreateExam = ({ data }) => {
         }
     }, [data]);
 
+    // Loacal Storage 저장
+    useEffect(() => {
+        localStorage.setItem('radioAnswers', JSON.stringify(radioAnswers));
+        localStorage.setItem('textAnswers', JSON.stringify(textAnswers));
+        localStorage.setItem('results', JSON.stringify(results));
+        localStorage.setItem('isSubmitted', JSON.stringify(isSubmitted));
+        localStorage.setItem('showExplanations', JSON.stringify(showExplanations));
+        localStorage.setItem('showExplanationButton', JSON.stringify(showExplanationButton));
+        localStorage.setItem('showQuestionButton', JSON.stringify(showQuestionButton));
+    }, [radioAnswers, textAnswers, results, isSubmitted, showExplanations, showExplanationButton, showQuestionButton]);
+
+    // radioAnswers와 textAnswers 초기 상태 설정
+    useEffect(() => {
+        const storedRadioAnswers = JSON.parse(localStorage.getItem('radioAnswers'));
+        const storedTextAnswers = JSON.parse(localStorage.getItem('textAnswers'));
+
+        if (storedRadioAnswers) {
+            setRadioAnswers(storedRadioAnswers);
+        }
+
+        if (storedTextAnswers) {
+            setTextAnswers(storedTextAnswers);
+        }
+    }, []);
+
     const onSubmit = (data) => {
 
         setIsSubmitted(true);
@@ -87,7 +114,21 @@ const CreateExam = ({ data }) => {
                 userAnswer: answer,
                 isCorrect: isCorrect,
             };
+
+            if (question.type === 0) {
+                setRadioAnswers((prevRadioAnswers) => ({
+                    ...prevRadioAnswers,
+                    [question.id]: answer,
+                }));
+            } else if (question.type === 1) {
+                setTextAnswers((prevTextAnswers) => ({
+                    ...prevTextAnswers,
+                    [question.id]: answer,
+                }));
+            }
+
             feedbackResults.push(questionInfo);
+
             if (isCorrect) {
                 score += 5;
             }
@@ -100,7 +141,7 @@ const CreateExam = ({ data }) => {
 
         setScore(score); 
         setIsModalOpen(true);
-        
+
         // jSON 전달
         console.log('FeedBackResults:', JSON.stringify(feedbackResults));
 
@@ -121,7 +162,7 @@ const CreateExam = ({ data }) => {
             alert('An error occurred while submitting feedback.');
         })
 
-        };
+    };
     
     const toggleExplanations = () => {
         setShowExplanations((prev) => !prev);
@@ -134,7 +175,21 @@ const CreateExam = ({ data }) => {
     const closeAlertModal = () => {
         setIsModalOpen(false);
     };
-    
+
+    const [key, setKey] = useState(0);
+
+    const clearAllLocalStorage = () => {
+        setRadioAnswers({});
+        setTextAnswers({});
+        setResults({});
+        setIsSubmitted(false);
+        setShowExplanations(false);
+        setShowExplanationButton(false);
+        setshowQuestionButton(false);
+
+        setKey(prevKey => prevKey + 1);
+    };
+
     return (
         <div>
             <Modal
@@ -160,6 +215,16 @@ const CreateExam = ({ data }) => {
                 <ModalScore>{score}점 / 100점</ModalScore>
                 <ModalButton onClick={() => setIsModalOpen(false)}>닫기</ModalButton>
             </Modal>
+
+            {data?.length > 0 &&(
+                <button
+                    onClick={() =>
+                        generatePDF(targetRef, {filename:'study-mentor.pdf'})
+                    }
+                >
+                    문제 저장하기
+                </button>
+            )}
             
             {data?.length == 0 && <div>Loading...</div>}
             {data?.length > 0 && (
@@ -207,35 +272,45 @@ const CreateExam = ({ data }) => {
                                             <RadioLabel 
                                                 key={idx} 
                                                 style={{ 
-                                                    fontWeight: (isSubmitted && results[question.id] === 'incorrect' && showQuestionButton && choice === question.correct_answer) || (isSubmitted && results[question.id] === 'correct' && choice === question.correct_answer) ? 'bold' : 'normal',
-                                                    color: isSubmitted && results[question.id] === 'incorrect' && showQuestionButton && choice === question.correct_answer ? 'red' : (isSubmitted && results[question.id] === 'correct' && choice === question.correct_answer) ? '#1187CF' : 'black'
+                                                    fontWeight: isSubmitted && results[question.id] === 'incorrect' && showExplanations && choice === question.correct_answer || isSubmitted && results[question.id] === 'correct' && choice === question.correct_answer ? 'bold' : 'normal',
+                                                    color: isSubmitted ? (results[question.id] === 'incorrect' && showExplanations && choice === question.correct_answer ? 'red' :
+                                                                        results[question.id] === 'correct' && choice === question.correct_answer ? '#1187CF' : 'black') : 'black'
                                                 }}
                                             >                                       
                                                 <input
                                                     type='radio'
                                                     name={`question_${index}`}
                                                     value={choice}
-                                                    disabled={isSubmitted}
-                                                    onChange={(e) => handleRadioChange(question.id, e.target.value)}
-                                                    {...register(
-                                                        `question_${index}`,
-                                                        {
-                                                            required: true,
+                                                    disabled={isSubmitted} 
+                                                    onChange={(e) => {
+                                                        if (!isSubmitted) {
+                                                            handleRadioChange(question.id, e.target.value);
                                                         }
-                                                    )}
+                                                    }}
+                                                    checked={isSubmitted ? (radioAnswers[question.id] === choice) : null}  
+                                                    key={`${choice}-${key}`} 
+                                                    {...register(`question_${index}`, {
+                                                        required: true,
+                                                    })}
                                                 />
+
                                                 {choice}
-                                            </RadioLabel>       
+                                            </RadioLabel>
+                                                                                   
                                         ))}
                                     </QuestionDetails>
                                 ) : (
                                     <TextInput
                                         type='text'
-                                        onChange={(e) => handleTextChange(question.id, e.target.value)}
+                                        onChange={(e) => {
+                                            if (!isSubmitted) {
+                                                handleTextChange(question.id, e.target.value);
+                                            }
+                                        }}
                                         {...register(`question_${index}`, {
                                             required: '정답을 입력하세요.',
                                         })}
-                                        placeholder='정답을 입력하시오.'
+                                        placeholder={isSubmitted ? textAnswers[question.id] : '정답을 입력하시오.'}
                                         disabled={isSubmitted}
                                     />
                                 )}
@@ -287,7 +362,7 @@ const CreateExam = ({ data }) => {
                     </StyledTest>
                 </MakeTest>
             )}
-            {/* <ClearText onClick={clearAllLocalStorage}>※ 데이터 초기화하기</ClearText> */}
+            <ClearText onClick={clearAllLocalStorage}>처음부터 다시 풀기</ClearText>
         </div>   
     );
 };
