@@ -139,7 +139,7 @@ const DataUpload = () => {
                     </GeneratePDFBtn>
                 )}
 
-                <CreateExam data={data} />
+                <CreateExam data={jsonData} />
             </MainWrapper>
         </Wrapper>
     );
