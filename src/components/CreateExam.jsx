@@ -362,7 +362,9 @@ const CreateExam = ({ data }) => {
                     </StyledTest>
                 </MakeTest>
             )}
-            <ClearText onClick={clearAllLocalStorage}>처음부터 다시 풀기</ClearText>
+            <ClearBox onClick={clearAllLocalStorage}>
+                <ClearText>처음부터 다시 풀기</ClearText>
+            </ClearBox>
         </div>   
     );
 };
@@ -590,10 +592,20 @@ const ExplainHelp = styled.p`
     border-radius: 5px;
 `;
 
-const ClearText = styled.p`
-    font-size: 20px;
+const ClearBox = styled.div`
     text-align: right;
     margin-bottom: 50px;
+`;
+
+const ClearText = styled.button`
+    font-size: 18px;
+    &:hover {
+        color: #E04F00; 
+    }
+    border: none; 
+    padding: 10px; 
+    background: white;
+    color: black;
 `;
 
 const ModalTitle = styled.h2`
