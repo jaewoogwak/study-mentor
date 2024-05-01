@@ -19,7 +19,19 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import ProgressViewer from './ProgressViewer';
 
-const PDFUpload = ({ examData, setExamData }) => {
+const PDFUpload = ({
+    examData,
+    setExamData,
+    multipleChoice,
+    setMultipleChoice,
+    shortAnswer,
+    setShortAnswer,
+    essay,
+    setEssay,
+    examNumber,
+    setExamNumber,
+    prompt,
+}) => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
     // const [data, setData] = React.useState(null);
@@ -94,7 +106,21 @@ const PDFUpload = ({ examData, setExamData }) => {
             console.log("beforeUpload's file", file, file.type);
             const formData = new FormData();
 
+            const examSetting = {
+                multipleChoice: multipleChoice,
+                shortAnswer: shortAnswer,
+                essay: essay,
+                examNumber: examNumber,
+                custom_prompt: prompt,
+            };
+
+            console.log('file', file);
+            console.log('examSetting', examSetting);
+
             formData.append('file', file);
+            formData.append('examSetting', JSON.stringify(examSetting));
+
+            console.log('formData', formData);
 
             const type =
                 file.type === 'application/pdf'
@@ -115,6 +141,7 @@ const PDFUpload = ({ examData, setExamData }) => {
                     setFileType('pdf');
                     console.log('response', response.data);
                     console.log('setExamdata', setExamData);
+
                     setExamData(response.data);
                     // 로컬 스토리지에 data 저장
                     localStorage.setItem(
@@ -184,20 +211,6 @@ const PDFUpload = ({ examData, setExamData }) => {
         </StatusWrapper>
     ) : fileState === 'done' ? (
         <PDFViewerWrapper>
-            {/* <DownloadBtn
-                onClick={() => {
-                    const downloadUrl = window.URL.createObjectURL(pdfFile);
-                    console.log('downloadUrl', downloadUrl, pdfFile);
-                    const link = document.createElement('a');
-                    link.href = downloadUrl;
-                    link.setAttribute('download', 'study-mentor.pdf');
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                }}
-            >
-                문제 저장하기
-            </DownloadBtn> */}
             <GeneratePDFBtn
                 onClick={() => {
                     // firebase에 저장된 파일 삭제

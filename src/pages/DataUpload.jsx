@@ -16,12 +16,23 @@ import CreateExam from '../components/CreateExam';
 import jsonData from '../chatgpt_json.json';
 import axios from 'axios';
 import { usePDF } from 'react-to-pdf';
+import PromptInput from '../components/PromptModal';
+import PromptModal from '../components/PromptModal';
 
 const DataUpload = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();
-
     const [data, setData] = useState(null);
+    // 객관식 문제
+    const [multipleChoice, setMultipleChoice] = useState(true);
+    // 주관식 문제
+    const [shortAnswer, setShortAnswer] = useState(true);
+    // 서술형 문제
+    const [essay, setEssay] = useState(true);
+    // 문제 수
+    const [examNumber, setExamNumber] = useState(10);
+    // 문제 생성 설정
+    const [prompt, setPrompt] = useState('');
 
     console.log('#######data', data);
 
@@ -53,31 +64,67 @@ const DataUpload = () => {
                         <SettingWrapper>
                             <SwitchWrapper>
                                 객관식
-                                <Switch defaultChecked />
+                                <Switch
+                                    defaultChecked
+                                    onChange={() => {
+                                        setMultipleChoice(!multipleChoice);
+                                    }}
+                                />
                             </SwitchWrapper>
                             <SwitchWrapper>
                                 주관식
-                                <Switch defaultChecked />
+                                <Switch
+                                    defaultChecked
+                                    onChange={() => {
+                                        setShortAnswer(!shortAnswer);
+                                    }}
+                                />
                             </SwitchWrapper>
                             <SwitchWrapper>
                                 서술형
-                                <Switch defaultChecked />
+                                <Switch
+                                    defaultChecked
+                                    onChange={() => {
+                                        setEssay(!essay);
+                                    }}
+                                />
                             </SwitchWrapper>
                             <SwitchWrapper>
                                 생성할 문제 수
                                 <ExamNumberInput
                                     min={1}
-                                    max={10}
-                                    defaultValue={3}
+                                    max={20}
+                                    defaultValue={10}
+                                    onChange={(value) => {
+                                        setExamNumber(value);
+                                    }}
                                 />
                             </SwitchWrapper>
+                            <PromptModal
+                                prompt={prompt}
+                                setPrompt={setPrompt}
+                            />
                         </SettingWrapper>
                     </UploadInfoContainer>
                 </DescriptionWrapper>
                 {/*
                     데이터가 없으면 PDF 업로드 컴포넌트를 보여줍니다.
                  */}
-                {!data && <PDFUpload examData={data} setExamData={setData} />}
+                {!data && (
+                    <PDFUpload
+                        examData={data}
+                        setExamData={setData}
+                        multipleChoice={multipleChoice}
+                        setMultipleChoice={setMultipleChoice}
+                        shortAnswer={shortAnswer}
+                        setShortAnswer={setShortAnswer}
+                        essay={essay}
+                        setEssay={setEssay}
+                        examNumber={examNumber}
+                        setExamNumber={setExamNumber}
+                        prompt={prompt}
+                    />
+                )}
                 {/* <ProgressViewer /> */}
                 {data && (
                     <GeneratePDFBtn
