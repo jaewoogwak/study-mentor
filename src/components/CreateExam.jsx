@@ -247,15 +247,27 @@ const CreateExam = ({ data, setData }) => {
     Modal.setAppElement('#root');
 
     return (
-        <div>
-            {data?.length > 0 &&(
-                <button
-                    onClick={() =>
-                        generatePDF(targetRef, {filename:'study-mentor.pdf'})
-                    }
-                >
-                    문제 저장하기
-                </button>
+        <Wrapper>
+            {data?.length > 0 && (
+                <ButtonWrapper>
+                    <PDFGenerateButton
+                        text={'문제 새로 생성하기'}
+                        onClickHandle={() => {
+                            setData(null);
+                            localStorage.removeItem('examData');
+                            // refresh
+                            window.location.reload();
+                        }}
+                    ></PDFGenerateButton>
+                    <PDFDownloadButton
+                        text={'문제 다운로드 하기'}
+                        onClickHandle={() =>
+                            generatePDF(targetRef, {
+                                filename: 'study-mentor.pdf',
+                            })
+                        }
+                    ></PDFDownloadButton>
+                </ButtonWrapper>
             )}
 
             {data?.length == 0 && <div>Loading...</div>}
@@ -302,14 +314,40 @@ const CreateExam = ({ data, setData }) => {
                                             {question.choices.map((choice, idx) => (
                                                 <RadioLabel
                                                     key={idx} 
-                                                    style={{ 
-                                                        fontWeight: isSubmitted && choice.split('')[0] === question.correct_answer ? 'bold' : 'normal',
-                                                        color: isSubmitted ? 
-                                                                ( choice.split('')[0] === question.correct_answer ? 
-                                                                    (results[question.id] === 'correct' ? 'blue' : 'red') 
-                                                                    : 'black') 
+                                                    style={{
+                                                        fontWeight:
+                                                            (isSubmitted &&
+                                                                results[
+                                                                    question.id
+                                                                ] === 'incorrect' &&
+                                                                showExplanations &&
+                                                                choice.split('')[0] ===
+                                                                    question.correct_answer) ||
+                                                            (isSubmitted &&
+                                                                results[
+                                                                    question.id
+                                                                ] === 'correct' &&
+                                                                choice.split('')[0] ===
+                                                                    question.correct_answer)
+                                                                ? 'bold'
+                                                                : 'normal',
+                                                        color: isSubmitted
+                                                            ? results[
+                                                                  question.id
+                                                              ] === 'incorrect' &&
+                                                              showExplanations &&
+                                                              choice.split('')[0] ===
+                                                                  question.correct_answer
+                                                                ? 'red'
+                                                                : results[
+                                                                      question.id
+                                                                  ] === 'correct' &&
+                                                                  choice.split('')[0] ===
+                                                                      question.correct_answer
+                                                                ? 'blue'
                                                                 : 'black'
-                                                    }}
+                                                            : 'black',
+                                                    }}    
                                                 >                             
                                                     <input
                                                         type="radio"
@@ -404,7 +442,7 @@ const CreateExam = ({ data, setData }) => {
             )}
             {data?.length > 0 && (
                 <ClearBox onClick={clearAllLocalStorage}>
-                    <ClearText>처음부터 다시 풀기</ClearText>
+                    <ClearText>다시 풀기(새로고침)</ClearText>
                 </ClearBox>
             )}
         </Wrapper>
@@ -425,7 +463,7 @@ const ButtonWrapper = styled.div`
 
 const MakeTest = styled.div`
     padding: 20px;
-    margin: 20px auto;
+    margin: 50px auto 20px auto;
     max-width: 1000px;
     border: 3px solid;
 `;
