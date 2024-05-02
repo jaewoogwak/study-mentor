@@ -21,15 +21,15 @@ p {
     margin: 0;
     padding: 0;
     /* html 여백 없애기 */
-    font-family: 'Dovemayo_gothic', sans-serif;
+    font-family: 'Pretendard-Regular', 'Dovemayo_gothic', sans-serif;
     text-align: center;
 }
 
-/* @font-face {
+@font-face {
     font-family: "Pretendard-Regular";
     font-weight: normal;
     src: url("./fonts/Pretendard-Regular.otf") format("truetype");
-  } */
+  }
   
 /* @font-face {
     font-family: 'Dovemayo_gothic';

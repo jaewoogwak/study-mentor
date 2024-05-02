@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import styled from 'styled-components';
 import correctImage from '../assets/correct.png';
 import incorrectImage from '../assets/incorrect.png';
+import ScoreModal from '../components/ScoreModal'
 import logo from '../assets/logo.png';
 
 import axios from 'axios';
@@ -35,16 +36,18 @@ const CreateExam = ({ data, setData }) => {
     const [showExplanationButton, setShowExplanationButton] = useState(
         JSON.parse(localStorage.getItem('showExplanationButton')) || false
     );
-
     const [showQuestionButton, setshowQuestionButton] = useState(
         JSON.parse(localStorage.getItem('showQuestionButton')) || false
     );
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+    
     const [isSubmitted, setIsSubmitted] = useState(
         JSON.parse(localStorage.getItem('isSubmitted')) || false
     );
+    const [showScoreModal, setShowScoreModal] = useState(false);
+
     const [submitHovering, setSubmitHovering] = useState(false);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const targetRef = useRef();
 
     const navigate = useNavigate();
@@ -54,18 +57,19 @@ const CreateExam = ({ data, setData }) => {
         formState: { errors },
     } = useForm();
 
-    // Exam Data 가져오기
+    // 1. Exam Data 가져오기
     useEffect(() => {
         console.log('#### EXAM DATA', data, data?.length);
 
         if (data?.length > 0) {
             const filteredQuestions = data.map((item, index) => ({
                 id: index,
-                question: item.question,
+                type: item.case,
                 choices: item.choices,
                 correct_answer: item.correct_answer,
                 explanation: item.explanation,
-                type: item.case,
+                question: item.question,
+                intent: item.intent,
             }));
 
             setQuestions(filteredQuestions);
@@ -86,7 +90,7 @@ const CreateExam = ({ data, setData }) => {
         }
     }, [data]);
 
-    // Loacal Storage 저장
+    // 2. Loacal Storage 저장
     useEffect(() => {
         localStorage.setItem('radioAnswers', JSON.stringify(radioAnswers));
         localStorage.setItem('textAnswers', JSON.stringify(textAnswers));
@@ -114,7 +118,7 @@ const CreateExam = ({ data, setData }) => {
         showQuestionButton,
     ]);
 
-    // radioAnswers와 textAnswers 초기 상태 설정
+    // 3. radioAnswers와 textAnswers 초기 상태 설정
     useEffect(() => {
         const storedRadioAnswers = JSON.parse(
             localStorage.getItem('radioAnswers')
@@ -135,39 +139,50 @@ const CreateExam = ({ data, setData }) => {
     const onSubmit = (data) => {
         setIsSubmitted(true);
 
-        let score = 0;
-
         const newResults = {};
-        const feedbackResults = [];
+
+        const testResults = [];
 
         questions.forEach((question, index) => {
+            
             const answer = data[`question_${index}`];
-            const isCorrect = answer === question.correct_answer;
-            newResults[question.id] = isCorrect ? 'correct' : 'incorrect';
+            let correct_answers;
+            let user_answers;
+
+            if (question.type === 0) {
+                correct_answers = question.correct_answer;
+                user_answers = answer.split('')[0];
+                const isCorrect = user_answers === correct_answers;
+                newResults[question.id] = isCorrect ? 'correct' : 'incorrect';
+            } else if (question.type === 1) {
+                correct_answers = question.correct_answer;
+                user_answers = data[`question_${index}`]; 
+            }
+            
             const questionInfo = {
                 index: index,
                 question: question.question,
-                userAnswer: answer,
-                isCorrect: isCorrect,
+                choices: question.choices,
+                correctAnswer:correct_answers,
+                userAnswer: user_answers,
+                isCorrect: question.type === 0 ? (newResults[question.id] === 'correct' ? "True" : "False") : undefined,
+                explanation: question.explanation,
+                intent: question.intent,
             };
 
             if (question.type === 0) {
                 setRadioAnswers((prevRadioAnswers) => ({
                     ...prevRadioAnswers,
-                    [question.id]: answer,
+                    [question.id]: user_answers,
                 }));
             } else if (question.type === 1) {
                 setTextAnswers((prevTextAnswers) => ({
                     ...prevTextAnswers,
-                    [question.id]: answer,
+                    [question.id]: user_answers,
                 }));
             }
 
-            feedbackResults.push(questionInfo);
-
-            if (isCorrect) {
-                score += 5;
-            }
+            testResults.push(questionInfo);
         });
 
         setResults(newResults);
@@ -175,13 +190,13 @@ const CreateExam = ({ data, setData }) => {
         setShowExplanationButton(true);
         setshowQuestionButton(true);
 
-        setScore(score);
-        setIsModalOpen(true);
+        setScore(score); 
+        setShowScoreModal(true);
 
-        // jSON 전달
-        console.log('FeedBackResults:', JSON.stringify(feedbackResults));
-
-        type = 'TEST_example';
+        console.log('testResults:', JSON.stringify(testResults));
+        
+        // end-point 수정 필요
+        type = "TEST_example"; 
 
         axios({
             url: `${import.meta.env.VITE_APP_API_URL}${type}`,
@@ -190,30 +205,32 @@ const CreateExam = ({ data, setData }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            data: JSON.stringify(feedbackResults),
+            data: JSON.stringify(testResults) 
+        }).then(response => {
+            console.log('Server response:', response.data);
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting feedback.');
         })
-            .then((response) => {
-                console.log('Server response:', response.data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting feedback.');
-            });
+
+    };
+
+    const ModalSubmit = () => {
+        handleSubmit(onSubmit)();
+    };
+
+    const handleCloseModal = () => {
+        setShowScoreModal(false);
     };
 
     const toggleExplanations = () => {
         setShowExplanations((prev) => !prev);
+        setIsFeedbackOpen(prevState => !prevState);
     };
 
     const handleGoToChatBot = () => {
-        navigate('/chatbot');
-    };
-
-    const closeAlertModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const [key, setKey] = useState(0);
+        window.open('/chatbot', '_blank'); // 새로운 창
+    };    
 
     const clearAllLocalStorage = () => {
         setRadioAnswers({});
@@ -224,57 +241,21 @@ const CreateExam = ({ data, setData }) => {
         setShowExplanationButton(false);
         setshowQuestionButton(false);
 
-        setKey((prevKey) => prevKey + 1);
+        window.location.reload(); // 새로고침
     };
 
-    return (
-        <Wrapper>
-            <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                contentLabel='Score Information'
-                style={{
-                    content: {
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '300px',
-                        height: '250px',
-                        textAlign: 'center',
-                        border: '2px solid',
-                    },
-                }}
-            >
-                <ModalTitle>시험 점수</ModalTitle>
-                <ModalScore>{score}점 / 100점</ModalScore>
-                <ModalButton onClick={() => setIsModalOpen(false)}>
-                    닫기
-                </ModalButton>
-            </Modal>
+    Modal.setAppElement('#root');
 
-            {data?.length > 0 && (
-                <ButtonWrapper>
-                    <PDFGenerateButton
-                        text={'문제 새로 생성하기'}
-                        onClickHandle={() => {
-                            setData(null);
-                            localStorage.removeItem('examData');
-                            // refresh
-                            window.location.reload();
-                        }}
-                    ></PDFGenerateButton>
-                    <PDFDownloadButton
-                        text={'문제 다운로드 하기'}
-                        onClickHandle={() =>
-                            generatePDF(targetRef, {
-                                filename: 'study-mentor.pdf',
-                            })
-                        }
-                    ></PDFDownloadButton>
-                </ButtonWrapper>
+    return (
+        <div>
+            {data?.length > 0 &&(
+                <button
+                    onClick={() =>
+                        generatePDF(targetRef, {filename:'study-mentor.pdf'})
+                    }
+                >
+                    문제 저장하기
+                </button>
             )}
 
             {data?.length == 0 && <div>Loading...</div>}
@@ -284,172 +265,129 @@ const CreateExam = ({ data, setData }) => {
                         <LogoImg src={logo} alt='logo' />
                         <Title>Study Mentor Exam</Title>
                     </ExamTitle>
-                    <Info>
-                        학번 : <InfoLine /> 이름 : <InfoLine />
-                    </Info>
+                    <Info>학번 : <InfoLine /> 이름 : <InfoLine /></Info>
                     <Line />
                     <StyledTest onSubmit={handleSubmit(onSubmit)}>
-                        {questions.map((question, index) => (
-                            <QuestionBlock key={question.id}>
-                                <QuestionRow>
-                                    <IndexText className={results[question.id]}>
-                                        {index + 1}.{' '}
-                                    </IndexText>
-                                    <QuestionText>
-                                        {question.question}
-                                        {errors[`question_${index}`] && (
-                                            <span style={{ color: 'green' }}>
-                                                {' '}
-                                                *입력되지 않았습니다.
-                                            </span>
+                        <TestContainer>
+                            {questions.map((question, index) => (
+                                <QuestionBlock key={question.id}>
+                                    <QuestionRow>
+                                        <IndexText className={results[question.id]}>
+                                            {index + 1}.{' '}
+                                        </IndexText>
+                                        <QuestionText>
+                                            {question.question}
+                                            {errors[`question_${index}`] && (
+                                                <span style={{ color: 'green' }}>
+                                                    {' '}
+                                                    *입력되지 않았습니다.
+                                                </span>
+                                            )}
+                                        </QuestionText>
+                                        {results[question.id] === 'correct' && (
+                                            <ImageOverlay
+                                                src={correctImage}
+                                                alt='Correct'
+                                            />
                                         )}
-                                    </QuestionText>
-                                    {results[question.id] === 'correct' && (
-                                        <ImageOverlay
-                                            src={correctImage}
-                                            alt='Correct'
-                                        />
-                                    )}
-                                    {results[question.id] === 'incorrect' && (
-                                        <ImageOverlay
-                                            src={incorrectImage}
-                                            alt='Incorrect'
-                                        />
-                                    )}
-                                </QuestionRow>
-                                {Array.isArray(question.choices) ? (
-                                    <QuestionDetails>
-                                        {question.choices.map((choice, idx) => (
-                                            <RadioLabel
-                                                key={idx}
-                                                style={{
-                                                    fontWeight:
-                                                        (isSubmitted &&
-                                                            results[
-                                                                question.id
-                                                            ] === 'incorrect' &&
-                                                            showExplanations &&
-                                                            choice ===
-                                                                question.correct_answer) ||
-                                                        (isSubmitted &&
-                                                            results[
-                                                                question.id
-                                                            ] === 'correct' &&
-                                                            choice ===
-                                                                question.correct_answer)
-                                                            ? 'bold'
-                                                            : 'normal',
-                                                    color: isSubmitted
-                                                        ? results[
-                                                              question.id
-                                                          ] === 'incorrect' &&
-                                                          showExplanations &&
-                                                          choice ===
-                                                              question.correct_answer
-                                                            ? 'red'
-                                                            : results[
-                                                                  question.id
-                                                              ] === 'correct' &&
-                                                              choice ===
-                                                                  question.correct_answer
-                                                            ? '#1187CF'
-                                                            : 'black'
-                                                        : 'black',
-                                                }}
-                                            >
-                                                <input
-                                                    type='radio'
-                                                    name={`question_${index}`}
-                                                    value={choice}
-                                                    disabled={isSubmitted}
-                                                    onChange={(e) => {
-                                                        if (!isSubmitted) {
-                                                            handleRadioChange(
-                                                                question.id,
-                                                                e.target.value
-                                                            );
-                                                        }
+                                        {results[question.id] === 'incorrect' && (
+                                            <ImageOverlay
+                                                src={incorrectImage}
+                                                alt='Incorrect'
+                                            />
+                                        )}
+                                    </QuestionRow>
+                                    {Array.isArray(question.choices) ? (
+                                        <QuestionDetails>
+                                            {question.choices.map((choice, idx) => (
+                                                <RadioLabel
+                                                    key={idx} 
+                                                    style={{ 
+                                                        fontWeight: isSubmitted && choice.split('')[0] === question.correct_answer ? 'bold' : 'normal',
+                                                        color: isSubmitted ? 
+                                                                ( choice.split('')[0] === question.correct_answer ? 
+                                                                    (results[question.id] === 'correct' ? 'blue' : 'red') 
+                                                                    : 'black') 
+                                                                : 'black'
                                                     }}
-                                                    checked={
-                                                        isSubmitted
-                                                            ? radioAnswers[
-                                                                  question.id
-                                                              ] === choice
-                                                            : null
-                                                    }
-                                                    key={`${choice}-${key}`}
-                                                    {...register(
-                                                        `question_${index}`,
-                                                        {
+                                                >                             
+                                                    <input
+                                                        type="radio"
+                                                        name={`question_${index}`}
+                                                        value={choice}
+                                                        disabled={isSubmitted}
+                                                        onChange={(e) => {
+                                                            if (!isSubmitted) {
+                                                                handleRadioChange(question.id, e.target.value);
+                                                            }
+                                                        }}
+                                                        checked={isSubmitted ? (radioAnswers[question.id] ===  choice.split('')[0]) : null}   
+                                                        {...register(`question_${index}`, {
                                                             required: true,
-                                                        }
-                                                    )}
-                                                />
-
-                                                {choice}
-                                            </RadioLabel>
-                                        ))}
-                                    </QuestionDetails>
-                                ) : (
-                                    <TextInput
-                                        type='text'
-                                        onChange={(e) => {
-                                            if (!isSubmitted) {
-                                                handleTextChange(
-                                                    question.id,
-                                                    e.target.value
-                                                );
-                                            }
-                                        }}
-                                        {...register(`question_${index}`, {
-                                            required: '정답을 입력하세요.',
-                                        })}
-                                        placeholder={
-                                            isSubmitted
-                                                ? textAnswers[question.id]
-                                                : '정답을 입력하시오.'
-                                        }
-                                        disabled={isSubmitted}
-                                    />
-                                )}
-                                {showExplanations && (
-                                    <ExplainHelp>
-                                        <p style={{ color: 'red' }}>
-                                            <strong>
-                                                정답: {question.correct_answer}
-                                            </strong>
-                                        </p>
-                                        <p>{question.explanation}</p>
-                                    </ExplainHelp>
-                                )}
-                            </QuestionBlock>
-                        ))}
+                                                        })}
+                                                    />
+                                                    {choice}
+                                                </RadioLabel>                                        
+                                            ))}
+                                        </QuestionDetails>
+                                    ) : (
+                                        <TextInput
+                                            type='text'
+                                            onChange={(e) => {
+                                                if (!isSubmitted) {
+                                                    handleTextChange(question.id, e.target.value);
+                                                }
+                                            }}
+                                            {...register(`question_${index}`, {
+                                                required: '정답을 입력하세요.',
+                                            })}
+                                            placeholder={isSubmitted ? textAnswers[question.id] : '정답을 입력하시오.'}
+                                            disabled={isSubmitted}
+                                        />
+                                    )}
+                                    {showExplanations && (
+                                        <>
+                                            <ExplainHelp>
+                                                <p style={{ color: 'red', fontSize: '18px' }}><strong>정답: {question.correct_answer}</strong></p>
+                                                <p style={{ marginTop: '10px', fontSize: '16px' }}><strong>해설: {question.explanation}</strong></p>
+                                            </ExplainHelp>
+                                            {results[question.id] === 'incorrect' && (
+                                                <GoChatBot> 
+                                                    <ChatBotButton onClick={handleGoToChatBot}>질문하러 가기</ChatBotButton>
+                                                </GoChatBot>
+                                            )}
+                                        </>
+                                    )}
+                                </QuestionBlock>
+                            ))}
+                        </TestContainer>
                         <ButtonContainer>
                             <div style={{ position: 'relative' }}>
-                                <SubmitButton
-                                    type='submit'
-                                    disabled={isSubmitted}
-                                    onMouseEnter={() => setSubmitHovering(true)}
-                                    onMouseLeave={() =>
-                                        setSubmitHovering(false)
-                                    }
-                                >
-                                    제출하기
-                                </SubmitButton>
-                                {submitHovering && !isSubmitted && (
-                                    <WarningMessage
-                                        style={{ display: 'block' }}
-                                    >
-                                        ※ 제출은 한 번만 가능합니다.
-                                    </WarningMessage>
-                                )}
+                            <SubmitButton
+                                type="submit"
+                                disabled={isSubmitted} 
+                                onMouseEnter={() => setSubmitHovering(true)}
+                                onMouseLeave={() => setSubmitHovering(false)}
+                                onClick={ModalSubmit}
+                            >
+                                제출하기
+                            </SubmitButton>
+                            {submitHovering && !isSubmitted && (
+                                <WarningMessage style={{ display: 'block' }}> ⚠️ 제출은 한 번만 가능합니다! <br /> 다시 한 번 검토해주세요.</WarningMessage>
+                            )}
+                            {showScoreModal && 
+                                <ScoreModal isOpen={showScoreModal} 
+                                onRequestClose={handleCloseModal} 
+                                scoreData={{ score: score }} 
+                                />
+                            }
                             </div>
                             {showExplanationButton && (
                                 <AnswerButton
                                     type='button'
                                     onClick={toggleExplanations}
                                 >
-                                    해설보기
+                                    {isFeedbackOpen ? '피드백 받기' : '피드백 닫기'}
                                 </AnswerButton>
                             )}
                             {showQuestionButton && (
@@ -501,7 +439,6 @@ const ExamTitle = styled.div`
 const Title = styled.div`
     color: #000;
     text-align: center;
-    font-family: Inter;
     font-size: 45px;
     font-style: normal;
     font-weight: bold;
@@ -544,6 +481,11 @@ const StyledTest = styled.form`
     box-sizing: border-box;
 `;
 
+const TestContainer = styled.div`
+    padding-bottom: 20px;
+    border-bottom: 3px dotted #9E9E9E;
+`;
+
 const QuestionBlock = styled.div`
     display: flex;
     flex-direction: column;
@@ -562,7 +504,6 @@ const QuestionRow = styled.div`
 const IndexText = styled.a`
     font-weight: bold;
     font-size: 20px;
-    font-family: Inter;
     margin-right: 8px;
     &.incorrect {
         color: red;
@@ -615,6 +556,7 @@ const ButtonContainer = styled.div`
     display: flex;
     justify-content: flex-end;
     padding-top: 20px;
+    margin-top: 20px;
 `;
 
 const SubmitButton = styled.button`
@@ -622,12 +564,13 @@ const SubmitButton = styled.button`
     height: 50px;
     border-radius: 10px;
     border: 3px solid #787878;
-    background: #eeeeee;
-    font-size: 17px;
+    background: #EEEEEE;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
     margin-right: 10px;
+    font-family: "Pretendard-Regular";
 
     &:hover {
         background: #c2c2c2;
@@ -639,39 +582,40 @@ const SubmitButton = styled.button`
 `;
 
 const WarningMessage = styled.div`
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #f9fff1;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    border: 5px dotted #afd485;
-    border-radius: 10px;
+    display: none;          
+    position: absolute;    
+    bottom: 100%;         
+    left: 50%;              
+    transform: translateX(-50%); 
+    background: #FFDED5;  
+    padding: 10px 20px;        
+    margin-bottom: 10px;       
+    border: 2px #FD8A69 solid;  
+    border-radius: 10px;        
     font-size: 17px;
-    font-weight: bold;
-    white-space: nowrap;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    font-weight: bold;          
+    white-space: nowrap;      
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
+    z-index: 10;              
 `;
 
 const AnswerButton = styled.button`
     width: 120px;
     height: 50px;
     border-radius: 10px;
-    border: 3px solid rgba(47, 165, 153, 0.5);
-    background: rgba(184, 230, 225, 0.5);
+    border: 3px solid #FFC67E;
+    background: #FEEBB6;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
+    font-family: "Pretendard-Regular";
 
     &:hover {
-        background: rgba(184, 230, 225, 0.75);
+        background: #FFC67E;
     }
 
     &:active {
-        background: rgba(47, 165, 153, 0.75);
+        background: #FFC67E;
     }
 `;
 
@@ -679,65 +623,70 @@ const QuestButton = styled.button`
     width: 120px;
     height: 50px;
     border-radius: 10px;
-    border: 3px solid rgba(253, 138, 105, 0.5);
-    background: rgba(254, 204, 190, 0.5);
-    font-size: 17px;
+    border: 3px solid #FFAB93;  
+    background: #FFE1D9; 
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
     margin-left: 10px;
+    font-family: "Pretendard-Regular";
 
     &:hover {
-        background: rgba(255, 192, 203, 0.75);
+        background: #FFAB93;  
     }
 
     &:active {
-        background: rgba(255, 182, 193, 0.75);
+        background: #FFAB93;  
     }
 `;
 
 const ExplainHelp = styled.p`
     font-size: 15px;
     text-align: left;
-    padding: 10px;
+    padding: 15px;
     margin: 15px 0;
-    border: 2px solid red;
-    background-color: white;
+    border: 4px #FD9F28 dotted;
+    background-color: #FFF3E3;
     border-radius: 5px;
+    width: 96%;
 `;
+
 
 const ClearBox = styled.div`
     text-align: right;
     margin-bottom: 50px;
+    margin-right: 30px;
 `;
 
 const ClearText = styled.button`
     font-size: 18px;
     &:hover {
-        color: #e04f00;
+        color: #9E9E9E; 
     }
     border: none;
     padding: 10px;
     background: white;
     color: black;
+    font-weight: bold;
+    font-family: "Pretendard-Regular";
 `;
 
-const ModalTitle = styled.h2`
-    margin: 20px;
-    font-size: 40px;
+const GoChatBot = styled.div`
+    display: flex;        
+    justify-content: flex-end; 
+    width: 100%;        
 `;
 
-const ModalScore = styled.p`
-    margin: 40px;
-    font-size: 30px;
-`;
-
-const ModalButton = styled.button`
-    width: 100px;
-    height: 40px;
-    font-size: 18px;
-    background: #ddecca;
-    border: 2px #7db249 solid;
-    border-radius: 10px;
+const ChatBotButton = styled.button`
+    padding: 8px 16px;  
+    color: black;
+    border: none;      
+    cursor: pointer;    
+    &:hover {
+        background-color: #C2C2C2;  
+    }
+    font-family: "Pretendard-Regular";
+    font-size: 15px;
     font-weight: bold;
 `;

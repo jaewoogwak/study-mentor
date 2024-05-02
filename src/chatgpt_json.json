@@ -2,191 +2,211 @@
     {
         "case": 0,
         "choices": [
-            "한국과학기술원",
-            "한국산업인력공단",
-            "국가기술자격검정위원회",
-            "과학기술정보통신부"
+            "1. C89",
+            "2. C99",
+            "3. C11",
+            "4. C++"
         ],
-        "correct_answer": "한국산업인력공단",
-        "explanation": "정보처리기사 실기 시험은 한국산업인력공단에서 주관합니다.",
-        "question": "정보처리기사 실기 시험 주관 기관은 어디입니까?"
+        "correct_answer": "2",
+        "explanation": "복합 리터럴은 C99 규격에서 새롭게 도입된 기능입니다. 이를 통해 배열이나 구조체 같은 데이터 타입을 초기화할 수 있습니다.",
+        "intent": "프로그래밍 언어의 버전별 특성과 변경사항을 이해하는 능력 검증",
+        "question": "다음 중 복합 리터럴을 정의하는 연산자를 지원하는 C의 버전은?"
     },
     {
         "case": 0,
         "choices": [
-            "답안은 문제의 마지막에 있는 답란에 작성",
-            "답안의 정정",
-            "수험자 인적사항 기재",
-            "계산 연습"
+            "1. 작동 의미론",
+            "2. 표기 의미론",
+            "3. 공리 의미론",
+            "4. 구문 의미론"
         ],
-        "correct_answer": "답안의 정정",
-        "explanation": "답안 정정 시 수정 테이프나 수정액의 사용은 금지되어 있습니다. 오직 두 줄로 취소하는 방법만 허용됩니다.",
-        "question": "수정 테이프나 수정액 사용이 불가능하다고 명시된 수험자 유의사항은 무엇인가?"
+        "correct_answer": "1",
+        "explanation": "작동 의미론은 프로그램의 의미를 그 실행과정을 통해 설명하는 방법입니다. 이는 프로그램의 각 단계를 따라가며 상태 변화를 보는 방식으로 의미를 파악합니다.",
+        "intent": "프로그래밍 언어의 의미론 이해와 분류할 수 있는 능력 평가",
+        "question": "프로그래밍의 의미론을 설명하기 위해 사용되는 방법 중, 프로그램 실행 과정을 통해 설명하는 방법은 무엇입니까?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "{'한국', '베트남', '홍콩', '태국'}",
-        "explanation": "asia 집합에 '중국'이 추가되어 있지만 집합은 중복을 허용하지 않으므로 '중국'은 한 번만 나타나며, '일본'은 remove 메소드로 제거되었습니다. 최종적으로 '베트남', '홍콩', '태국'이 추가되어 최종 상태는 {'한국', '베트남', '홍콩', '태국'}입니다.",
-        "question": "Python 프로그램의 실행 결과 예상을 요구하는 문제에서, asia 집합의 최종 상태는 무엇입니까?"
+        "correct_answer": "우선순위가 높은 연산자가 먼저 실행됨",
+        "explanation": "'a+b*c'에서 곱셈 연산자 '*'는 덧셈 연산자 '+'보다 우선순위가 높으므로 먼저 계산됩니다. 따라서 b와 c를 곱한 결과에 a를 더합니다.",
+        "intent": "연산자 우선순위에 대한 이해를 테스트하고, 표현식 계산 방법을 식별할 수 있는지 평가",
+        "question": "다음 표현식에서 테스트된 값을 결정하는 연산자 우선순위의 기본 원칙은 무엇입니까? 'a+b*c'"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "AJAX",
-        "explanation": "AJAX(Ajax, Asynchronous JavaScript and XML)는 클라이언트와 서버 간에 XML이나 JSON과 같은 데이터를 비동기적으로 교환하고 처리할 수 있게 하는 웹 개발 기법입니다. 이를 통해 웹페이지의 부분적인 업데이트가 가능합니다.",
-        "question": "클라이언트와 서버 간 웹페이지 일부만 업데이트할 수 있도록 하는 기술의 이름은 무엇인가요?"
+        "correct_answer": "대입 연산자",
+        "explanation": "C언어에서 연산자 우선순위 순서에 따라 삼항 조건 연산자는 대입 연산자보다 높은 우선순위를 가집니다. 따라서 삼항 조건 연산자가 먼저 평가되고 그 다음에 대입 연산자가 평가됩니다.",
+        "intent": "C언어의 연산자 우선순위에 대한 이해를 평가",
+        "question": "C언어에서 삼항 조건 연산자(?:) 다음에 평가되는 연산자는 무엇인가?"
     },
     {
         "case": 0,
         "choices": [
-            "시험문제와 관련된 메모지 사용",
-            "휴대용 전화기의 사용",
-            "신분증과 수험표 미제시",
-            "자신의 답안을 다른 수험자와 공유"
+            "1. FORTRAN",
+            "2. Ada",
+            "3. C",
+            "4. Pascal"
         ],
-        "correct_answer": "신분증과 수험표 미제시",
-        "explanation": "시험위원이 요구할 경우 신분증과 수험표를 제시해야 하지만, 미제시 자체가 부정행위로 간주되지는 않습니다. 다른 선택지들은 모두 부정행위에 해당합니다.",
-        "question": "국가기술자격시험에서 부정행위로 간주되지 않는 행위는?"
+        "correct_answer": "3",
+        "explanation": "C 언어는 후위 증감 연산자 '++'와 '--'을 제공합니다. 이 연산자들은 변수의 값을 증가하거나 감소시킨 후 평가됩니다.",
+        "intent": "후위 증감 연산자를 지원하는 언어에 대한 이해를 묻는 문제입니다.",
+        "question": "어느 언어가 후위 증감 연산자 '++'와 '--'을 지원합니까?"
     },
     {
         "case": 0,
         "choices": [
-            "문제를 복제하여 배포하기",
-            "문제를 인터넷에 공개하기",
-            "문제를 출판하거나 전자출판하기",
-            "문제를 개인적으로 연구 및 학습 목적으로 사용하기"
+            "1. +",
+            "2. /",
+            "3. sizeof",
+            "4. &&"
         ],
-        "correct_answer": "문제를 개인적으로 연구 및 학습 목적으로 사용하기",
-        "explanation": "국가기술자격시험 문제는 일부 또는 전부가 저작권법상 보호되는 저작물이며, 저작권자의 허가 없이 복제, 배포, 출판하는 행위를 금합니다. 그러나 개인적으로 연구 및 학습 목적으로 사용하는 것은 저작권 침해에 해당하지 않습니다.",
-        "question": "다음 중 국가기술자격시험 문제 저작권을 침해하지 않는 행동은?"
+        "correct_answer": "3",
+        "explanation": "C 언어에서 'sizeof' 연산자는 가장 높은 우선순위를 가지는 연산자 중 하나입니다. 이 연산자는 피연산자의 크기를 측정합니다.",
+        "intent": "C 언어 연산자의 우선순위에 대한 이해를 평가하는 문제입니다.",
+        "question": "어느 연산자가 C언어에서 우선순위가 가장 높습니까?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "{'태국', '중국', '베트남', '홍콩', '한국'}",
-        "explanation": "Python의 집합(set)은 중복 값을 허용하지 않으며, 순서가 보장되지 않습니다. 따라서 '중국'을 추가해도 이미 존재하기 때문에 변경되지 않고, '일본'은 제거됩니다. 결과적으로 {'한국', '중국', '베트남', '홍콩', '태국'}이 최종 집합이 됩니다.",
-        "question": "Python 코드 실행 결과를 작성하시오."
+        "correct_answer": "Ada",
+        "explanation": "Ada 언어에서 '**'는 지수 연산자로 사용되며, 우선순위가 아주 높습니다.",
+        "intent": "지수 연산자를 표현하는 심볼과 관련 언어를 연결하는 지식을 평가하는 문제입니다.",
+        "question": "다음 중 연산자 '**'가 지수 연산을 나타내는 프로그래밍 언어는 무엇입니까?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "복구시간 목표(RTO, Recovery Time Objective)",
-        "explanation": "복구시간 목표(RTO, Recovery Time Objective)는 비상 상황 발생 후 서비스나 업무의 중단 없이 정상적으로 복구되기까지의 목표 시간을 의미합니다. 이는 재해 복구 계획에서 중요한 요소 중 하나입니다.",
-        "question": "업무중단 시점부터 업무가 복구되어 다시 정상 가동 될 때까지의 시간을 의미하는 용어를 쓰시오."
+        "correct_answer": "false",
+        "explanation": "C언어의 '&&' 연산자는 단락 평가(short-circuit evaluation)를 지원하며, x가 'false' 일 때 y의 조건은 평가되지 않습니다. 이는 성능 최적화와 에러 방지에 도움이 됩니다.",
+        "intent": "단락 평가 메커니즘과 관련하여 논리적 판단력을 테스트하는 문제입니다.",
+        "question": "C언어에서 조건 표현 'x && y'에서 실제로 y의 조건이 평가되지 않는 경우, x의 값은 무엇입니까?"
     },
     {
         "case": 0,
         "choices": [
-            "Singleton Pattern",
-            "Strategy Pattern",
-            "Observer Pattern",
-            "Loose Coupling"
+            "1. 모든 조건을 무조건 평가한다.",
+            "2. 첫 번째 조건이 거짓이면 두 번째 조건을 평가하지 않는다.",
+            "3. 첫 번째 조건만 평가하고 두 번째 조건을 무시한다.",
+            "4. 두 조건의 결과를 항상 더한다."
         ],
-        "correct_answer": "Loose Coupling",
-        "explanation": "느슨한 결합(Loose Coupling)은 각 컴포넌트나 클래스가 서로 상호작용할 때 의존성을 최소화하여 변경이 용이하도록 하는 소프트웨어 디자인 패턴이다.",
-        "question": "하면 느슨하게 결합하는 소프트웨어 디자인 패턴의 이름은 무엇인가?"
+        "correct_answer": "2",
+        "explanation": "Ada의 and then 연산자는 단락회로 평가를 사용하여 첫 번째 조건이 거짓일 경우 두 번째 조건의 평가를 건너뛰게 됩니다.",
+        "intent": "Ada 언어의 particularly단락회로 평가 기능에 대한 이해를 측정합니다.",
+        "question": "Ada 언어에서 and then 연산자의 기능은 무엇입니까?"
     },
     {
         "case": 0,
         "choices": [
-            "iOS",
-            "Windows Phone",
-            "Android",
-            "BlackBerry OS"
+            "1. 하나의 기호가 두 가지 이상의 용도로 사용될 수 있다.",
+            "2. C++과 Ada에서 프로그래머는 중복 연산자를 직접 정의할 수 있다.",
+            "3. 모든 프로그래밍 언어에서 중복 연산자의 사용이 허용된다.",
+            "4. 분수 곱셈에 * 연산자를 사용할 수 있도록 정의할 수 있다."
         ],
-        "correct_answer": "Android",
-        "explanation": "Android는 자바와 코틀린을 사용하여 애플리케이션을 개발할 수 있는, 리눅스 커널 기반의 모바일 운영 체제이다.",
-        "question": "리눅스의 커널 위에서 동작하며, 자바와 코틀린으로 애플리케이션을 작성하는, 휴대용 장치에서 주로 사용되는 운영체제의 이름은?"
+        "correct_answer": "3",
+        "explanation": "모든 프로그래밍 언어에서 중복 연산자의 사용이 허용되는 것은 아닙니다. 특정 언어에서는 허용하고 일부 언어에서는 허용하지 않을 수 있습니다.",
+        "intent": "중복 연산자의 정의와 사용 범위에 대한 이해를 확인합니다.",
+        "question": "중복 연산자에 관한 설명으로 옳지 않은 것은 무엇입니까?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "CREATE INDEX idx_name ON student (name);",
-        "explanation": "SQL에서 특정 테이블의 특정 컬럼에 대해 인덱스를 생성하려면 CREATE INDEX 명령어를 사용하며, 이는 조회 성능을 향상시키기 위해 사용됩니다.",
-        "question": "'name' 속성으로 ‘idx_name'이라는 인덱스를 생성하는 SQL문을 작성하시오."
+        "correct_answer": "IF 문",
+        "explanation": "FORTRAN에서 처음 도입된 조건문 구조는 IF 문입니다. 이 문은 조건에 따라 특정 코드 블럭을 실행하는 구조입니다.",
+        "intent": "FORTRAN 프로그래밍 언어에 대한 기본 지식을 평가합니다.",
+        "question": "FORTRAN에서 처음 도입된 조건문 구조는 무엇입니까?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "SOAP",
-        "explanation": "SOAP(Simple Object Access Protocol)은 HTTP, HTTPS, SMTP 등을 사용하여 XML 기반 메시지를 네트워크 상에서 교환하기 위한 프로토콜로, 웹 서비스 통신에 사용된다.",
-        "question": "HTTP, HTTPS, SMTP 등을 사용하여 XML 기반의 메시지를 네트워크 상에서 교환하는 프로토콜은 무엇인가?"
+        "correct_answer": "goto label;",
+        "explanation": "goto 문은 label을 지정하여 프로그램의 실행 순서를 해당 위치로 바꾸는 구문으로 사용됩니다.",
+        "intent": "구조적 프로그래밍 원칙에서 비권장하는 goto 문 사용법을 이해하게 합니다.",
+        "question": "goto 문을 사용해 프로그램의 실행 순서를 특정 위치로 바꾸는 구문은 어떻게 표현됩니까?"
     },
     {
         "case": 0,
         "choices": [
-            "RTO",
-            "RTC",
-            "RTM",
-            "RTP"
+            "1. To increase the execution speed of programs",
+            "2. To enhance the readability and writability of the code",
+            "3. To reduce the memory usage of programs",
+            "4. To introduce new functionality into the language"
         ],
-        "correct_answer": "RTO",
-        "explanation": "목표 복구 시간은 'Recovery Time Objective'의 약어로 RTO이다.",
-        "question": "목표 복구 시간을 영문 약어로 나타낼 때, 올바른 표현은 무엇인가?"
+        "correct_answer": "2",
+        "explanation": "Syntactic sugar is designed to make the code more intuitive and concise, therefore enhancing the readability and writability for programmers without introducing new functionality.",
+        "intent": "To assess understanding of the concept and purpose of syntactic sugar in programming languages.",
+        "question": "What is the main purpose of 'syntactic sugar' in programming languages?"
     },
     {
         "case": 0,
         "choices": [
-            "{\"한국\", \"중국\", \"베트남\", \"홍콩\", \"태국\"}",
-            "{\"한국\", \"중국\", \"일본\", \"베트남\"}",
-            "{\"한국\", \"중국\", \"태국\"}",
-            "{\"중국\", \"베트남\", \"홍콩\"}"
+            "1. It defines the meaning of a program using the theory of types.",
+            "2. It describes the meaning of a program by its translation into another language.",
+            "3. It explains a program's behavior through the process of its execution.",
+            "4. It uses mathematical logic to explain program behavior."
         ],
-        "correct_answer": "{\"한국\", \"중국\", \"베트남\", \"홍콩\", \"태국\"}",
-        "explanation": "세트는 중복을 허용하지 않고, 중국이 이미 존재하므로 무시되며, 일본은 제거되어 최종적으로 한국, 중국, 베트남, 홍콩, 태국이 포함된다.",
-        "question": "asia 세트에 저장된 최종 요소들은?"
+        "correct_answer": "3",
+        "explanation": "Operational semantics describes the meaning of a program by viewing its execution as a series of state transitions.",
+        "intent": "To test the understanding of different semantic approaches in programming languages.",
+        "question": "Which statement describes the operational semantics approach in programming language semantics?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "Asynchronous JavaScript and XML",
-        "explanation": "AJAX는 Asynchronous JavaScript and XML의 약어로, 웹페이지에서 비동기적으로 데이터를 교환하고 갱신하기 위해 사용된다.",
-        "question": "AJAX는 어떤 기술의 약어이며 주로 어떤 목적으로 사용되는가?"
+        "correct_answer": "Eval(s, S) = s'",
+        "explanation": "In operational semantics, a state transition is often represented by an evaluation function that maps an initial state 's' and a statement 'S' to a new state 's''.",
+        "intent": "To understand the notation used in describing state transitions in operational semantics.",
+        "question": "According to operational semantics, how are state transitions generally represented?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "인스턴스 생성",
-        "explanation": "\"new\" 키워드는 클래스의 인스턴스(객체)를 생성할 때 사용된다. 예를 들어, \"new Child()\"는 Child 클래스의 새로운 객체를 만들고, 이 객체를 pa 변수에 할당한다.",
-        "question": "코드 상에서 new 키워드의 주요 기능은 무엇인가?"
+        "correct_answer": "if (<expr>) then <stmt> [else <stmt>]",
+        "explanation": "The syntax provided describes an if-else statement where 'expr' evaluates the condition, followed by 'then' which executes the statement if true, optionally followed by 'else' which executes if the condition is false.",
+        "intent": "To identify understanding of parsing and syntax from given language definitions.",
+        "question": "According to the syntactic definition provided, what is the correct syntax for a simple if-else statement in language S?"
     },
     {
         "case": 0,
         "choices": [
-            "컴파일러 최적화",
-            "클래스 형 변환",
-            "가상 메소드 호출",
-            "메소드 숨김"
+            "1. Creates new variables and initializes them to 0.",
+            "2. Deletes variables from the current state.",
+            "3. Adds entries for declared variables to the state.",
+            "4. Adds declared variables to the next state but retains their value."
         ],
-        "correct_answer": "가상 메소드 호출",
-        "explanation": "가상 메소드 호출 메커니즘은 실행 시점에 객체의 실제 타입에 기반하여 해당 타입의 오버라이드된 메소드를 호출한다. 따라서 Parent 타입의 참조변수로 Child 객체를 참조할 경우, Child 클래스에 정의된 show() 메소드가 호출된다.",
-        "question": "객체 변수 pa의 타입이 Parent이지만 실제로 호출되는 메소드는 Child 클래스의 메소드이다. 이러한 현상의 원인은 무엇인가?"
+        "correct_answer": "3",
+        "explanation": "The 'let' statement adds new entries for declared variables to the current state, as it is used to manage the scope of variables.",
+        "intent": "To test understanding of variable scoping and state manipulation through the 'let' statement in language S.",
+        "question": "What does the 'let' statement in the programming language S do in terms of state manipulation?"
     },
     {
         "case": 0,
         "choices": [
-            "모든 학생의 학년을 3 또는 4로 변경한다.",
-            "학년이 3이나 4인 학생의 학번과 이름을 조회한다.",
-            "학년이 3이나 4인 학생의 수를 센다.",
-            "학년을 기준으로 학생을 정렬한다."
+            "1. Exits when a condition becomes false.",
+            "2. Continuously executes a block of code.",
+            "3. Executes the loop body only if the condition is initially true.",
+            "4. Executes the loop until the condition becomes false."
         ],
-        "correct_answer": "학년이 3이나 4인 학생의 학번과 이름을 조회한다.",
-        "explanation": "해당 쿼리는 '학년'이 3 또는 4인 '학생' 테이블의 레코드에서 '학번'과 '이름'을 선택하여 조회하는 명령어로, 특정 조건을 만족하는 데이터를 검색하기 위해 사용된다.",
-        "question": "\"SELECT 학번, 이름 FROM 학생 WHERE 학년 IN (3, 4);\" 쿼리의 목적은 무엇인가?"
+        "correct_answer": "4",
+        "explanation": "The while loop in Ada, like in many other languages, keeps executing its body as long as the loop's condition remains true. When the condition evaluates to false, the loop terminates.",
+        "intent": "To evaluate the knowledge of loop control mechanisms in the Ada programming language, specifically the while loop.",
+        "question": "In Ada language, what operation does the while loop perform?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "ROLLBACK",
-        "explanation": "ROLLBACK 명령어는 데이터베이스에서 트랜잭션이 실패했거나 의도적으로 취소할 때 이전 상태로 돌아가기 위해 사용된다. 이를 통해 데이터의 일관성을 보장할 수 있다.",
-        "question": "트랜잭션이 실패한 경우 작업을 취소하고 이전 상태로 되돌리기 위해 사용하는 SQL 명령어는 무엇인가?"
+        "correct_answer": "55",
+        "explanation": "The sum of the first 10 positive integers (1 to 10) is 55. This is calculated by executing 'result = result + index' within the while loop in the sum procedure.",
+        "intent": "To assess understanding of loop operations and arithmetic summation over an iterative process in Ada.",
+        "question": "What will be the output of the 'sum' procedure in Ada if the procedure executes the loop from index 1 to 10?"
     },
     {
         "case": 1,
         "choices": "빈칸",
-        "correct_answer": "SQL Injection",
-        "explanation": "SQL Injection은 악의적인 사용자가 SQL 쿼리를 조작하는 방식으로, 웹 어플리케이션의 보안 취약점을 이용하여 데이터베이스 서버에 비정상적인 SQL 명령을 실행시키는 공격 기법이다.",
-        "question": "웹 응용 프로그램에 SQL 구문을 삽입하여 내부 데이터베이스 서버의 데이터를 유출 및 변조하고 관리자 인증을 우회하는 공격 기법은 무엇인가?"
+        "correct_answer": "New state based on the condition evaluation",
+        "explanation": "The 'Eval' function either executes the first statement if the condition is true, or the second statement if false. The value returned is the new state resulting from whichever statement is executed.",
+        "intent": "To check comprehension of how conditional statements affect program state in interpreter functions.",
+        "question": "Based on the implementation details provided, what does the 'Eval' function compute for an 'If' statement?"
     }
 ]
