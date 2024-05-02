@@ -10,22 +10,38 @@ import logo from '../assets/logo.png';
 
 import axios from 'axios';
 import generatePDF from 'react-to-pdf';
+import PDFDownloadButton from './PDFDownloadButton';
+import PDFGenerateButton from './PDFGenerateButton';
 
-const CreateExam = ({ data }) => {
+const CreateExam = ({ data, setData }) => {
     const [questions, setQuestions] = useState([]);
-    const [radioAnswers, setRadioAnswers] = useState(JSON.parse(localStorage.getItem('radioAnswers')) || {});
-    const [textAnswers, setTextAnswers] = useState(JSON.parse(localStorage.getItem('textAnswers')) || {});
+    const [radioAnswers, setRadioAnswers] = useState(
+        JSON.parse(localStorage.getItem('radioAnswers')) || {}
+    );
+    const [textAnswers, setTextAnswers] = useState(
+        JSON.parse(localStorage.getItem('textAnswers')) || {}
+    );
 
-    const [results, setResults] = useState(JSON.parse(localStorage.getItem('results')) || {});
+    const [results, setResults] = useState(
+        JSON.parse(localStorage.getItem('results')) || {}
+    );
     const [score, setScore] = useState(0);
 
     const [warnings, setWarnings] = useState({});
 
-    const [showExplanations, setShowExplanations] = useState(JSON.parse(localStorage.getItem('showExplanations')) || false);
-    const [showExplanationButton, setShowExplanationButton] = useState(JSON.parse(localStorage.getItem('showExplanationButton')) || false);
+    const [showExplanations, setShowExplanations] = useState(
+        JSON.parse(localStorage.getItem('showExplanations')) || false
+    );
+    const [showExplanationButton, setShowExplanationButton] = useState(
+        JSON.parse(localStorage.getItem('showExplanationButton')) || false
+    );
 
-    const [showQuestionButton, setshowQuestionButton] = useState(JSON.parse(localStorage.getItem('showQuestionButton')) || false); 
-    const [isSubmitted, setIsSubmitted] = useState(JSON.parse(localStorage.getItem('isSubmitted')) || false); 
+    const [showQuestionButton, setshowQuestionButton] = useState(
+        JSON.parse(localStorage.getItem('showQuestionButton')) || false
+    );
+    const [isSubmitted, setIsSubmitted] = useState(
+        JSON.parse(localStorage.getItem('isSubmitted')) || false
+    );
     const [submitHovering, setSubmitHovering] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,12 +52,12 @@ const CreateExam = ({ data }) => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm(); 
+    } = useForm();
 
     // Exam Data 가져오기
     useEffect(() => {
         console.log('#### EXAM DATA', data, data?.length);
-        
+
         if (data?.length > 0) {
             const filteredQuestions = data.map((item, index) => ({
                 id: index,
@@ -76,15 +92,36 @@ const CreateExam = ({ data }) => {
         localStorage.setItem('textAnswers', JSON.stringify(textAnswers));
         localStorage.setItem('results', JSON.stringify(results));
         localStorage.setItem('isSubmitted', JSON.stringify(isSubmitted));
-        localStorage.setItem('showExplanations', JSON.stringify(showExplanations));
-        localStorage.setItem('showExplanationButton', JSON.stringify(showExplanationButton));
-        localStorage.setItem('showQuestionButton', JSON.stringify(showQuestionButton));
-    }, [radioAnswers, textAnswers, results, isSubmitted, showExplanations, showExplanationButton, showQuestionButton]);
+        localStorage.setItem(
+            'showExplanations',
+            JSON.stringify(showExplanations)
+        );
+        localStorage.setItem(
+            'showExplanationButton',
+            JSON.stringify(showExplanationButton)
+        );
+        localStorage.setItem(
+            'showQuestionButton',
+            JSON.stringify(showQuestionButton)
+        );
+    }, [
+        radioAnswers,
+        textAnswers,
+        results,
+        isSubmitted,
+        showExplanations,
+        showExplanationButton,
+        showQuestionButton,
+    ]);
 
     // radioAnswers와 textAnswers 초기 상태 설정
     useEffect(() => {
-        const storedRadioAnswers = JSON.parse(localStorage.getItem('radioAnswers'));
-        const storedTextAnswers = JSON.parse(localStorage.getItem('textAnswers'));
+        const storedRadioAnswers = JSON.parse(
+            localStorage.getItem('radioAnswers')
+        );
+        const storedTextAnswers = JSON.parse(
+            localStorage.getItem('textAnswers')
+        );
 
         if (storedRadioAnswers) {
             setRadioAnswers(storedRadioAnswers);
@@ -96,7 +133,6 @@ const CreateExam = ({ data }) => {
     }, []);
 
     const onSubmit = (data) => {
-
         setIsSubmitted(true);
 
         let score = 0;
@@ -139,13 +175,13 @@ const CreateExam = ({ data }) => {
         setShowExplanationButton(true);
         setshowQuestionButton(true);
 
-        setScore(score); 
+        setScore(score);
         setIsModalOpen(true);
 
         // jSON 전달
         console.log('FeedBackResults:', JSON.stringify(feedbackResults));
 
-        type = "TEST_example"; 
+        type = 'TEST_example';
 
         axios({
             url: `${import.meta.env.VITE_APP_API_URL}${type}`,
@@ -154,20 +190,21 @@ const CreateExam = ({ data }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            data: JSON.stringify(feedbackResults) 
-        }).then(response => {
-            console.log('Server response:', response.data);
-        }).catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while submitting feedback.');
+            data: JSON.stringify(feedbackResults),
         })
-
+            .then((response) => {
+                console.log('Server response:', response.data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting feedback.');
+            });
     };
-    
+
     const toggleExplanations = () => {
         setShowExplanations((prev) => !prev);
     };
-    
+
     const handleGoToChatBot = () => {
         navigate('/chatbot');
     };
@@ -187,15 +224,15 @@ const CreateExam = ({ data }) => {
         setShowExplanationButton(false);
         setshowQuestionButton(false);
 
-        setKey(prevKey => prevKey + 1);
+        setKey((prevKey) => prevKey + 1);
     };
 
     return (
-        <div>
+        <Wrapper>
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
-                contentLabel="Score Information"
+                contentLabel='Score Information'
                 style={{
                     content: {
                         top: '50%',
@@ -204,28 +241,42 @@ const CreateExam = ({ data }) => {
                         bottom: 'auto',
                         marginRight: '-50%',
                         transform: 'translate(-50%, -50%)',
-                        width: '300px', 
+                        width: '300px',
                         height: '250px',
                         textAlign: 'center',
-                        border: '2px solid'
-                    }
-                }}                
+                        border: '2px solid',
+                    },
+                }}
             >
                 <ModalTitle>시험 점수</ModalTitle>
                 <ModalScore>{score}점 / 100점</ModalScore>
-                <ModalButton onClick={() => setIsModalOpen(false)}>닫기</ModalButton>
+                <ModalButton onClick={() => setIsModalOpen(false)}>
+                    닫기
+                </ModalButton>
             </Modal>
 
-            {data?.length > 0 &&(
-                <button
-                    onClick={() =>
-                        generatePDF(targetRef, {filename:'study-mentor.pdf'})
-                    }
-                >
-                    문제 저장하기
-                </button>
+            {data?.length > 0 && (
+                <ButtonWrapper>
+                    <PDFGenerateButton
+                        text={'문제 새로 생성하기'}
+                        onClickHandle={() => {
+                            setData(null);
+                            localStorage.removeItem('examData');
+                            // refresh
+                            window.location.reload();
+                        }}
+                    ></PDFGenerateButton>
+                    <PDFDownloadButton
+                        text={'문제 다운로드 하기'}
+                        onClickHandle={() =>
+                            generatePDF(targetRef, {
+                                filename: 'study-mentor.pdf',
+                            })
+                        }
+                    ></PDFDownloadButton>
+                </ButtonWrapper>
             )}
-            
+
             {data?.length == 0 && <div>Loading...</div>}
             {data?.length > 0 && (
                 <MakeTest ref={targetRef}>
@@ -269,34 +320,74 @@ const CreateExam = ({ data }) => {
                                 {Array.isArray(question.choices) ? (
                                     <QuestionDetails>
                                         {question.choices.map((choice, idx) => (
-                                            <RadioLabel 
-                                                key={idx} 
-                                                style={{ 
-                                                    fontWeight: isSubmitted && results[question.id] === 'incorrect' && showExplanations && choice === question.correct_answer || isSubmitted && results[question.id] === 'correct' && choice === question.correct_answer ? 'bold' : 'normal',
-                                                    color: isSubmitted ? (results[question.id] === 'incorrect' && showExplanations && choice === question.correct_answer ? 'red' :
-                                                                        results[question.id] === 'correct' && choice === question.correct_answer ? '#1187CF' : 'black') : 'black'
+                                            <RadioLabel
+                                                key={idx}
+                                                style={{
+                                                    fontWeight:
+                                                        (isSubmitted &&
+                                                            results[
+                                                                question.id
+                                                            ] === 'incorrect' &&
+                                                            showExplanations &&
+                                                            choice ===
+                                                                question.correct_answer) ||
+                                                        (isSubmitted &&
+                                                            results[
+                                                                question.id
+                                                            ] === 'correct' &&
+                                                            choice ===
+                                                                question.correct_answer)
+                                                            ? 'bold'
+                                                            : 'normal',
+                                                    color: isSubmitted
+                                                        ? results[
+                                                              question.id
+                                                          ] === 'incorrect' &&
+                                                          showExplanations &&
+                                                          choice ===
+                                                              question.correct_answer
+                                                            ? 'red'
+                                                            : results[
+                                                                  question.id
+                                                              ] === 'correct' &&
+                                                              choice ===
+                                                                  question.correct_answer
+                                                            ? '#1187CF'
+                                                            : 'black'
+                                                        : 'black',
                                                 }}
-                                            >                                       
+                                            >
                                                 <input
                                                     type='radio'
                                                     name={`question_${index}`}
                                                     value={choice}
-                                                    disabled={isSubmitted} 
+                                                    disabled={isSubmitted}
                                                     onChange={(e) => {
                                                         if (!isSubmitted) {
-                                                            handleRadioChange(question.id, e.target.value);
+                                                            handleRadioChange(
+                                                                question.id,
+                                                                e.target.value
+                                                            );
                                                         }
                                                     }}
-                                                    checked={isSubmitted ? (radioAnswers[question.id] === choice) : null}  
-                                                    key={`${choice}-${key}`} 
-                                                    {...register(`question_${index}`, {
-                                                        required: true,
-                                                    })}
+                                                    checked={
+                                                        isSubmitted
+                                                            ? radioAnswers[
+                                                                  question.id
+                                                              ] === choice
+                                                            : null
+                                                    }
+                                                    key={`${choice}-${key}`}
+                                                    {...register(
+                                                        `question_${index}`,
+                                                        {
+                                                            required: true,
+                                                        }
+                                                    )}
                                                 />
 
                                                 {choice}
                                             </RadioLabel>
-                                                                                   
                                         ))}
                                     </QuestionDetails>
                                 ) : (
@@ -304,13 +395,20 @@ const CreateExam = ({ data }) => {
                                         type='text'
                                         onChange={(e) => {
                                             if (!isSubmitted) {
-                                                handleTextChange(question.id, e.target.value);
+                                                handleTextChange(
+                                                    question.id,
+                                                    e.target.value
+                                                );
                                             }
                                         }}
                                         {...register(`question_${index}`, {
                                             required: '정답을 입력하세요.',
                                         })}
-                                        placeholder={isSubmitted ? textAnswers[question.id] : '정답을 입력하시오.'}
+                                        placeholder={
+                                            isSubmitted
+                                                ? textAnswers[question.id]
+                                                : '정답을 입력하시오.'
+                                        }
                                         disabled={isSubmitted}
                                     />
                                 )}
@@ -328,19 +426,23 @@ const CreateExam = ({ data }) => {
                         ))}
                         <ButtonContainer>
                             <div style={{ position: 'relative' }}>
-                            <SubmitButton
-                                type="submit"
-                                disabled={isSubmitted} 
-                                onMouseEnter={() => setSubmitHovering(true)}
-                                onMouseLeave={() => setSubmitHovering(false)}
-                            >
-                                제출하기
-                            </SubmitButton>
-                            {submitHovering && !isSubmitted && (
-                                <WarningMessage style={{ display: 'block' }}>
-                                    ※ 제출은 한 번만 가능합니다.
-                                </WarningMessage>
-                            )}
+                                <SubmitButton
+                                    type='submit'
+                                    disabled={isSubmitted}
+                                    onMouseEnter={() => setSubmitHovering(true)}
+                                    onMouseLeave={() =>
+                                        setSubmitHovering(false)
+                                    }
+                                >
+                                    제출하기
+                                </SubmitButton>
+                                {submitHovering && !isSubmitted && (
+                                    <WarningMessage
+                                        style={{ display: 'block' }}
+                                    >
+                                        ※ 제출은 한 번만 가능합니다.
+                                    </WarningMessage>
+                                )}
                             </div>
                             {showExplanationButton && (
                                 <AnswerButton
@@ -362,14 +464,26 @@ const CreateExam = ({ data }) => {
                     </StyledTest>
                 </MakeTest>
             )}
-            <ClearBox onClick={clearAllLocalStorage}>
-                <ClearText>처음부터 다시 풀기</ClearText>
-            </ClearBox>
-        </div>   
+            {data?.length > 0 && (
+                <ClearBox onClick={clearAllLocalStorage}>
+                    <ClearText>처음부터 다시 풀기</ClearText>
+                </ClearBox>
+            )}
+        </Wrapper>
     );
 };
 
 export default CreateExam;
+
+const Wrapper = styled.div`
+    margin-top: 10px;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+`;
 
 const MakeTest = styled.div`
     padding: 20px;
@@ -508,7 +622,7 @@ const SubmitButton = styled.button`
     height: 50px;
     border-radius: 10px;
     border: 3px solid #787878;
-    background: #EEEEEE;
+    background: #eeeeee;
     font-size: 17px;
     font-weight: bold;
     cursor: pointer;
@@ -516,30 +630,30 @@ const SubmitButton = styled.button`
     margin-right: 10px;
 
     &:hover {
-        background: #C2C2C2;
+        background: #c2c2c2;
     }
 
     &:active {
-        background: #9E9E9E;
+        background: #9e9e9e;
     }
 `;
 
 const WarningMessage = styled.div`
-    display: none;          
-    position: absolute;    
-    bottom: 100%;         
-    left: 50%;              
-    transform: translateX(-50%); 
-    background: #F9FFF1;  
-    padding: 10px 20px;        
-    margin-bottom: 10px;       
-    border: 5px dotted #AFD485;  
-    border-radius: 10px;        
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f9fff1;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border: 5px dotted #afd485;
+    border-radius: 10px;
     font-size: 17px;
-    font-weight: bold;          
-    white-space: nowrap;      
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-    z-index: 10;              
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 `;
 
 const AnswerButton = styled.button`
@@ -600,10 +714,10 @@ const ClearBox = styled.div`
 const ClearText = styled.button`
     font-size: 18px;
     &:hover {
-        color: #E04F00; 
+        color: #e04f00;
     }
-    border: none; 
-    padding: 10px; 
+    border: none;
+    padding: 10px;
     background: white;
     color: black;
 `;
@@ -622,8 +736,8 @@ const ModalButton = styled.button`
     width: 100px;
     height: 40px;
     font-size: 18px;
-    background: #DDECCA;
-    border: 2px #7DB249 solid;
+    background: #ddecca;
+    border: 2px #7db249 solid;
     border-radius: 10px;
     font-weight: bold;
 `;

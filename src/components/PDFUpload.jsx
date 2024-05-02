@@ -23,14 +23,12 @@ const PDFUpload = ({
     examData,
     setExamData,
     multipleChoice,
-    setMultipleChoice,
     shortAnswer,
-    setShortAnswer,
     essay,
-    setEssay,
     examNumber,
-    setExamNumber,
     prompt,
+    isTextCentered,
+    imagePrompt,
 }) => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
@@ -112,6 +110,8 @@ const PDFUpload = ({
                 essay: essay,
                 examNumber: examNumber,
                 custom_prompt: prompt,
+                custom_image_prompt: imagePrompt,
+                isTextCentered: isTextCentered,
             };
 
             console.log('file', file);

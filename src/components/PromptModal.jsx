@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import PromptInput from './PromptInput';
-const PromptModal = ({ prompt, setPrompt }) => {
+const PromptModal = ({
+    prompt,
+    setPrompt,
+    imagePrompt,
+    setImagePrompt,
+    isTextCentered,
+}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -26,7 +32,13 @@ const PromptModal = ({ prompt, setPrompt }) => {
                 onCancel={handleCancel}
                 width={800}
             >
-                <PromptInput prompt={prompt} setPrompt={setPrompt} />
+                <PromptInput
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                    imagePrompt={imagePrompt}
+                    setImagePrompt={setImagePrompt}
+                    isTextCentered={isTextCentered}
+                />
             </Modal>
         </>
     );

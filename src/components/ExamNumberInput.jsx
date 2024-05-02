@@ -5,6 +5,11 @@ const onChange = (value) => {
     console.log('changed', value);
 };
 const ExamNumberInput = ({ min, max, defaultValue }) => (
-    <InputNumber min={1} max={20} defaultValue={10} onChange={onChange} />
+    <InputNumber
+        min={min}
+        max={max}
+        defaultValue={defaultValue}
+        onChange={onChange}
+    />
 );
 export default ExamNumberInput;

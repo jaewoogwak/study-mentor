@@ -18,21 +18,37 @@ import axios from 'axios';
 import { usePDF } from 'react-to-pdf';
 import PromptInput from '../components/PromptModal';
 import PromptModal from '../components/PromptModal';
+import PDFGenerateButton from '../components/PDFGenerateButton';
+import ExamSetting from '../components/ExamSetting';
+
+const defaultValue = {
+    multipleChoice: 2,
+    shortAnswer: 2,
+    essay: 2,
+    examNumber: 10,
+};
 
 const DataUpload = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();
     const [data, setData] = useState(null);
     // 객관식 문제
-    const [multipleChoice, setMultipleChoice] = useState(true);
+    const [multipleChoice, setMultipleChoice] = useState(
+        defaultValue.multipleChoice
+    );
     // 주관식 문제
-    const [shortAnswer, setShortAnswer] = useState(true);
+    const [shortAnswer, setShortAnswer] = useState(defaultValue.shortAnswer);
     // 서술형 문제
-    const [essay, setEssay] = useState(true);
+    const [essay, setEssay] = useState(defaultValue.essay);
     // 문제 수
-    const [examNumber, setExamNumber] = useState(10);
-    // 문제 생성 설정
+    const [examNumber, setExamNumber] = useState(defaultValue.examNumber);
+    // 문제 생성 방향성 프롬프트
     const [prompt, setPrompt] = useState('');
+    // 이미지 중심일 때 제공하는 프롬프트
+    const [imagePrompt, setImagePrompt] = useState('');
+
+    // 텍스트 중심인지
+    const [isTextCentered, setIsTextCentered] = useState(true);
 
     console.log('#######data', data);
 
@@ -52,61 +68,33 @@ const DataUpload = () => {
         }
 
         console.log('[user info]: ', user);
+        console.log('data', data);
     }, [user]);
 
     return (
         <Wrapper>
             <Header />
+
             <MainWrapper>
                 <DescriptionWrapper>
-                    <UploadInfoContainer>
-                        <h1>시험 문제 생성 설정</h1>
-                        <SettingWrapper>
-                            <SwitchWrapper>
-                                객관식
-                                <Switch
-                                    defaultChecked
-                                    onChange={() => {
-                                        setMultipleChoice(!multipleChoice);
-                                    }}
-                                />
-                            </SwitchWrapper>
-                            <SwitchWrapper>
-                                주관식
-                                <Switch
-                                    defaultChecked
-                                    onChange={() => {
-                                        setShortAnswer(!shortAnswer);
-                                    }}
-                                />
-                            </SwitchWrapper>
-                            <SwitchWrapper>
-                                서술형
-                                <Switch
-                                    defaultChecked
-                                    onChange={() => {
-                                        setEssay(!essay);
-                                    }}
-                                />
-                            </SwitchWrapper>
-                            <SwitchWrapper>
-                                생성할 문제 수
-                                <ExamNumberInput
-                                    min={1}
-                                    max={20}
-                                    defaultValue={10}
-                                    onChange={(value) => {
-                                        setExamNumber(value);
-                                    }}
-                                />
-                            </SwitchWrapper>
-                            <PromptModal
-                                prompt={prompt}
-                                setPrompt={setPrompt}
-                            />
-                        </SettingWrapper>
-                    </UploadInfoContainer>
+                    <ExamSetting
+                        prompt={prompt}
+                        setPrompt={setPrompt}
+                        imagePrompt={imagePrompt}
+                        setImagePrompt={setImagePrompt}
+                        multipleChoice={multipleChoice}
+                        setMultipleChoice={setMultipleChoice}
+                        shortAnswer={shortAnswer}
+                        setShortAnswer={setShortAnswer}
+                        essay={essay}
+                        setEssay={setEssay}
+                        examNumber={examNumber}
+                        setExamNumber={setExamNumber}
+                        isTextCentered={isTextCentered}
+                        setIsTextCentered={setIsTextCentered}
+                    />
                 </DescriptionWrapper>
+
                 {/*
                     데이터가 없으면 PDF 업로드 컴포넌트를 보여줍니다.
                  */}
@@ -123,23 +111,14 @@ const DataUpload = () => {
                         examNumber={examNumber}
                         setExamNumber={setExamNumber}
                         prompt={prompt}
+                        imagePrompt={imagePrompt}
+                        isTextCentered={isTextCentered}
+                        setIsTextCentered={setIsTextCentered}
                     />
                 )}
                 {/* <ProgressViewer /> */}
-                {data && (
-                    <GeneratePDFBtn
-                        onClick={() => {
-                            setData(null);
-                            localStorage.removeItem('examData');
-                            // refresh
-                            window.location.reload();
-                        }}
-                    >
-                        문제 새로 생성하기
-                    </GeneratePDFBtn>
-                )}
 
-                <CreateExam data={jsonData} />
+                <CreateExam data={data} setData={setData} />
             </MainWrapper>
         </Wrapper>
     );
@@ -168,30 +147,6 @@ const DescriptionWrapper = styled.div`
     flex-direction: row;
     gap: 24px;
     margin-bottom: 40px;
-`;
-
-const UploadInfoContainer = styled.div`
-    width: 698px;
-    height: 200px;
-    border-radius: 20px;
-    border: 0.5px solid gray;
-    padding: 20px;
-`;
-
-const SettingWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
-`;
-
-const SwitchWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
 `;
 
 const GeneratePDFBtn = styled.button`

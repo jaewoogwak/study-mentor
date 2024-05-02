@@ -4,9 +4,7 @@ import { Switch, Space, ConfigProvider } from 'antd';
 import '../styles/App.css';
 import styled from 'styled-components';
 
-const SwitchWithText = () => {
-    const [checked, setChecked] = React.useState(true);
-
+const SwitchWithText = ({ isTextCentered, setIsTextCentered }) => {
     return (
         <ConfigProvider
             theme={{
@@ -25,7 +23,7 @@ const SwitchWithText = () => {
                                 fontSize: '16px',
                             }}
                         >
-                            텍스트와 이미지 모두 분석하기
+                            텍스트 중심으로 분석하기
                         </div>
                     }
                     unCheckedChildren={
@@ -34,19 +32,19 @@ const SwitchWithText = () => {
                                 fontSize: '16px',
                             }}
                         >
-                            텍스트만 분석하기
+                            이미지 중심으로 분석하기
                         </div>
                     }
                     defaultChecked
                     style={{
-                        backgroundColor: checked ? '#1890ff' : '#faad14',
+                        backgroundColor: isTextCentered ? '#1890ff' : '#faad14',
                         display: 'flex',
                         justifyContent: 'center',
                         height: '22px',
                         // 중앙 정렬
                     }}
-                    checked={checked}
-                    onChange={setChecked}
+                    checked={isTextCentered}
+                    onChange={setIsTextCentered}
                 />
             </Space>
         </ConfigProvider>
