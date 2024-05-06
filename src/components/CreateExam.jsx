@@ -195,6 +195,8 @@ const CreateExam = ({ data, setData }) => {
             testResults.push(questionInfo);
         });
 
+        console.log('testResults:', JSON.stringify(testResults));
+
         // end-point 수정 필요
         type = "TEST_example"; 
 
@@ -213,8 +215,6 @@ const CreateExam = ({ data, setData }) => {
             console.error('Error:', error);
             alert('An error occurred while submitting Exam.');
         })
-
-        console.log('testResults:', JSON.stringify(testResults));
     
         getScore(AnswerJson);
     };
@@ -263,9 +263,7 @@ const CreateExam = ({ data, setData }) => {
         });
     };
 
-    // 이 부분 그냥 질문만 parse해서 보내도록 하기...
     const handleGoToChatBot_withQuest = (questionId, question, choices, userAnswer, correctAnswer) => {
-        // localStorage에 질문과 사용자의 입력, 정답을 저장
         const questionData = { 
             questionId, 
             question, 
@@ -450,7 +448,9 @@ const CreateExam = ({ data, setData }) => {
                                                     <ChatBotButton 
                                                         type="button" 
                                                         onClick={() => {
-                                                            const userAnswer = question.choices ? radioAnswers[question.id] : textAnswers[question.id];
+                                                            // console.log("question type", question.type);
+                                                            const userAnswer = question.type === 0 ? radioAnswers[question.id] : textAnswers[question.id];
+                                                            // console.log("userAnswer", userAnswer);
                                                             handleGoToChatBot_withQuest(question.id, question.question, question.choices, userAnswer, question.correct_answer);
                                                         }}
                                                     >
