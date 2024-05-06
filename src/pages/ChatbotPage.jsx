@@ -20,7 +20,11 @@ import {
     MessageInput,
     TypingIndicator,
 } from '@chatscope/chat-ui-kit-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { 
+    Link, 
+    useNavigate,
+    // useLocation,
+} from 'react-router-dom';
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
 import LogoSvg from '../assets/logo.svg';
@@ -37,31 +41,35 @@ import Header from '../components/Header';
 const API_KEY = import.meta.env.VITE_APP_API_KEY;
 
 const NewChatbotPage = () => {
+
     const [messages, setMessages] = useState([
         {
             message: '안녕하세요! 어떤 문제가 궁금하신가요?',
             sentTime: 'just now',
             sender: 'ChatGPT',
-        },
+        },        
     ]);
+
     const [isTyping, setIsTyping] = useState(false);
     const { user, login, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleSend = async (message) => {
         const newMessage = {
-            message,
+            message: message,
             direction: 'outgoing',
             sender: 'user',
         };
 
+        // 메시지 목록에 새 메시지 추가
         setMessages([...messages, newMessage]);
-
+    
         setIsTyping(true);
-        // await processMessageToChatGPT(newMessages);
+        
+        // 서버로 메시지 전송
         await sendTextToServer(message);
     };
-
+    
     // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
     const findChatId = async () => {
         // console.log('user', user.email);
@@ -85,6 +93,7 @@ const NewChatbotPage = () => {
         }/chatbot/question-answer`;
 
         console.log('address', address, import.meta.env.VITE_APP_API_URL);
+
         await fetch(address, {
             method: 'POST',
             headers: {
@@ -147,7 +156,7 @@ const NewChatbotPage = () => {
 
             // chats에 유저 채팅 정보가 없으면 새로 생성
             if (!currentUserFBId) {
-                console.log('유저정보없더');
+                console.log('유저정보없다');
                 const docRef = await addDoc(collection(db, 'chats'), {
                     email: user.email,
                     messages: [
@@ -172,9 +181,40 @@ const NewChatbotPage = () => {
                 console.log('No such document!');
             }
         };
-        getMessages();
 
-        // console.log('messages', messages);
+        // const questionData = { 
+        //     questionId, 
+        //     question, 
+        //     choices,
+        //     userAnswer, 
+        //     correctAnswer
+        // };
+
+        const QuestionMessages = async () => {
+            const storedQuestion = localStorage.getItem('examQuestion');
+        
+            if (storedQuestion) {
+                const { question, choices, userAnswer, correctAnswer } = JSON.parse(storedQuestion);
+
+                const prompt = 
+                    `문제 질문: ${question}\n
+                    선택지: ${choices.join(', ')}\n
+                    정답: ${correctAnswer}\n
+                    나의 답안: ${userAnswer}\n
+                    나의 답안과 올바른 정답을 비교하여 자세한 설명을 해줘.`;
+
+                try {
+                    await handleSend(prompt);
+                } catch (error) {
+                    console.error('Failed to send message:', error);
+                }
+            }
+            localStorage.removeItem('examQuestion');
+        };        
+
+        getMessages();
+        QuestionMessages();
+
     }, [user]);
 
     return (

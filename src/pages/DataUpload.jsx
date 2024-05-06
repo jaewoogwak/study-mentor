@@ -117,7 +117,6 @@ const DataUpload = () => {
                     />
                 )}
                 {/* <ProgressViewer /> */}
-
                 <CreateExam data={data} setData={setData} />
             </MainWrapper>
         </Wrapper>

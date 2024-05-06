@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
-const ScoreModal = ({ isOpen, onRequestClose, scoreData }) => {
+const ScoreModal = ({ isOpen, onRequestClose, scoreData, totalQuestion }) => {
     const { score } = scoreData;
 
     return (
@@ -28,10 +28,10 @@ const ScoreModal = ({ isOpen, onRequestClose, scoreData }) => {
                 }}                
             >
                 <ModalTitle>📌 시험 점수</ModalTitle>
-                <ModalScore>{score}점 / 100점</ModalScore>
-                {score < 50 ? (
+                <ModalScore>{score} / {totalQuestion}</ModalScore>
+                {score <  (totalQuestion * 0.5) ? (
                     <ModalText>조금 더 세세한 공부가 필요합니다. 🤔 <br /> 오답에 대해 학습한 뒤, 다시 문제를 풀어보세요.</ModalText>
-                ) : score < 80 ? (
+                ) : score < (totalQuestion * 0.8) ? (
                     <ModalText>열심히 공부하셨군요! 🙂  <br /> 하지만, 조금 더 학습을 하여 고득점을 노려보세요.</ModalText>
                 ) : (
                     <ModalText>열심히 공부하셨군요! 😊<br /> 열심히 한 만큼 좋은 결과가 있을 것입니다.</ModalText>

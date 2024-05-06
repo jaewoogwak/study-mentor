@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 
 import styled from 'styled-components';
@@ -14,6 +14,8 @@ import generatePDF from 'react-to-pdf';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
 
+import AnswerJson from '../answer_sheet.json';
+
 const CreateExam = ({ data, setData }) => {
     const [questions, setQuestions] = useState([]);
     const [radioAnswers, setRadioAnswers] = useState(
@@ -26,6 +28,11 @@ const CreateExam = ({ data, setData }) => {
     const [results, setResults] = useState(
         JSON.parse(localStorage.getItem('results')) || {}
     );
+
+    const [feedbackMessages, setFeedbackMessages] = useState(
+        JSON.parse(localStorage.getItem('feedbackMessages')) || {}
+    );
+
     const [score, setScore] = useState(0);
 
     const [warnings, setWarnings] = useState({});
@@ -39,8 +46,9 @@ const CreateExam = ({ data, setData }) => {
     const [showQuestionButton, setshowQuestionButton] = useState(
         JSON.parse(localStorage.getItem('showQuestionButton')) || false
     );
-    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
-    
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(
+        JSON.parse(localStorage.getItem('isFeedbackOpen')) || false);
+
     const [isSubmitted, setIsSubmitted] = useState(
         JSON.parse(localStorage.getItem('isSubmitted')) || false
     );
@@ -108,6 +116,14 @@ const CreateExam = ({ data, setData }) => {
             'showQuestionButton',
             JSON.stringify(showQuestionButton)
         );
+        localStorage.setItem(
+            'isFeedbackOpen',
+            JSON.stringify(isFeedbackOpen)
+        );
+        localStorage.setItem(
+            'feedbackMessages',
+            JSON.stringify(feedbackMessages)
+        );
     }, [
         radioAnswers,
         textAnswers,
@@ -116,6 +132,8 @@ const CreateExam = ({ data, setData }) => {
         showExplanations,
         showExplanationButton,
         showQuestionButton,
+        isFeedbackOpen,
+        feedbackMessages,
     ]);
 
     // 3. radioAnswers와 textAnswers 초기 상태 설정
@@ -139,23 +157,16 @@ const CreateExam = ({ data, setData }) => {
     const onSubmit = (data) => {
         setIsSubmitted(true);
 
-        const newResults = {};
-
         const testResults = [];
 
         questions.forEach((question, index) => {
             
             const answer = data[`question_${index}`];
-            let correct_answers;
             let user_answers;
 
             if (question.type === 0) {
-                correct_answers = question.correct_answer;
                 user_answers = answer.split('')[0];
-                const isCorrect = user_answers === correct_answers;
-                newResults[question.id] = isCorrect ? 'correct' : 'incorrect';
             } else if (question.type === 1) {
-                correct_answers = question.correct_answer;
                 user_answers = data[`question_${index}`]; 
             }
             
@@ -163,9 +174,8 @@ const CreateExam = ({ data, setData }) => {
                 index: index,
                 question: question.question,
                 choices: question.choices,
-                correctAnswer:correct_answers,
+                correctAnswer:question.correct_answer,
                 userAnswer: user_answers,
-                isCorrect: question.type === 0 ? (newResults[question.id] === 'correct' ? "True" : "False") : undefined,
                 explanation: question.explanation,
                 intent: question.intent,
             };
@@ -185,16 +195,6 @@ const CreateExam = ({ data, setData }) => {
             testResults.push(questionInfo);
         });
 
-        setResults(newResults);
-
-        setShowExplanationButton(true);
-        setshowQuestionButton(true);
-
-        setScore(score); 
-        setShowScoreModal(true);
-
-        console.log('testResults:', JSON.stringify(testResults));
-        
         // end-point 수정 필요
         type = "TEST_example"; 
 
@@ -208,12 +208,43 @@ const CreateExam = ({ data, setData }) => {
             data: JSON.stringify(testResults) 
         }).then(response => {
             console.log('Server response:', response.data);
+            getScore(response.data); // 받은 data를 getScore 함수로 전달
         }).catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while submitting feedback.');
+            alert('An error occurred while submitting Exam.');
         })
 
+        console.log('testResults:', JSON.stringify(testResults));
+    
+        getScore(AnswerJson);
     };
+
+
+    // server에서 받은 정답과 비교해야 함
+    const getScore = (AnswerJson) => {
+
+        let correctCount = 0;
+        const newResults = {};
+        const newFeedbackMessages = {}; // feedback message 저장
+
+        AnswerJson.forEach((answer) => {
+            newResults[answer.index] = answer.isCorrect === 1 ? 'correct' : 'incorrect';
+            if (answer.isCorrect === 1) {
+                correctCount++; 
+            }
+            else {
+                newFeedbackMessages[answer.index] = answer.feedback;
+            }
+        });
+    
+        setShowScoreModal(true);
+        setShowExplanationButton(true);
+        setshowQuestionButton(true);
+        
+        setResults(newResults);  
+        setScore(correctCount);
+        setFeedbackMessages(newFeedbackMessages);
+    };    
 
     const ModalSubmit = () => {
         handleSubmit(onSubmit)();
@@ -225,13 +256,31 @@ const CreateExam = ({ data, setData }) => {
 
     const toggleExplanations = () => {
         setShowExplanations((prev) => !prev);
-        setIsFeedbackOpen(prevState => !prevState);
+        setIsFeedbackOpen(prevState => {
+            const newState = !prevState;
+            localStorage.setItem('IsFeedbackOpen', JSON.stringify(newState));
+            return newState;
+        });
     };
 
-    const handleGoToChatBot = () => {
-        window.open('/chatbot', '_blank'); // 새로운 창
+    // 이 부분 그냥 질문만 parse해서 보내도록 하기...
+    const handleGoToChatBot_withQuest = (questionId, question, choices, userAnswer, correctAnswer) => {
+        // localStorage에 질문과 사용자의 입력, 정답을 저장
+        const questionData = { 
+            questionId, 
+            question, 
+            choices,
+            userAnswer, 
+            correctAnswer
+        };
+        localStorage.setItem('examQuestion', JSON.stringify(questionData));
+        window.open(`/chatbot`, '_blank');
     };    
 
+    const handleGoToChatBot = () => {
+        window.open(`/chatbot`, '_blank');
+    };    
+ 
     const clearAllLocalStorage = () => {
         setRadioAnswers({});
         setTextAnswers({});
@@ -240,6 +289,8 @@ const CreateExam = ({ data, setData }) => {
         setShowExplanations(false);
         setShowExplanationButton(false);
         setshowQuestionButton(false);
+        setIsFeedbackOpen(false);
+        setFeedbackMessages(false);
 
         window.location.reload(); // 새로고침
     };
@@ -386,12 +437,25 @@ const CreateExam = ({ data, setData }) => {
                                     {showExplanations && (
                                         <>
                                             <ExplainHelp>
-                                                <p style={{ color: 'red', fontSize: '18px' }}><strong>정답: {question.correct_answer}</strong></p>
-                                                <p style={{ marginTop: '10px', fontSize: '16px' }}><strong>해설: {question.explanation}</strong></p>
+                                                <p style={{ color: 'red', fontSize: '18px' }}><strong>정답 : {question.correct_answer}</strong></p>
+                                                <p style={{ marginTop: '10px', fontSize: '17px' }}><strong>해설 : {question.explanation}</strong></p>
+                                                {results[question.id] === 'incorrect' && feedbackMessages[question.id] && (
+                                                    <p style={{ color: 'navy', fontSize: '17px', marginTop: '10px' }}>
+                                                        <strong>피드백 : {feedbackMessages[question.id]}</strong>
+                                                    </p>
+                                                )}
                                             </ExplainHelp>
                                             {results[question.id] === 'incorrect' && (
-                                                <GoChatBot> 
-                                                    <ChatBotButton onClick={handleGoToChatBot}>질문하러 가기</ChatBotButton>
+                                                <GoChatBot>
+                                                    <ChatBotButton 
+                                                        type="button" 
+                                                        onClick={() => {
+                                                            const userAnswer = question.choices ? radioAnswers[question.id] : textAnswers[question.id];
+                                                            handleGoToChatBot_withQuest(question.id, question.question, question.choices, userAnswer, question.correct_answer);
+                                                        }}
+                                                    >
+                                                        질문하러 가기
+                                                    </ChatBotButton>
                                                 </GoChatBot>
                                             )}
                                         </>
@@ -417,6 +481,7 @@ const CreateExam = ({ data, setData }) => {
                                 <ScoreModal isOpen={showScoreModal} 
                                 onRequestClose={handleCloseModal} 
                                 scoreData={{ score: score }} 
+                                totalQuestion={questions.length}
                                 />
                             }
                             </div>
@@ -425,7 +490,7 @@ const CreateExam = ({ data, setData }) => {
                                     type='button'
                                     onClick={toggleExplanations}
                                 >
-                                    {isFeedbackOpen ? '피드백 받기' : '피드백 닫기'}
+                                    {isFeedbackOpen ? '피드백 닫기' : '피드백 받기'}
                                 </AnswerButton>
                             )}
                             {showQuestionButton && (
