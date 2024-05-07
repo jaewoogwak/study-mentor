@@ -61,17 +61,7 @@ const ExamSetting = ({
                         }}
                     />
                 </SwitchWrapper>
-                <SwitchWrapper>
-                    생성할 문제 수
-                    <ExamNumberInput
-                        min={1}
-                        max={20}
-                        defaultValue={6}
-                        onChange={(value) => {
-                            setExamNumber(value);
-                        }}
-                    />
-                </SwitchWrapper>
+
                 <SwitchWithText
                     isTextCentered={isTextCentered}
                     setIsTextCentered={setIsTextCentered}
