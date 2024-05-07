@@ -192,10 +192,17 @@ const CreateExam = ({ data, setData }) => {
             testResults.push(questionInfo);
         });
 
-        console.log('testResults:', JSON.stringify(testResults));
+        console.log(
+            '##### testResults:',
+            JSON.stringify({ 'FeedBackResults:': testResults })
+        );
 
         // end-point 수정 필요
         // type = '/feedback/';
+
+        const feedbackResults = {
+            FeedBackResults: testResults,
+        };
 
         axios({
             url: `${import.meta.env.VITE_API_URL}/feedback/`,
@@ -204,7 +211,7 @@ const CreateExam = ({ data, setData }) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            data: JSON.stringify(testResults),
+            data: feedbackResults,
         })
             .then((response) => {
                 console.log('Server response:', response.data);
@@ -215,7 +222,7 @@ const CreateExam = ({ data, setData }) => {
                 alert('An error occurred while submitting Exam.');
             });
 
-        getScore(AnswerJson);
+        // getScore(AnswerJson);
     };
 
     // server에서 받은 정답과 비교해야 함
