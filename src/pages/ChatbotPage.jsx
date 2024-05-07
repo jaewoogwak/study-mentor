@@ -179,15 +179,9 @@ const NewChatbotPage = () => {
             } else {
                 console.log('No such document!');
             }
-        };
 
-        // const questionData = {
-        //     questionId,
-        //     question,
-        //     choices,
-        //     userAnswer,
-        //     correctAnswer
-        // };
+            await QuestionMessages();
+        };
 
         const QuestionMessages = async () => {
             const storedQuestion = localStorage.getItem('examQuestion');
@@ -196,23 +190,26 @@ const NewChatbotPage = () => {
                 const { question, choices, userAnswer, correctAnswer } =
                     JSON.parse(storedQuestion);
 
-                const prompt = `문제 질문: ${question}\n
-                    선택지: ${choices.join(', ')}\n
-                    정답: ${correctAnswer}\n
+                const formattedChoices = Array.isArray(choices)
+                    ? choices
+                    : ['빈칸'];
+
+                const prompt = `문제 질문: ${question}
+                    선택지: ${formattedChoices.join(', ')}
+                    정답: ${correctAnswer}
                     나의 답안: ${userAnswer}\n
-                    나의 답안과 올바른 정답을 비교하여 자세한 설명을 해줘.`;
+                    정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
 
                 try {
                     await handleSend(prompt);
+                    localStorage.removeItem('examQuestion');
                 } catch (error) {
                     console.error('Failed to send message:', error);
                 }
             }
-            localStorage.removeItem('examQuestion');
         };
 
         getMessages();
-        QuestionMessages();
     }, [user]);
 
     return (
