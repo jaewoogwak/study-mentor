@@ -20,8 +20,8 @@ import {
     MessageInput,
     TypingIndicator,
 } from '@chatscope/chat-ui-kit-react';
-import { 
-    Link, 
+import {
+    Link,
     useNavigate,
     // useLocation,
 } from 'react-router-dom';
@@ -41,13 +41,12 @@ import Header from '../components/Header';
 const API_KEY = import.meta.env.VITE_APP_API_KEY;
 
 const NewChatbotPage = () => {
-
     const [messages, setMessages] = useState([
         {
             message: '안녕하세요! 어떤 문제가 궁금하신가요?',
             sentTime: 'just now',
             sender: 'ChatGPT',
-        },        
+        },
     ]);
 
     const [isTyping, setIsTyping] = useState(false);
@@ -63,13 +62,13 @@ const NewChatbotPage = () => {
 
         // 메시지 목록에 새 메시지 추가
         setMessages([...messages, newMessage]);
-    
+
         setIsTyping(true);
-        
+
         // 서버로 메시지 전송
         await sendTextToServer(message);
     };
-    
+
     // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
     const findChatId = async () => {
         // console.log('user', user.email);
@@ -89,10 +88,10 @@ const NewChatbotPage = () => {
 
     async function sendTextToServer(text) {
         const address = `${
-            import.meta.env.VITE_APP_API_URL
+            import.meta.env.VITE_API_URL
         }/chatbot/question-answer`;
 
-        console.log('address', address, import.meta.env.VITE_APP_API_URL);
+        console.log('address', address, import.meta.env.VITE_API_URL);
 
         await fetch(address, {
             method: 'POST',
@@ -182,22 +181,22 @@ const NewChatbotPage = () => {
             }
         };
 
-        // const questionData = { 
-        //     questionId, 
-        //     question, 
+        // const questionData = {
+        //     questionId,
+        //     question,
         //     choices,
-        //     userAnswer, 
+        //     userAnswer,
         //     correctAnswer
         // };
 
         const QuestionMessages = async () => {
             const storedQuestion = localStorage.getItem('examQuestion');
-        
-            if (storedQuestion) {
-                const { question, choices, userAnswer, correctAnswer } = JSON.parse(storedQuestion);
 
-                const prompt = 
-                    `문제 질문: ${question}\n
+            if (storedQuestion) {
+                const { question, choices, userAnswer, correctAnswer } =
+                    JSON.parse(storedQuestion);
+
+                const prompt = `문제 질문: ${question}\n
                     선택지: ${choices.join(', ')}\n
                     정답: ${correctAnswer}\n
                     나의 답안: ${userAnswer}\n
@@ -210,11 +209,10 @@ const NewChatbotPage = () => {
                 }
             }
             localStorage.removeItem('examQuestion');
-        };        
+        };
 
         getMessages();
         QuestionMessages();
-
     }, [user]);
 
     return (

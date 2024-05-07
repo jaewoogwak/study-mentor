@@ -23,7 +23,7 @@ const SwitchWithText = ({ isTextCentered, setIsTextCentered }) => {
                                 fontSize: '16px',
                             }}
                         >
-                            텍스트 중심으로 분석하기
+                            이미지 중심으로 분석하기
                         </div>
                     }
                     unCheckedChildren={
@@ -32,7 +32,7 @@ const SwitchWithText = ({ isTextCentered, setIsTextCentered }) => {
                                 fontSize: '16px',
                             }}
                         >
-                            이미지 중심으로 분석하기
+                            텍스트 중심으로 분석하기
                         </div>
                     }
                     defaultChecked

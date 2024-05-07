@@ -127,8 +127,9 @@ const PDFUpload = ({
                     ? '/upload/pdf'
                     : '/upload/image';
 
+            console.log('address', `${import.meta.env.VITE_API_URL}${type}`);
             axios({
-                url: `${import.meta.env.VITE_APP_API_URL}${type}`,
+                url: `${import.meta.env.VITE_API_URL}${type}`,
                 method: 'POST',
                 responseType: 'json',
                 headers: {
