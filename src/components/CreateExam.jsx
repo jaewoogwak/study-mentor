@@ -195,10 +195,10 @@ const CreateExam = ({ data, setData }) => {
         console.log('testResults:', JSON.stringify(testResults));
 
         // end-point 수정 필요
-        type = 'TEST_example';
+        // type = '/feedback/';
 
         axios({
-            url: `${import.meta.env.VITE_API_URL}${type}`,
+            url: `${import.meta.env.VITE_API_URL}/feedback/`,
             method: 'POST',
             responseType: 'json',
             headers: {
