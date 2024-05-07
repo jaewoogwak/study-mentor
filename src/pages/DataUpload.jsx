@@ -48,9 +48,11 @@ const DataUpload = () => {
     const [imagePrompt, setImagePrompt] = useState('');
 
     // 텍스트 중심인지
-    const [isTextCentered, setIsTextCentered] = useState(true);
+    const [isTextCentered, setIsTextCentered] = useState(0);
 
     console.log('#######data', data);
+
+    console.log('env', import.meta.env.VITE_API_URL);
 
     useEffect(() => {
         auth.onAuthStateChanged((usr) => {
