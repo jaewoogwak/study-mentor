@@ -27,10 +27,10 @@ const PromptInput = ({
                     height: 200,
                     resize: 'none',
                     marginBottom: 32,
-                    fontFamily: 'Pretendard-Regular'
+                    fontFamily: 'Pretendard-Regular',
                 }}
             />
-            {!isTextCentered && (
+            {isTextCentered == 1 && (
                 <TextArea
                     showCount
                     maxLength={100}
@@ -40,7 +40,7 @@ const PromptInput = ({
                         height: 200,
                         resize: 'none',
                         marginBottom: 32,
-                        fontFamily: 'Pretendard-Regular'
+                        fontFamily: 'Pretendard-Regular',
                     }}
                 />
             )}
