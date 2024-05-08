@@ -41,6 +41,7 @@ const SwitchWithText = ({ isTextCentered, setIsTextCentered }) => {
                         display: 'flex',
                         justifyContent: 'center',
                         height: '22px',
+                        fontFamily: 'Pretendard-Regular',
                         // 중앙 정렬
                     }}
                     checked={isTextCentered}

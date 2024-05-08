@@ -14,8 +14,6 @@ import generatePDF from 'react-to-pdf';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
 
-import AnswerJson from '../answer_sheet.json';
-
 const CreateExam = ({ data, setData }) => {
     const [questions, setQuestions] = useState([]);
     const [radioAnswers, setRadioAnswers] = useState(
@@ -83,14 +81,17 @@ const CreateExam = ({ data, setData }) => {
 
             setQuestions(filteredQuestions);
 
+            const loadedRadioAnswers = JSON.parse(localStorage.getItem('radioAnswers')) || {};
+            const loadedTextAnswers = JSON.parse(localStorage.getItem('textAnswers')) || {};
+    
             const initialRadioAnswers = {};
             const initialTextAnswers = {};
-
+    
             filteredQuestions.forEach((question) => {
                 if (question.type === 0) {
-                    initialRadioAnswers[question.id] = null;
+                    initialRadioAnswers[question.id] = loadedRadioAnswers[question.id] || null;
                 } else if (question.type === 1) {
-                    initialTextAnswers[question.id] = '';
+                    initialTextAnswers[question.id] = loadedTextAnswers[question.id] || '';
                 }
             });
 
@@ -133,24 +134,6 @@ const CreateExam = ({ data, setData }) => {
         isFeedbackOpen,
         feedbackMessages,
     ]);
-
-    // 3. radioAnswers와 textAnswers 초기 상태 설정
-    useEffect(() => {
-        const storedRadioAnswers = JSON.parse(
-            localStorage.getItem('radioAnswers')
-        );
-        const storedTextAnswers = JSON.parse(
-            localStorage.getItem('textAnswers')
-        );
-
-        if (storedRadioAnswers) {
-            setRadioAnswers(storedRadioAnswers);
-        }
-
-        if (storedTextAnswers) {
-            setTextAnswers(storedTextAnswers);
-        }
-    }, []);
 
     const onSubmit = (data) => {
         setIsSubmitted(true);
@@ -221,8 +204,6 @@ const CreateExam = ({ data, setData }) => {
                 console.error('Error:', error);
                 alert('An error occurred while submitting Exam.');
             });
-
-        // getScore(AnswerJson);
     };
 
     // server에서 받은 정답과 비교해야 함
@@ -314,8 +295,8 @@ const CreateExam = ({ data, setData }) => {
                         onClickHandle={() => {
                             setData(null);
                             localStorage.removeItem('examData');
-                            // refresh
-                            window.location.reload();
+                            // local storage 초기화 및 refresh
+                            clearAllLocalStorage();
                         }}
                     ></PDFGenerateButton>
                     <PDFDownloadButton
@@ -662,7 +643,7 @@ const ButtonWrapper = styled.div`
 const MakeTest = styled.div`
     padding: 20px;
     margin: 50px auto 20px auto;
-    max-width: 1000px;
+    max-width: 800px;
     border: 3px solid;
 `;
 
@@ -885,7 +866,6 @@ const ExplainHelp = styled.p`
     border: 4px #fd9f28 dotted;
     background-color: #fff3e3;
     border-radius: 5px;
-    width: 96%;
 `;
 
 const ClearBox = styled.div`

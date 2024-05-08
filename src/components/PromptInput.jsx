@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flex, Input } from 'antd';
+
 const { TextArea } = Input;
 
 const PromptInput = ({
@@ -26,6 +27,7 @@ const PromptInput = ({
                     height: 200,
                     resize: 'none',
                     marginBottom: 32,
+                    fontFamily: 'Pretendard-Regular'
                 }}
             />
             {!isTextCentered && (
@@ -38,6 +40,7 @@ const PromptInput = ({
                         height: 200,
                         resize: 'none',
                         marginBottom: 32,
+                        fontFamily: 'Pretendard-Regular'
                     }}
                 />
             )}
