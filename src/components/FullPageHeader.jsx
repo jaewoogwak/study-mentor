@@ -127,7 +127,6 @@ const FileUploadLink = styled(NavLink)`
     font-size: 24px;
     color: black;
     text-decoration: none;
-    // font-family: 'Red Hat Text';
     font-weight: 600;
 `;
 
@@ -136,7 +135,6 @@ const ChatbotLink = styled(NavLink)`
     font-size: 24px;
     text-decoration: none;
     color: black;
-    // font-family: 'Red Hat Text';
     font-weight: 600;
 `;
 
@@ -150,7 +148,6 @@ const Logout = styled.div`
     text-decoration: none;
     color: black;
     cursor: pointer;
-    // font-family: 'Red Hat Text';
     font-weight: 600;
     margin-right: 30px;
 `;

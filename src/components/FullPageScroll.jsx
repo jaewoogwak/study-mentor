@@ -70,7 +70,7 @@ const FullPageScroll = () => {
                                         marginTop: '39px',
                                     }}
                                 >
-                                    자신이 학습한 내용이 담긴 이미지 혹은 PDF
+                                    자신이 학습한 내용이 담긴 이미지 혹은 PDF<br></br>{' '}
                                     파일을 업로드하여 시험 문제를 만들어보세요!
                                 </Text>
                                 <FileUploadLink
@@ -147,11 +147,12 @@ const Wrapper = styled.div`
 /*      공용 스타일       */
 const Image = styled.img`
     width: ${(props) => props.width || '100%'};
-    height: ${(props) => props.height || '100%'};
+    height: ${(props) => props.height || '80%'};
 `;
 
 const Text = styled.div`
     font-size: ${(props) => props.fontsize || '16px'};
+    line-Height: 1.5;
 `;
 
 /**********************************/
@@ -186,14 +187,20 @@ const SecondContainer = styled.div`
 `;
 
 const FileUploadLink = styled.button`
-    color: white;
+    // color: white;
     text-decoration: none;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 22px;
     margin-top: 32px;
     cursor: pointer;
-    border: none;
-    background-color: #ffa500;
-    padding: 10px 20px;
+    border: 3px #FD9F28 dotted;
+    background-color: #FFCD4A;
+    padding: 10px 25px;
     border-radius: 10px;
+
+    font-family: 'Pretendard-Regular';
+    font-weight: bold;
+
+    &:hover {
+        background-color: #FD9F28; 
+    }
 `;

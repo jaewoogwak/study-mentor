@@ -25,7 +25,7 @@ const ExamSetting = ({
 }) => {
     return (
         <UploadInfoContainer>
-            <h1>시험 문제 생성 설정</h1>
+            <h1 style={{marginTop: "15px"}}>시험 문제 생성 설정</h1>
             <SettingWrapper>
                 <SwitchWrapper>
                     객관식
@@ -87,7 +87,7 @@ const UploadInfoContainer = styled.div`
     width: 698px;
     height: 300px;
     border-radius: 20px;
-    /* border: 0.5px solid gray; */
+    border: 3px #EEEEEE solid; 
     padding: 20px;
 `;
 
