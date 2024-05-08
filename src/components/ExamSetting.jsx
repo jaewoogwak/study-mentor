@@ -1,5 +1,5 @@
 import { Switch } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import ExamNumberInput from '../components/ExamNumberInput';
 import PromptModal from './PromptModal';
@@ -29,35 +29,38 @@ const ExamSetting = ({
             <SettingWrapper>
                 <SwitchWrapper>
                     객관식
-                    <ExamNumberInput
+                    <input
+                        type='number'
                         min={1}
                         max={20}
-                        defaultValue={2}
-                        onChange={(value) => {
-                            setMultipleChoice(value);
+                        value={multipleChoice}
+                        onChange={(e) => {
+                            setMultipleChoice(e.target.value);
                         }}
                     />
                 </SwitchWrapper>
 
                 <SwitchWrapper>
                     주관식
-                    <ExamNumberInput
+                    <input
                         min={1}
                         max={20}
-                        defaultValue={2}
-                        onChange={(value) => {
-                            setShortAnswer(value);
+                        // defaultValue={2}
+                        value={shortAnswer}
+                        onChange={(e) => {
+                            setShortAnswer(e.target.value);
                         }}
                     />
                 </SwitchWrapper>
                 <SwitchWrapper>
                     서술형
-                    <ExamNumberInput
+                    <input
                         min={1}
                         max={20}
-                        defaultValue={2}
-                        onChange={(value) => {
-                            setEssay(value);
+                        // defaultValue={2}
+                        value={essay}
+                        onChange={(e) => {
+                            setEssay(e.target.value);
                         }}
                     />
                 </SwitchWrapper>

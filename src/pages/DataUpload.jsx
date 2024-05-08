@@ -21,27 +21,18 @@ import PromptModal from '../components/PromptModal';
 import PDFGenerateButton from '../components/PDFGenerateButton';
 import ExamSetting from '../components/ExamSetting';
 
-const defaultValue = {
-    multipleChoice: 2,
-    shortAnswer: 2,
-    essay: 2,
-    examNumber: 10,
-};
-
 const DataUpload = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();
     const [data, setData] = useState(null);
     // 객관식 문제
-    const [multipleChoice, setMultipleChoice] = useState(
-        defaultValue.multipleChoice
-    );
+    const [multipleChoice, setMultipleChoice] = useState(2);
     // 주관식 문제
-    const [shortAnswer, setShortAnswer] = useState(defaultValue.shortAnswer);
+    const [shortAnswer, setShortAnswer] = useState(2);
     // 서술형 문제
-    const [essay, setEssay] = useState(defaultValue.essay);
+    const [essay, setEssay] = useState(2);
     // 문제 수
-    const [examNumber, setExamNumber] = useState(defaultValue.examNumber);
+    const [examNumber, setExamNumber] = useState(2);
     // 문제 생성 방향성 프롬프트
     const [prompt, setPrompt] = useState('');
     // 이미지 중심일 때 제공하는 프롬프트
@@ -71,7 +62,17 @@ const DataUpload = () => {
 
         console.log('[user info]: ', user);
         console.log('data', data);
-    }, [user]);
+        console.log(
+            'multipleChoice',
+            multipleChoice,
+            'shortAnswer',
+            shortAnswer,
+            'essay',
+            essay,
+            'examNumber',
+            examNumber
+        );
+    }, [user, multipleChoice, shortAnswer, essay, examNumber]);
 
     return (
         <Wrapper>
