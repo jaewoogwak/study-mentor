@@ -13,6 +13,9 @@ import axios from 'axios';
 import generatePDF from 'react-to-pdf';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
+import { set } from 'firebase/database';
+import { Spin } from 'antd';
+import Spinner from './Spinner';
 
 const CreateExam = ({ data, setData }) => {
     const [questions, setQuestions] = useState([]);
@@ -55,6 +58,9 @@ const CreateExam = ({ data, setData }) => {
 
     const [submitHovering, setSubmitHovering] = useState(false);
 
+    // 채점 중인지 아닌지
+    const [isGrading, setIsGrading] = useState(false);
+
     const targetRef = useRef();
 
     const navigate = useNavigate();
@@ -81,17 +87,21 @@ const CreateExam = ({ data, setData }) => {
 
             setQuestions(filteredQuestions);
 
-            const loadedRadioAnswers = JSON.parse(localStorage.getItem('radioAnswers')) || {};
-            const loadedTextAnswers = JSON.parse(localStorage.getItem('textAnswers')) || {};
-    
+            const loadedRadioAnswers =
+                JSON.parse(localStorage.getItem('radioAnswers')) || {};
+            const loadedTextAnswers =
+                JSON.parse(localStorage.getItem('textAnswers')) || {};
+
             const initialRadioAnswers = {};
             const initialTextAnswers = {};
-    
+
             filteredQuestions.forEach((question) => {
                 if (question.type === 0) {
-                    initialRadioAnswers[question.id] = loadedRadioAnswers[question.id] || null;
+                    initialRadioAnswers[question.id] =
+                        loadedRadioAnswers[question.id] || null;
                 } else if (question.type === 1) {
-                    initialTextAnswers[question.id] = loadedTextAnswers[question.id] || '';
+                    initialTextAnswers[question.id] =
+                        loadedTextAnswers[question.id] || '';
                 }
             });
 
@@ -197,6 +207,7 @@ const CreateExam = ({ data, setData }) => {
             data: feedbackResults,
         })
             .then((response) => {
+                setIsGrading(false);
                 console.log('Server response:', response.data);
                 getScore(response.data); // 받은 data를 getScore 함수로 전달
             })
@@ -232,6 +243,7 @@ const CreateExam = ({ data, setData }) => {
     };
 
     const ModalSubmit = () => {
+        setIsGrading(true);
         handleSubmit(onSubmit)();
     };
 
@@ -262,8 +274,11 @@ const CreateExam = ({ data, setData }) => {
             userAnswer,
             correctAnswer,
         };
+
+        console.log('1. questionData:', questionData);
+
         localStorage.setItem('examQuestion', JSON.stringify(questionData));
-        window.open(`/chatbot`, '_blank');
+        navigate('/chatbot');
     };
 
     const handleGoToChatBot = () => {
@@ -287,7 +302,46 @@ const CreateExam = ({ data, setData }) => {
     Modal.setAppElement('#root');
 
     return (
+        // 채점 중이면 화면을 검게 만들고 채점중이라는 메시지를 띄워야함. 또한 로딩 스핀도 추가해야함.
         <Wrapper>
+            {isGrading && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 100,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '20px',
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '10px',
+                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+                        }}
+                    >
+                        <Spinner />
+                        {/* 화면 크기에 맞는 폰트 크기 필요*/}
+                        <div
+                            style={{
+                                fontSize: '1.5rem',
+                            }}
+                        >
+                            채점 중입니다. 잠시만 기다려주세요...
+                        </div>
+                    </div>
+                </div>
+            )}
             {data?.length > 0 && (
                 <ButtonWrapper>
                     <PDFGenerateButton
