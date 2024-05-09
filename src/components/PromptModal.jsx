@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd'; 
 import PromptInput from './PromptInput';
 import styled from 'styled-components';
 
@@ -23,12 +23,12 @@ const PromptModal = ({
         setIsModalOpen(false);
     };
     return (
-        <>
+        <>  
             <StyleButton 
                 type='primary'
                 onClick={showModal}
             >
-                시험문제 스타일 설정 하기
+                시험문제 스타일 설정하기
             </StyleButton>
             <Modal
                 title='시험문제 스타일 설정하기'
@@ -54,13 +54,12 @@ const PromptModal = ({
 export default PromptModal;
 
 const StyleButton = styled.button`
-    margin-top: 5px;
-    padding: 7px 10px;
+    padding: 7px 12px;
 
     border-radius: 5px;
-    border: 3px #58CCFF dotted;
+    border: 3px #58CCFF solid;
 
-    font-size: 15px;
+    font-size: 16px;
     font-family: 'pretendard-Regular';
 
     color: white;

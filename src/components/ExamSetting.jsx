@@ -1,4 +1,4 @@
-import { Switch } from 'antd';
+import { Switch, Button } from 'antd';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import ExamNumberInput from '../components/ExamNumberInput';
@@ -25,11 +25,15 @@ const ExamSetting = ({
 }) => {
     return (
         <UploadInfoContainer>
-            <h1 style={{marginTop: "15px"}}>시험 문제 생성 설정</h1>
+            <OverlayBox>
+                How To Make?
+            </OverlayBox>
+            <h1 style={{marginTop: "10px"}}>시험 문제 생성 설정</h1>
+            <p style={{marginTop: "20px"}}>1. 시험 문제로 만들고 싶은 유형을 선택하세요. </p>
             <SettingWrapper>
                 <SwitchWrapper>
                     객관식
-                    <input
+                    <SwitchInput
                         type='number'
                         min={1}
                         max={20}
@@ -37,12 +41,18 @@ const ExamSetting = ({
                         onChange={(e) => {
                             setMultipleChoice(e.target.value);
                         }}
+                        style={{
+                            width: '60px',
+                            height: '20px',
+                            fontSize: '15px',
+                        }}
                     />
                 </SwitchWrapper>
 
                 <SwitchWrapper>
                     주관식
-                    <input
+                    <SwitchInput
+                        type='number'
                         min={1}
                         max={20}
                         // defaultValue={2}
@@ -50,11 +60,17 @@ const ExamSetting = ({
                         onChange={(e) => {
                             setShortAnswer(e.target.value);
                         }}
-                    />
+                        style={{
+                            width: '60px',
+                            height: '20px',
+                            fontSize: '15px',
+                        }}
+                        />
                 </SwitchWrapper>
                 <SwitchWrapper>
                     서술형
-                    <input
+                    <SwitchInput
+                        type='number'
                         min={1}
                         max={20}
                         // defaultValue={2}
@@ -62,20 +78,32 @@ const ExamSetting = ({
                         onChange={(e) => {
                             setEssay(e.target.value);
                         }}
+                        style={{
+                            width: '60px',
+                            height: '20px',
+                            fontSize: '15px',
+                        }}
                     />
                 </SwitchWrapper>
+                        
+                <TextContainer>
+                    <p style={{marginBottom: "20px"}}>2. 이미지 중심으로 분석할지, 텍스트 중심으로 분석할지 선택하세요. </p>
+                    <SwitchWithText
+                        isTextCentered={isTextCentered}
+                        setIsTextCentered={setIsTextCentered}
+                    />
+                </TextContainer>
 
-                <SwitchWithText
-                    isTextCentered={isTextCentered}
-                    setIsTextCentered={setIsTextCentered}
-                />
-                <PromptModal
-                    prompt={prompt}
-                    setPrompt={setPrompt}
-                    imagePrompt={imagePrompt}
-                    setImagePrompt={setImagePrompt}
-                    isTextCentered={isTextCentered}
-                />
+                <ModalContainer>
+                    <p style={{marginBottom: "20px"}}>3. 원하는 조건이 있다면, 프롬프트를 작성하세요.</p>
+                    <PromptModal
+                        prompt={prompt}
+                        setPrompt={setPrompt}
+                        imagePrompt={imagePrompt}
+                        setImagePrompt={setImagePrompt}
+                        isTextCentered={isTextCentered}
+                    />
+                </ModalContainer>
             </SettingWrapper>
         </UploadInfoContainer>
     );
@@ -83,18 +111,37 @@ const ExamSetting = ({
 
 export default ExamSetting;
 
+const OverlayBox = styled.div`
+    position: absolute;
+    top: -15px; 
+    left: 20px; 
+    width: 150px; 
+    height: 15px; 
+    font-weight: bold;
+    background-color: white;
+    border: 3px solid #595959;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 10; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
 const UploadInfoContainer = styled.div`
+    position: relative; // 상대적 위치 설정
     width: 698px;
-    height: 300px;
-    border-radius: 20px;
-    border: 3px #EEEEEE solid; 
-    padding: 20px;
+    height: 430px;
+    border-radius: 10px;
+    border: 2px black solid; 
+    padding: 30px 30px 50px 30px;
 `;
 
 const SettingWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
     padding: 20px;
     justify-content: center;
     align-items: center;
@@ -106,3 +153,19 @@ const SwitchWrapper = styled.div`
     gap: 10px;
     align-items: center;
 `;
+
+const SwitchInput= styled.input`
+    border-radius: 10px;
+    padding: 5px;
+    text-align: center;
+    border: 2px solid;
+`;
+
+const TextContainer= styled.div`
+    margin-top: 20px;
+`;
+
+const ModalContainer= styled.div`
+    margin: 20px;
+`;
+
