@@ -22,12 +22,11 @@ const PromptInput = ({
                 showCount
                 maxLength={100}
                 onChange={onChangePrompt}
-                placeholder='시험 문제 생성 방향성을 설정할 수 있어요.  ex) 어떤 이론의 등장 배경과 문제점과 한계를 묻는 문제 중심으로 만들고 싶어.'
+                placeholder='시험 문제 생성 방향성을 설정할 수 있어요. ex) 어떤 이론의 등장 배경과 문제점과 한계를 묻는 문제 중심으로 만들고 싶어.'
                 style={{
                     height: 200,
                     resize: 'none',
                     marginBottom: 32,
-                    fontFamily: 'Pretendard-Regular',
                 }}
             />
             {isTextCentered == 1 && (
@@ -40,7 +39,7 @@ const PromptInput = ({
                         height: 200,
                         resize: 'none',
                         marginBottom: 32,
-                        fontFamily: 'Pretendard-Regular',
+                        fontFamily: 'Pretendard-Regular'
                     }}
                 />
             )}

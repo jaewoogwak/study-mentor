@@ -190,13 +190,11 @@ const CreateExam = ({ data, setData }) => {
             JSON.stringify({ 'FeedBackResults:': testResults })
         );
 
-        // end-point 수정 필요
-        // type = '/feedback/';
-
         const feedbackResults = {
             FeedBackResults: testResults,
         };
 
+        // server 통신
         axios({
             url: `${import.meta.env.VITE_API_URL}/feedback/`,
             method: 'POST',
@@ -417,55 +415,26 @@ const CreateExam = ({ data, setData }) => {
                                                     <RadioLabel
                                                         key={idx}
                                                         style={{
-                                                            fontWeight:
+                                                            fontWeight: (isSubmitted &&
+                                                                results[question.id] === 'incorrect' &&
+                                                                showExplanations &&
+                                                                parseInt(choice.split('.')[0]) === question.correct_answer) ||
                                                                 (isSubmitted &&
-                                                                    results[
-                                                                        question
-                                                                            .id
-                                                                    ] ===
-                                                                        'incorrect' &&
-                                                                    showExplanations &&
-                                                                    choice.split(
-                                                                        ''
-                                                                    )[0] ===
-                                                                        question.correct_answer) ||
-                                                                (isSubmitted &&
-                                                                    results[
-                                                                        question
-                                                                            .id
-                                                                    ] ===
-                                                                        'correct' &&
-                                                                    choice.split(
-                                                                        ''
-                                                                    )[0] ===
-                                                                        question.correct_answer)
-                                                                    ? 'bold'
-                                                                    : 'normal',
+                                                                results[question.id] === 'correct' &&
+                                                                parseInt(choice.split('.')[0]) === question.correct_answer)
+                                                                ? 'bold'
+                                                                : 'normal',
                                                             color: isSubmitted
-                                                                ? results[
-                                                                      question
-                                                                          .id
-                                                                  ] ===
-                                                                      'incorrect' &&
+                                                                ? results[question.id] === 'incorrect' &&
                                                                   showExplanations &&
-                                                                  choice.split(
-                                                                      ''
-                                                                  )[0] ===
-                                                                      question.correct_answer
+                                                                  parseInt(choice.split('.')[0]) === question.correct_answer
                                                                     ? 'red'
-                                                                    : results[
-                                                                          question
-                                                                              .id
-                                                                      ] ===
-                                                                          'correct' &&
-                                                                      choice.split(
-                                                                          ''
-                                                                      )[0] ===
-                                                                          question.correct_answer
+                                                                    : results[question.id] === 'correct' &&
+                                                                      parseInt(choice.split('.')[0]) === question.correct_answer
                                                                     ? 'blue'
                                                                     : 'black'
                                                                 : 'black',
-                                                        }}
+                                                        }}                                                         
                                                     >
                                                         <input
                                                             type='radio'

@@ -25,6 +25,7 @@ const PDFDownloadButton = ({ text, onClickHandle }) => (
                             colors1
                         ).join(', ')})`,
                         lineWidth: 0,
+                        fontFamily: 'Pretendard-Regular', 
                     },
                 },
             }}

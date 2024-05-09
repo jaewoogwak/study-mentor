@@ -11,6 +11,7 @@ const SwitchWithText = ({ isTextCentered, setIsTextCentered }) => {
                 components: {
                     Switch: {
                         // handleSize: '22px',
+                        trackPadding: '6px', 
                     },
                 },
             }}
@@ -40,7 +41,8 @@ const SwitchWithText = ({ isTextCentered, setIsTextCentered }) => {
                         backgroundColor: isTextCentered ? '#1890ff' : '#faad14',
                         display: 'flex',
                         justifyContent: 'center',
-                        height: '22px',
+                        padding: "5px 2px",
+                        height: '30px',
                         fontFamily: 'Pretendard-Regular',
                         // 중앙 정렬
                     }}
