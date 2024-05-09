@@ -60,6 +60,8 @@ const NewChatbotPage = () => {
             sender: 'user',
         };
 
+        console.log('handle send', messages);
+
         // 메시지 목록에 새 메시지 추가
         setMessages([...messages, newMessage]);
 
@@ -87,6 +89,7 @@ const NewChatbotPage = () => {
     };
 
     async function sendTextToServer(text) {
+        console.log('sendTextToServer', text);
         const address = `${
             import.meta.env.VITE_API_URL
         }/chatbot/question-answer`;
@@ -151,6 +154,7 @@ const NewChatbotPage = () => {
         });
 
         const getMessages = async () => {
+            console.log('getMessages');
             const currentUserFBId = await findChatId();
 
             // chats에 유저 채팅 정보가 없으면 새로 생성
@@ -175,17 +179,16 @@ const NewChatbotPage = () => {
 
             if (chatSnapshot.exists()) {
                 const chatData = chatSnapshot.data();
+                console.log('Document data:', chatData);
                 setMessages(chatData.messages);
             } else {
                 console.log('No such document!');
             }
-
-            await QuestionMessages();
         };
 
         const QuestionMessages = async () => {
+            // 시험 문제 페이지에서 질문하기를 눌러서 LocalStorage에 저장한 문제가 있으면 챗봇에게 전송
             const storedQuestion = localStorage.getItem('examQuestion');
-
             if (storedQuestion) {
                 const { question, choices, userAnswer, correctAnswer } =
                     JSON.parse(storedQuestion);
@@ -195,21 +198,20 @@ const NewChatbotPage = () => {
                     : ['빈칸'];
 
                 const prompt = `문제 질문: ${question}
-                    선택지: ${formattedChoices.join(', ')}
-                    정답: ${correctAnswer}
-                    나의 답안: ${userAnswer}\n
-                    정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
+                선택지: ${formattedChoices.join(', ')}
+                정답: ${correctAnswer}
+                나의 답안: ${userAnswer}\n
+                정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
 
-                try {
-                    await handleSend(prompt);
-                    localStorage.removeItem('examQuestion');
-                } catch (error) {
-                    console.error('Failed to send message:', error);
-                }
+                await handleSend(prompt);
+
+                localStorage.removeItem('examQuestion');
             }
         };
 
         getMessages();
+
+        QuestionMessages();
     }, [user]);
 
     return (
