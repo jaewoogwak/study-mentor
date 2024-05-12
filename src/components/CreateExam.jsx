@@ -306,12 +306,12 @@ const CreateExam = ({ data, setData }) => {
                 <div
                     style={{
                         position: 'fixed',
-                        top: 0,
-                        left: 0,
+                        top: '0',
+                        left: '0',
                         width: '100%',
                         height: '100%',
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 100,
+                        zIndex: 200,
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -321,21 +321,23 @@ const CreateExam = ({ data, setData }) => {
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '20px',
+                            gap: '50px',
                             backgroundColor: 'white',
-                            padding: '20px',
+                            padding: '40px',
                             borderRadius: '10px',
                             boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+                            border: '3px #787878 solid',
                         }}
                     >
                         <Spinner />
                         {/* 화면 크기에 맞는 폰트 크기 필요*/}
                         <div
                             style={{
-                                fontSize: '1.5rem',
+                                fontSize: '1.2rem',
+                                fontWeight: 'bold',
                             }}
                         >
-                            채점 중입니다. 잠시만 기다려주세요...
+                            채점 중입니다, 조금만 기다려주세요 ...
                         </div>
                     </div>
                 </div>

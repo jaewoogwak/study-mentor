@@ -13,7 +13,7 @@ import ExamNumberInput from '../components/ExamNumberInput';
 import { Switch } from 'antd';
 import ProgressViewer from '../components/ProgressViewer';
 import CreateExam from '../components/CreateExam';
-import jsonData from '../chatgpt_json.json';
+
 import axios from 'axios';
 import { usePDF } from 'react-to-pdf';
 import PromptInput from '../components/PromptModal';

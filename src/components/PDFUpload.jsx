@@ -17,7 +17,8 @@ import PDFViewer from './PDFViewer';
 import PDFDownload from './PDFDownload';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
-import ProgressViewer from './ProgressViewer';
+// import ProgressViewer from './ProgressViewer';
+import ProgressBar from '../components/progressBar';
 
 const PDFUpload = ({
     examData,
@@ -35,8 +36,7 @@ const PDFUpload = ({
     // const [data, setData] = React.useState(null);
     const [pdfFile, setPdfFile] = React.useState(null);
     const { user, login, logout } = useAuth();
-    const [processState, setProcessState] =
-        React.useState('파일을 업로드 하고 있어요');
+    const [processState, setProcessState] = React.useState(null);
 
     useEffect(() => {
         console.log('useEffect');
@@ -204,6 +204,7 @@ const PDFUpload = ({
 
     return fileState === 'uploading' ? (
         <StatusWrapper>
+            <ProgressBar />
             {fileType === 'pdf' ? (
                 <div> {processState}</div>
             ) : (
