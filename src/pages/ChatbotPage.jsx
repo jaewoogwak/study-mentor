@@ -37,6 +37,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useAuth } from '../contexts/AuthContext';
 import { set } from 'firebase/database';
 import Header from '../components/Header';
+import InfoFooter from '../components/InfoFooter';
 
 const API_KEY = import.meta.env.VITE_APP_API_KEY;
 
@@ -295,6 +296,7 @@ const NewChatbotPage = () => {
                     </Container>
                 )}
             </Main>
+            <InfoFooter />
         </Wrapper>
     );
 };

@@ -179,7 +179,7 @@ const FirstContainer = styled.div`
 /*      두 번째 페이지 스타일       */
 
 const SecondContainer = styled.div`
-    margin-top: 218px;
+    margin-top: 150px;
     display: flex;
     align-items: center;
     justify-content: center;

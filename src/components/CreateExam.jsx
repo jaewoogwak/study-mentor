@@ -668,7 +668,7 @@ const ButtonWrapper = styled.div`
 const MakeTest = styled.div`
     padding: 20px;
     margin: 50px auto 20px auto;
-    max-width: 800px;
+    width: 800px;
     border: 3px solid;
 `;
 
@@ -895,7 +895,7 @@ const ExplainHelp = styled.p`
 
 const ClearBox = styled.div`
     text-align: right;
-    margin-bottom: 50px;
+    // margin-bottom: 50px;
     margin-right: 30px;
 `;
 

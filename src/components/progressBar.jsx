@@ -126,7 +126,7 @@ const ProgressBar = () => {
 export default ProgressBar;
 
 const ProgressContainer = styled.div`
-    padding-bottom: 40px;
+    // padding-bottom: 30px;
 `;
 
 const LoadingText = styled.div`
@@ -138,5 +138,5 @@ const LoadingText = styled.div`
 const LoadingSubText = styled.div`
     font-size: 20px;
     font-family: 'WavvePADO-Regular';
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 `;

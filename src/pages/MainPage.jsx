@@ -6,6 +6,7 @@ import FullPageHeader from '../components/FullPageHeader';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../services/firebase';
 import { useNavigate } from 'react-router-dom';
+import InfoFooter from '../components/InfoFooter';
 
 const MainPage = () => {
     const { user, login, logout } = useAuth();
@@ -24,6 +25,7 @@ const MainPage = () => {
         <Wrapper>
             <FullPageHeader />
             <FullPageScroll />
+            <InfoFooter />
         </Wrapper>
     );
 };

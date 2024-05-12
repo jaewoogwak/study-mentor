@@ -20,6 +20,7 @@ import PromptInput from '../components/PromptModal';
 import PromptModal from '../components/PromptModal';
 import PDFGenerateButton from '../components/PDFGenerateButton';
 import ExamSetting from '../components/ExamSetting';
+import InfoFooter from '../components/InfoFooter';
 
 const DataUpload = () => {
     const navigate = useNavigate();
@@ -122,6 +123,7 @@ const DataUpload = () => {
                 {/* <ProgressViewer /> */}
                 <CreateExam data={data} setData={setData} />
             </MainWrapper>
+            <InfoFooter />
         </Wrapper>
     );
 };
@@ -139,7 +141,7 @@ const MainWrapper = styled.div`
     padding-top: 40px;
     padding-bottom: 20px;
     /* justify-content: center; */
-
+    flex: 1;
     height: calc(100vh - 80px);
     align-items: center;
 `;
