@@ -16,6 +16,10 @@ import PDFGenerateButton from './PDFGenerateButton';
 import { set } from 'firebase/database';
 import { Spin } from 'antd';
 import Spinner from './Spinner';
+import { useChatStore } from '../contexts/store';
+import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { db } from '../services/firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 const CreateExam = ({ data, setData }) => {
     const [questions, setQuestions] = useState([]);
@@ -60,6 +64,17 @@ const CreateExam = ({ data, setData }) => {
 
     // 채점 중인지 아닌지
     const [isGrading, setIsGrading] = useState(false);
+
+    const {
+        messages,
+        sendMessage,
+        setIsTyping,
+        setOutgoingMessage,
+        setIncomingMessage,
+        setQuestionData,
+        questionData,
+    } = useChatStore();
+    const { user, login, logout } = useAuth();
 
     const targetRef = useRef();
 
@@ -258,25 +273,100 @@ const CreateExam = ({ data, setData }) => {
         });
     };
 
-    const handleGoToChatBot_withQuest = (
-        questionId,
-        question,
-        choices,
-        userAnswer,
-        correctAnswer
+    // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
+    const findChatId = async () => {
+        // console.log('user', user.email);
+        const currentUser = user.email;
+        const chats = [];
+        const messageSnapshot = await getDocs(collection(db, 'chats'));
+        messageSnapshot.forEach((doc) => {
+            console.log(`e ${doc.id} => ${doc.data()?.email}`);
+
+            if (doc.data().email === currentUser) {
+                chats.push(doc.id);
+            }
+        });
+        console.log('chats id ', chats[0]);
+        return chats[0];
+    };
+
+    const handleGoToChatBot_withQuest = async (
+        qid,
+        ques,
+        chc,
+        user_answer,
+        correct_answer
     ) => {
+        console.log(
+            'qid',
+            qid,
+            'ques',
+            ques,
+            'chc',
+            chc,
+            'user_answer',
+            user_answer,
+            'correct_answer',
+            correct_answer
+        );
         const questionData = {
-            questionId,
-            question,
-            choices,
-            userAnswer,
-            correctAnswer,
+            question: ques,
+            choices: chc,
+            userAnswer: user_answer,
+            correctAnswer: correct_answer,
         };
 
         console.log('1. questionData:', questionData);
 
-        localStorage.setItem('examQuestion', JSON.stringify(questionData));
+        const { question, choices, userAnswer, correctAnswer } = questionData;
+
+        const formattedChoices = Array.isArray(choices) ? choices : ['빈칸'];
+
+        const prompt = `문제 질문: ${question}
+                선택지: ${formattedChoices.join(', ')}
+                정답: ${correctAnswer}
+                나의 답안: ${userAnswer}\n
+                정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
+
+        console.log('2. prompt:', prompt);
+
+        setOutgoingMessage(prompt);
+        setQuestionData(prompt);
+
         navigate('/chatbot');
+        setIsTyping(true);
+
+        const res = await sendMessage(prompt);
+
+        console.log('3. res:', res);
+
+        setIncomingMessage(res);
+
+        // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾기
+        const id = await findChatId();
+
+        // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션에 메시지 추가하기
+        const currentUserMessage = {
+            message: prompt,
+            sender: 'user',
+            direction: 'outgoing',
+        };
+
+        const chatRef = doc(db, 'chats', id);
+
+        updateDoc(chatRef, {
+            messages: [
+                ...messages,
+                currentUserMessage,
+                {
+                    message: res,
+                    sender: 'ChatGPT',
+                },
+            ],
+        });
+        // localStorage.setItem('examQuestion', JSON.stringify(questionData));
+
+        setIsTyping(false);
     };
 
     const handleGoToChatBot = () => {
@@ -417,26 +507,63 @@ const CreateExam = ({ data, setData }) => {
                                                     <RadioLabel
                                                         key={idx}
                                                         style={{
-                                                            fontWeight: (isSubmitted &&
-                                                                results[question.id] === 'incorrect' &&
-                                                                showExplanations &&
-                                                                parseInt(choice.split('.')[0]) === question.correct_answer) ||
+                                                            fontWeight:
                                                                 (isSubmitted &&
-                                                                results[question.id] === 'correct' &&
-                                                                parseInt(choice.split('.')[0]) === question.correct_answer)
-                                                                ? 'bold'
-                                                                : 'normal',
+                                                                    results[
+                                                                        question
+                                                                            .id
+                                                                    ] ===
+                                                                        'incorrect' &&
+                                                                    showExplanations &&
+                                                                    parseInt(
+                                                                        choice.split(
+                                                                            '.'
+                                                                        )[0]
+                                                                    ) ===
+                                                                        question.correct_answer) ||
+                                                                (isSubmitted &&
+                                                                    results[
+                                                                        question
+                                                                            .id
+                                                                    ] ===
+                                                                        'correct' &&
+                                                                    parseInt(
+                                                                        choice.split(
+                                                                            '.'
+                                                                        )[0]
+                                                                    ) ===
+                                                                        question.correct_answer)
+                                                                    ? 'bold'
+                                                                    : 'normal',
                                                             color: isSubmitted
-                                                                ? results[question.id] === 'incorrect' &&
+                                                                ? results[
+                                                                      question
+                                                                          .id
+                                                                  ] ===
+                                                                      'incorrect' &&
                                                                   showExplanations &&
-                                                                  parseInt(choice.split('.')[0]) === question.correct_answer
+                                                                  parseInt(
+                                                                      choice.split(
+                                                                          '.'
+                                                                      )[0]
+                                                                  ) ===
+                                                                      question.correct_answer
                                                                     ? 'red'
-                                                                    : results[question.id] === 'correct' &&
-                                                                      parseInt(choice.split('.')[0]) === question.correct_answer
+                                                                    : results[
+                                                                          question
+                                                                              .id
+                                                                      ] ===
+                                                                          'correct' &&
+                                                                      parseInt(
+                                                                          choice.split(
+                                                                              '.'
+                                                                          )[0]
+                                                                      ) ===
+                                                                          question.correct_answer
                                                                     ? 'blue'
                                                                     : 'black'
                                                                 : 'black',
-                                                        }}                                                         
+                                                        }}
                                                     >
                                                         <input
                                                             type='radio'

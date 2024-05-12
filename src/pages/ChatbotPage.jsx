@@ -38,19 +38,19 @@ import { useAuth } from '../contexts/AuthContext';
 import { set } from 'firebase/database';
 import Header from '../components/Header';
 import InfoFooter from '../components/InfoFooter';
+import { useChatStore } from '../contexts/store';
 
-const API_KEY = import.meta.env.VITE_APP_API_KEY;
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 const NewChatbotPage = () => {
-    const [messages, setMessages] = useState([
-        {
-            message: '안녕하세요! 어떤 문제가 궁금하신가요?',
-            sentTime: 'just now',
-            sender: 'ChatGPT',
-        },
-    ]);
-
-    const [isTyping, setIsTyping] = useState(false);
+    const {
+        messages,
+        setMessages,
+        isTyping,
+        setIsTyping,
+        setQuestionData,
+        questionData,
+    } = useChatStore();
     const { user, login, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -109,8 +109,13 @@ const NewChatbotPage = () => {
         })
             .then((response) => response.json())
             .then(async (data) => {
-                setMessages((prevMessages) => [
-                    ...prevMessages,
+                setMessages([
+                    ...messages,
+                    {
+                        message: text,
+                        sender: 'user',
+                        direction: 'outgoing',
+                    },
                     {
                         message: data.answer,
                         sender: 'ChatGPT',
@@ -181,7 +186,19 @@ const NewChatbotPage = () => {
             if (chatSnapshot.exists()) {
                 const chatData = chatSnapshot.data();
                 console.log('Document data:', chatData);
-                setMessages(chatData.messages);
+                const messages = chatData.messages;
+
+                // 시험문제 페이지에서 질문하기를 눌러서 questionData가 있으면 그것까지 messages에 추가
+                if (questionData) {
+                    messages.push({
+                        message: questionData,
+                        sender: 'user',
+                        direction: 'outgoing',
+                    });
+                    setQuestionData(null);
+                }
+                console.log('##### messages', messages);
+                setMessages(messages);
             } else {
                 console.log('No such document!');
             }
@@ -212,8 +229,8 @@ const NewChatbotPage = () => {
 
         getMessages();
 
-        QuestionMessages();
-    }, [user]);
+        // QuestionMessages();
+    }, [user, login, navigate, setMessages]);
 
     return (
         <Wrapper>
