@@ -12,6 +12,7 @@ import Header from '../components/Header';
 import ExamNumberInput from '../components/ExamNumberInput';
 import { Switch } from 'antd';
 import ProgressViewer from '../components/ProgressViewer';
+import ProgressBar from '../components/progressBar';
 import CreateExam from '../components/CreateExam';
 
 import axios from 'axios';
