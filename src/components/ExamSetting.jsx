@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import ExamNumberInput from '../components/ExamNumberInput';
 import PromptModal from './PromptModal';
 import SwitchWithText from './SwitchWithText';
+import ExamGenToggle from './ExamGenToggle';
 
 const ExamSetting = ({
     prompt,
@@ -14,14 +15,10 @@ const ExamSetting = ({
     setMultipleChoice,
     shortAnswer,
     setShortAnswer,
-    essay,
-    setEssay,
-    examNumber,
-    setExamNumber,
-    checked,
-    setChecked,
     isTextCentered,
     setIsTextCentered,
+    isLectureOnly,
+    setIsLectureOnly,
 }) => {
     return (
         <UploadInfoContainer>
@@ -73,10 +70,16 @@ const ExamSetting = ({
                         2. 이미지 중심으로 분석할지, 텍스트 중심으로 분석할지
                         선택하세요.{' '}
                     </p>
-                    <SwitchWithText
-                        isTextCentered={isTextCentered}
-                        setIsTextCentered={setIsTextCentered}
-                    />
+                    <ToggleWrapper>
+                        <SwitchWithText
+                            isTextCentered={isTextCentered}
+                            setIsTextCentered={setIsTextCentered}
+                        />
+                        <ExamGenToggle
+                            isLectureOnly={isLectureOnly}
+                            setIsLectureOnly={setIsLectureOnly}
+                        />
+                    </ToggleWrapper>
                 </TextContainer>
 
                 <ModalContainer>
@@ -154,4 +157,11 @@ const TextContainer = styled.div`
 
 const ModalContainer = styled.div`
     margin: 20px;
+`;
+
+const ToggleWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
 `;

@@ -42,6 +42,9 @@ const DataUpload = () => {
     // 텍스트 중심인지
     const [isTextCentered, setIsTextCentered] = useState(0);
 
+    // 강의자료에서만 생성 or 외부자료도 참고하여 생성
+    const [isLectureOnly, setIsLectureOnly] = useState(0);
+
     console.log('#######data', data);
 
     console.log('env', import.meta.env.VITE_API_URL);
@@ -71,9 +74,11 @@ const DataUpload = () => {
             'essay',
             essay,
             'examNumber',
-            examNumber
+            examNumber,
+            'isLectureOnly',
+            isLectureOnly
         );
-    }, [user, multipleChoice, shortAnswer, essay, examNumber]);
+    }, [user, multipleChoice, shortAnswer, essay, examNumber, isLectureOnly]);
 
     return (
         <Wrapper>
@@ -96,6 +101,8 @@ const DataUpload = () => {
                         setExamNumber={setExamNumber}
                         isTextCentered={isTextCentered}
                         setIsTextCentered={setIsTextCentered}
+                        isLectureOnly={isLectureOnly}
+                        setIsLectureOnly={setIsLectureOnly}
                     />
                 </DescriptionWrapper>
 
@@ -118,6 +125,8 @@ const DataUpload = () => {
                         imagePrompt={imagePrompt}
                         isTextCentered={isTextCentered}
                         setIsTextCentered={setIsTextCentered}
+                        isLectureOnly={isLectureOnly}
+                        setIsLectureOnly={setIsLectureOnly}
                     />
                 )}
                 {/* <ProgressViewer /> */}

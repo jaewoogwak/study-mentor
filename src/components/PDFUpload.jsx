@@ -30,6 +30,7 @@ const PDFUpload = ({
     prompt,
     isTextCentered,
     imagePrompt,
+    isLectureOnly,
 }) => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
@@ -112,6 +113,7 @@ const PDFUpload = ({
                 custom_prompt: prompt,
                 custom_image_prompt: imagePrompt,
                 isTextCentered: isTextCentered,
+                isLectureOnly: isLectureOnly,
             };
 
             console.log('file', file);
