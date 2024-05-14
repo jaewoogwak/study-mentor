@@ -25,7 +25,7 @@ const ExamSetting = ({
             <OverlayBox>How To Make?</OverlayBox>
             <h1 style={{ marginTop: '10px' }}>시험 문제 생성 설정</h1>
             <p style={{ marginTop: '20px' }}>
-                1. 시험 문제로 만들고 싶은 유형을 선택하세요.{' '}
+                1. 생성할 시험 문제 개수와 유형을 선택하세요. (혼합 선택 가능){' '}
             </p>
             <SettingWrapper>
                 <SwitchWrapper>
@@ -67,8 +67,8 @@ const ExamSetting = ({
 
                 <TextContainer>
                     <p style={{ marginBottom: '20px' }}>
-                        2. 이미지 중심으로 분석할지, 텍스트 중심으로 분석할지
-                        선택하세요.{' '}
+                        2. 학습 자료를 이미지나 텍스트 중심으로 분석할지 
+                        선택해주세요.{' '}
                     </p>
                     <ToggleWrapper>
                         <SwitchWithText
@@ -109,7 +109,7 @@ const OverlayBox = styled.div`
     height: 15px;
     font-weight: bold;
     background-color: white;
-    border: 3px solid #595959;
+    border: 2px solid;
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -120,12 +120,12 @@ const OverlayBox = styled.div`
 `;
 
 const UploadInfoContainer = styled.div`
-    position: relative; // 상대적 위치 설정
+    position: relative; 
     width: 698px;
     height: 430px;
     border-radius: 10px;
-    border: 2px black solid;
-    padding: 30px 30px 50px 30px;
+    border: 2px solid grey;
+    padding: 30px 30px 15px 30px;
 `;
 
 const SettingWrapper = styled.div`

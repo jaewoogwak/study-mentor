@@ -130,13 +130,13 @@ const ProgressContainer = styled.div`
 `;
 
 const LoadingText = styled.div`
-    font-size: 20px;
-    font-family: 'WavvePADO-Regular';
+    font-size: 22px;
+    font-family: 'GmarketSansMedium';
     padding-bottom: 5px;
 `;
 
 const LoadingSubText = styled.div`
-    font-size: 20px;
-    font-family: 'WavvePADO-Regular';
+    font-size: 22px;
+    font-family: 'GmarketSansMedium';
     margin-bottom: 30px;
 `;
