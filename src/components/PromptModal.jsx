@@ -57,7 +57,7 @@ const StyleButton = styled.button`
     padding: 7px 12px;
 
     border-radius: 5px;
-    border: 3px #58CCFF solid;
+    border: 3px #18A8F1 solid;
 
     font-size: 16px;
     font-family: 'pretendard-Regular';

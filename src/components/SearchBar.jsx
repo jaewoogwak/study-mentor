@@ -17,6 +17,7 @@ const Wrapper = styled.input`
 
     font-size: 16px;
     color: #00000057;
+    font-family: 'Pretendard-Regular';
 `;
 
 const SearchBar = ({ placeholder, onSend }) => {

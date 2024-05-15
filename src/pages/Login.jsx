@@ -110,7 +110,6 @@ const Title = styled.div`
     font-size: 100px;
     font-style: normal;
     font-weight: 900;
-    font-family: 'Passion One';
 `;
 
 const Description = styled.div`
@@ -118,7 +117,7 @@ const Description = styled.div`
     color: #000;
 
     text-align: center;
-    font-family: 'Anek Kannada';
+    // font-family: 'Anek Kannada';
     font-size: 40px;
     font-style: normal;
     font-weight: 600;
@@ -135,7 +134,7 @@ const LoginButton = styled.button`
     background: rgba(253, 159, 40, 0.5);
 
     text-align: center;
-    font-family: Abel;
+    // font-family: Abel;
     font-size: 24px;
     font-style: normal;
 

@@ -28,6 +28,7 @@ import {
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
 import LogoSvg from '../assets/logo.svg';
+import ChatMentor from '../assets/chat_mentor.png'
 
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar';
@@ -238,26 +239,18 @@ const NewChatbotPage = () => {
             <Main>
                 {messages.length === 1 ? (
                     <ChatListWraper>
-                        <InfoList>
                             <InfoWrapper>
-                                <InfoBox src={Info1Svg} alt='info1' />
-                                <InfoText>이런 문제를 만들 수 있어요</InfoText>
-                                <QuestionList>
-                                    <QuestionWrapper>
-                                        <InfoText>객관식 문제</InfoText>
-                                    </QuestionWrapper>
-                                    <QuestionWrapper>
-                                        <InfoText>주관식 문제</InfoText>
-                                    </QuestionWrapper>
-                                    <QuestionWrapper>
-                                        <InfoText>서술형 문제</InfoText>
-                                    </QuestionWrapper>
-                                </QuestionList>
-                            </InfoWrapper>
+                                <ChatWrapper>
+                                    <MainImg src={ChatMentor} alt='chatmentor' />
+                                    <TextContainer>
+                                        <MainText>Chatting with a Mentor</MainText>
+                                        <p style = {{fontSize: '17px'}}>모르는 것에 대해 자유롭게 질문해보세요.</p>
+                                    </TextContainer>
+                                </ChatWrapper>
 
-                            <InfoWrapper>
-                                <InfoBox src={Info2Svg} alt='info2' />
-                                <InfoText>이런 방식으로 질문해요</InfoText>
+                                {/* <InfoBox src={Info2Svg} alt='info2' />
+                                <InfoText>이런 방식으로 질문해요</InfoText> */}
+
                                 <QuestionList>
                                     <ImageTypeWrapper>
                                         <InfoText>
@@ -271,15 +264,8 @@ const NewChatbotPage = () => {
                                             주관식 문제를 만들어줘
                                         </InfoText>
                                     </ImageTypeWrapper>
-                                    <ImageTypeWrapper>
-                                        <InfoText>
-                                            CNN 모델의 개념에 대한
-                                            <br /> 서술형 문제를 만들어줘
-                                        </InfoText>
-                                    </ImageTypeWrapper>
                                 </QuestionList>
                             </InfoWrapper>
-                        </InfoList>
                         <SearchBar
                             placeholder={'챗봇에게 물어볼 질문을 작성해주세요'}
                             onSend={handleSend}
@@ -330,6 +316,7 @@ const Wrapper = styled.div`
 const Logo = styled.div`
     margin-left: 45px;
 `;
+
 const Title = styled.div`
     margin-left: 17px;
     font-weight: 500;
@@ -370,24 +357,38 @@ const ChatListWraper = styled.div`
     flex-direction: column;
 `;
 
-const InfoList = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-
-    gap: 20px;
-    margin-top: 30px;
-    margin-bottom: 40px;
-`;
-
 const InfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    width: 320px;
-    height: 461px;
+    // width: 320px;
+    wdith: 100%;
+    height: 500px;
+`;
+
+const ChatWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    gap: 30px;
+    margin-top: 140px;
+    margin-bottom: 30px;
+`;
+
+const TextContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`;
+
+const MainImg = styled.img`
+    width: 90px;
+    height: 90px;
+`;
+
+const MainText = styled.h2`
+    font-size: 35px;
 `;
 
 const InfoBox = styled.img`
@@ -397,16 +398,15 @@ const InfoBox = styled.img`
 `;
 
 const InfoText = styled.div`
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
-    line-height: 32px;
+    line-height: 30px;
 `;
 
 const QuestionList = styled.div`
     display: flex;
-    flex-direction: column;
     gap: 17px;
-    margin-top: 30px;
+    margin-top: 140px;
 `;
 
 const QuestionWrapper = styled.div`
@@ -424,7 +424,7 @@ const ImageTypeWrapper = styled.div`
     justify-content: center;
     align-items: center;
     width: 320px;
-    height: 92px;
+    height: 85px;
     background-color: #f0f8ff;
     border-radius: 10px;
 `;
@@ -442,7 +442,7 @@ const Container = styled.div`
 const MainContainerWrapper = styled(MainContainer)`
     width: 700px;
     // 높이는 화면에 따라 조절해야함. 바닥에서 20px 떨어지게 하기
-    height: 75vh;
+    height: 70vh;
     margin: 0 auto;
     border: none;
 `;

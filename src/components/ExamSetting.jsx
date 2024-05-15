@@ -67,7 +67,7 @@ const ExamSetting = ({
 
                 <TextContainer>
                     <p style={{ marginBottom: '20px' }}>
-                        2. 학습 자료를 이미지나 텍스트 중심으로 분석할지 
+                        2. 학습 자료를 어떠한 방식으로 분석할지 
                         선택해주세요.{' '}
                     </p>
                     <ToggleWrapper>
@@ -125,7 +125,7 @@ const UploadInfoContainer = styled.div`
     height: 430px;
     border-radius: 10px;
     border: 2px solid grey;
-    padding: 30px 30px 15px 30px;
+    padding: 30px 30px 50px 30px;
 `;
 
 const SettingWrapper = styled.div`

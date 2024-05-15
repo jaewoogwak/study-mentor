@@ -33,15 +33,15 @@ const ExamGenToggle = ({ isLectureOnly, setIsLectureOnly }) => {
                                 fontSize: '16px',
                             }}
                         >
-                            외부자료도 참고하여 문제 생성하기
+                            외부자료를 참고하여 문제 생성하기
                         </div>
                     }
                     defaultChecked
                     style={{
-                        backgroundColor: isLectureOnly ? '#b1e1ba' : '#c994da',
+                        backgroundColor: isLectureOnly ? '#5D6DBE' : '#2FA599',
                         display: 'flex',
                         justifyContent: 'center',
-                        padding: '5px 2px',
+                        padding: '5px 3px',
                         height: '30px',
                         fontFamily: 'Pretendard-Regular',
                         // 중앙 정렬

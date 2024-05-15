@@ -71,12 +71,12 @@ const ProgressBar = () => {
             interval = setInterval(() => {
                 setText(prevText => prevText + currentText[0][count]);
                 setCount(count + 1);
-            }, 300);
+            }, 250);
         } else if (!deleting && count >= currentText[0].length && subCount < currentText[1].length) {
             interval = setInterval(() => {
                 setSubtext(prevSubtext => prevSubtext + currentText[1][subCount]);
                 setSubCount(subCount + 1);
-            }, 300);
+            }, 250);
         } else if (deleting) {
             // Clear text in reverse order
             interval = setInterval(() => {
