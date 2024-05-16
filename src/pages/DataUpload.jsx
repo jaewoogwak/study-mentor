@@ -46,10 +46,6 @@ const DataUpload = () => {
     // 강의자료에서만 생성 or 외부자료도 참고하여 생성
     const [isLectureOnly, setIsLectureOnly] = useState(0);
 
-    console.log('#######data', data);
-
-    console.log('env', import.meta.env.VITE_API_URL);
-
     useEffect(() => {
         auth.onAuthStateChanged((usr) => {
             login(usr);
@@ -64,21 +60,6 @@ const DataUpload = () => {
         if (localData) {
             setData(JSON.parse(localData));
         }
-
-        console.log('[user info]: ', user);
-        console.log('data', data);
-        console.log(
-            'multipleChoice',
-            multipleChoice,
-            'shortAnswer',
-            shortAnswer,
-            'essay',
-            essay,
-            'examNumber',
-            examNumber,
-            'isLectureOnly',
-            isLectureOnly
-        );
     }, [user, multipleChoice, shortAnswer, essay, examNumber, isLectureOnly]);
 
     return (

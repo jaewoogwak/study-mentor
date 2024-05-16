@@ -45,7 +45,6 @@ const Header = () => {
             </HeaderItemWrapper>
             <Logout
                 onClick={() => {
-                    console.log('outout');
                     auth.signOut();
                     logout();
                     window.location.href = '/login';

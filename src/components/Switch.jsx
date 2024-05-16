@@ -3,7 +3,7 @@ import { Switch } from 'antd';
 
 const App = () => {
     const onChange = (checked) => {
-        console.log(`switch to ${checked}`);
+        // console.log(`switch to ${checked}`);
     };
     return <Switch defaultChecked onChange={onChange} />;
 };

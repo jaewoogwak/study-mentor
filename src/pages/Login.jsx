@@ -26,14 +26,12 @@ const NewLoginPage = () => {
     const handleGoogleLogin = () => {
         signInWithPopup(auth, provider)
             .then(async (result) => {
-                console.log(result.user.email);
                 try {
                     const querySnapshot = await getDocs(
                         collection(db, 'users')
                     );
                     const users = [];
                     querySnapshot.forEach((doc) => {
-                        console.log(`${doc.id} => ${doc.data().email}`);
                         users.push(doc.data().email);
                     });
 
@@ -48,8 +46,6 @@ const NewLoginPage = () => {
                 } catch (err) {
                     console.log('[Err]', err);
                 }
-
-                console.log(result);
             })
             .catch((error) => {
                 console.log(error);

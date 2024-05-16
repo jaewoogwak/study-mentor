@@ -87,8 +87,6 @@ const CreateExam = ({ data, setData }) => {
 
     // 1. Exam Data 가져오기
     useEffect(() => {
-        console.log('#### EXAM DATA', data, data?.length);
-
         if (data?.length > 0) {
             const filteredQuestions = data.map((item, index) => ({
                 id: index,
@@ -200,11 +198,6 @@ const CreateExam = ({ data, setData }) => {
             testResults.push(questionInfo);
         });
 
-        console.log(
-            '##### testResults:',
-            JSON.stringify({ 'FeedBackResults:': testResults })
-        );
-
         const feedbackResults = {
             FeedBackResults: testResults,
         };
@@ -221,7 +214,6 @@ const CreateExam = ({ data, setData }) => {
         })
             .then((response) => {
                 setIsGrading(false);
-                console.log('Server response:', response.data);
                 getScore(response.data); // 받은 data를 getScore 함수로 전달
             })
             .catch((error) => {
@@ -275,18 +267,14 @@ const CreateExam = ({ data, setData }) => {
 
     // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
     const findChatId = async () => {
-        // console.log('user', user.email);
         const currentUser = user.email;
         const chats = [];
         const messageSnapshot = await getDocs(collection(db, 'chats'));
         messageSnapshot.forEach((doc) => {
-            console.log(`e ${doc.id} => ${doc.data()?.email}`);
-
             if (doc.data().email === currentUser) {
                 chats.push(doc.id);
             }
         });
-        console.log('chats id ', chats[0]);
         return chats[0];
     };
 
@@ -297,26 +285,12 @@ const CreateExam = ({ data, setData }) => {
         user_answer,
         correct_answer
     ) => {
-        console.log(
-            'qid',
-            qid,
-            'ques',
-            ques,
-            'chc',
-            chc,
-            'user_answer',
-            user_answer,
-            'correct_answer',
-            correct_answer
-        );
         const questionData = {
             question: ques,
             choices: chc,
             userAnswer: user_answer,
             correctAnswer: correct_answer,
         };
-
-        console.log('1. questionData:', questionData);
 
         const { question, choices, userAnswer, correctAnswer } = questionData;
 
@@ -328,8 +302,6 @@ const CreateExam = ({ data, setData }) => {
                 나의 답안: ${userAnswer}\n
                 정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
 
-        console.log('2. prompt:', prompt);
-
         setOutgoingMessage(prompt);
         setQuestionData(prompt);
 
@@ -337,8 +309,6 @@ const CreateExam = ({ data, setData }) => {
         setIsTyping(true);
 
         const res = await sendMessage(prompt);
-
-        console.log('3. res:', res);
 
         setIncomingMessage(res);
 
@@ -687,7 +657,6 @@ const CreateExam = ({ data, setData }) => {
                                                     <ChatBotButton
                                                         type='button'
                                                         onClick={() => {
-                                                            // console.log("question type", question.type);
                                                             const userAnswer =
                                                                 question.type ===
                                                                 0
@@ -699,7 +668,6 @@ const CreateExam = ({ data, setData }) => {
                                                                           question
                                                                               .id
                                                                       ];
-                                                            // console.log("userAnswer", userAnswer);
                                                             handleGoToChatBot_withQuest(
                                                                 question.id,
                                                                 question.question,

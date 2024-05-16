@@ -6,13 +6,13 @@ import PageMover from './Pagination';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const PDFViewer = ({ path, scale }) => {
-    console.log('path', path);
+    // console.log('path', path);
 
     const [numPages, setNumPages] = useState(0);
     const [index, setIndex] = useState(1);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
-        console.log(numPages, '!!!');
+        // console.log(numPages, '!!!');
         setNumPages(numPages);
     };
 
@@ -29,7 +29,7 @@ const PDFViewer = ({ path, scale }) => {
     };
 
     useEffect(() => {
-        console.log('pdf viewer useEffect');
+        // console.log('pdf viewer useEffect');
     }, [
         path,
         scale,

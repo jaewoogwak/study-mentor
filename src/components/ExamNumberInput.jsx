@@ -1,9 +1,7 @@
 import { InputNumber } from 'antd';
 import React from 'react';
 
-const onChange = (value) => {
-    console.log('changed', value);
-};
+const onChange = (value) => {};
 const ExamNumberInput = ({ min, max, defaultValue, value }) => (
     <InputNumber
         min={min}

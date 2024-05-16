@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from 'antd'; 
+import { Modal } from 'antd';
 import PromptInput from './PromptInput';
 import styled from 'styled-components';
 
@@ -17,17 +17,14 @@ const PromptModal = ({
     };
     const handleOk = () => {
         setIsModalOpen(false);
-        console.log(prompt);
+        // console.log(prompt);
     };
     const handleCancel = () => {
         setIsModalOpen(false);
     };
     return (
-        <>  
-            <StyleButton 
-                type='primary'
-                onClick={showModal}
-            >
+        <>
+            <StyleButton type='primary' onClick={showModal}>
                 시험문제 스타일 설정하기
             </StyleButton>
             <Modal
@@ -37,7 +34,7 @@ const PromptModal = ({
                 onCancel={handleCancel}
                 width={800}
                 style={{
-                    fontFamily: 'Pretendard-Regular'
+                    fontFamily: 'Pretendard-Regular',
                 }}
             >
                 <PromptInput
@@ -57,15 +54,15 @@ const StyleButton = styled.button`
     padding: 7px 12px;
 
     border-radius: 5px;
-    border: 3px #18A8F1 solid;
+    border: 3px #18a8f1 solid;
 
     font-size: 16px;
     font-family: 'pretendard-Regular';
 
     color: white;
-    background: #18A8F1;
+    background: #18a8f1;
 
     &:hover {
-        background-color: #1187CF; 
+        background-color: #1187cf;
     }
 `;

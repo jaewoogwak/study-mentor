@@ -40,7 +40,6 @@ const PDFUpload = ({
     const [processState, setProcessState] = React.useState(null);
 
     useEffect(() => {
-        console.log('useEffect');
         const downloadFile = async () => {
             try {
                 const storage = getStorage();
@@ -53,14 +52,11 @@ const PDFUpload = ({
                         storage,
                         'pdfs/' + fileNames + '.pdf'
                     );
-                    console.log('storageRef', storageRef);
 
                     if (storageRef) {
                         const url = await getDownloadURL(storageRef);
-                        console.log('url', url);
                         const response = await fetch(url);
                         const blob = await response.blob();
-                        console.log('blob', blob);
                         setPdfFile(blob);
                         setFileState('done');
                     }
@@ -86,13 +82,12 @@ const PDFUpload = ({
         action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
         onChange(info) {
             const { status } = info.file;
-            console.log("onChange's info", status);
             setFileState('uploading');
             if (status !== 'uploading') {
-                console.log('🔃', info.file, info.fileList);
+                // console.log('🔃', info.file, info.fileList);
             }
             if (status === 'done') {
-                console.log('👍', info.file.response);
+                // console.log('👍', info.file.response);
                 message.success(
                     `${info.file.name} file uploaded successfully.`
                 );
@@ -116,20 +111,14 @@ const PDFUpload = ({
                 isLectureOnly: isLectureOnly,
             };
 
-            console.log('file', file);
-            console.log('examSetting', examSetting);
-
             formData.append('file', file);
             formData.append('examSetting', JSON.stringify(examSetting));
-
-            console.log('formData', formData);
 
             const type =
                 file.type === 'application/pdf'
                     ? '/upload/pdf'
                     : '/upload/image';
 
-            console.log('address', `${import.meta.env.VITE_API_URL}${type}`);
             axios({
                 url: `${import.meta.env.VITE_API_URL}${type}`,
                 method: 'POST',
@@ -142,8 +131,6 @@ const PDFUpload = ({
                 .then((response) => {
                     setFileState('done');
                     setFileType('pdf');
-                    console.log('response', response.data);
-                    console.log('setExamdata', setExamData);
 
                     setExamData(response.data);
                     // 로컬 스토리지에 data 저장
@@ -178,7 +165,6 @@ const PDFUpload = ({
                 (snapshot) => {
                     const progress =
                         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress + '% done');
                     switch (snapshot.state) {
                         case 'paused':
                             console.log('Upload is paused');
@@ -194,7 +180,7 @@ const PDFUpload = ({
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then(
                         (downloadURL) => {
-                            console.log('File available at', downloadURL);
+                            // console.log('File available at', downloadURL);
                         }
                     );
                 }

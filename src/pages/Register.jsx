@@ -24,15 +24,11 @@ const Register = () => {
                 password
             );
 
-            console.log(res);
-
             // firebase db에 user 추가
             const docRef = await addDoc(collection(db, 'users'), {
                 email,
                 uid: res.user.uid,
             });
-
-            console.log('Document written with ID: ', docRef.id);
 
             navigate('/login');
         } catch (err) {
