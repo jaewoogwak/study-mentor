@@ -31,6 +31,7 @@ const PDFUpload = ({
     isTextCentered,
     imagePrompt,
     isLectureOnly,
+    deductCredit,
 }) => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
@@ -138,6 +139,8 @@ const PDFUpload = ({
                         'examData',
                         JSON.stringify(response.data)
                     );
+
+                    deductCredit();
                     // setPdfFile(response.data);
                     // uploadFileToFirebase(response.data);
                 })

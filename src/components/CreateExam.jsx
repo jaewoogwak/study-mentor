@@ -21,7 +21,7 @@ import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
-const CreateExam = ({ data, setData }) => {
+const CreateExam = ({ data, setData, credits }) => {
     const [questions, setQuestions] = useState([]);
     const [radioAnswers, setRadioAnswers] = useState(
         JSON.parse(localStorage.getItem('radioAnswers')) || {}
@@ -267,6 +267,7 @@ const CreateExam = ({ data, setData }) => {
 
     // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
     const findChatId = async () => {
+        console.log('USER info', user);
         const currentUser = user.email;
         const chats = [];
         const messageSnapshot = await getDocs(collection(db, 'chats'));
@@ -421,6 +422,7 @@ const CreateExam = ({ data, setData }) => {
                             })
                         }
                     ></PDFDownloadButton>
+                    {/* <CreditWrapper>사용 가능 횟수: {credits}</CreditWrapper> */}
                 </ButtonWrapper>
             )}
 
@@ -1024,4 +1026,19 @@ const ChatBotButton = styled.button`
     font-family: 'Pretendard-Regular';
     font-size: 15px;
     font-weight: bold;
+`;
+
+const CreditWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; // 추가
+    font-size: 16px;
+    color: #333; // 텍스트 색상 추가
+    background-color: #f9f9f9; // 배경 색상 추가
+    padding: 20px; // 패딩 추가
+    border-radius: 10px; // 모서리 둥글게
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // 그림자 추가
+    margin-bottom: 20px; // 하단 여백 추가
+    text-align: center; // 텍스트 중앙 정렬
 `;

@@ -30,6 +30,12 @@ const Register = () => {
                 uid: res.user.uid,
             });
 
+            // firebase db credits 추가
+            const docRefCredits = await addDoc(collection(db, 'credits'), {
+                email,
+                credit: 3,
+            });
+
             navigate('/login');
         } catch (err) {
             console.log('[Err]', err);

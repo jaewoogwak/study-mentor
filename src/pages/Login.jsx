@@ -40,6 +40,15 @@ const NewLoginPage = () => {
                             email: result.user.email,
                             uid: result.user.uid,
                         });
+
+                        // credits 컬렉션에도 추가
+                        const docRefCredits = await addDoc(
+                            collection(db, 'credits'),
+                            {
+                                email: result.user.email,
+                                credit: 3,
+                            }
+                        );
                     }
 
                     navigate('/');
