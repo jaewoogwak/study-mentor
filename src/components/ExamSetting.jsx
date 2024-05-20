@@ -116,6 +116,16 @@ const ExamSetting = ({
                     <p style={{ marginBottom: '20px' }}>
                         3. 원하는 조건이 있다면, 프롬프트를 작성하세요.
                     </p>
+
+                    <CustomPromptRecommandWrapper>
+                        <CustomPromptRecommand>
+                            이론 기반의 계산 문제를 만들어줘
+                        </CustomPromptRecommand>
+                        <CustomPromptRecommand>
+                            매우 어려운 난이도로 출제해줘
+                        </CustomPromptRecommand>
+                    </CustomPromptRecommandWrapper>
+
                     <PromptModal
                         prompt={prompt}
                         setPrompt={setPrompt}
@@ -152,7 +162,7 @@ const OverlayBox = styled.div`
 const UploadInfoContainer = styled.div`
     position: relative;
     width: 698px;
-    height: 430px;
+    height: 500px;
     border-radius: 10px;
     border: 2px solid grey;
     padding: 30px 30px 50px 30px;
@@ -194,4 +204,29 @@ const ToggleWrapper = styled.div`
     flex-direction: column;
     gap: 20px;
     align-items: center;
+`;
+
+const CustomPromptRecommandWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    align-items: center;
+
+    text-align: center;
+`;
+
+const CustomPromptRecommand = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: #b6dcee;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    text-align: center;
+    width: 310px;
+    margin-bottom: 20px;
 `;
