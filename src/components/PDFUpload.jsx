@@ -83,7 +83,13 @@ const PDFUpload = ({
         action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
         onChange(info) {
             const { status } = info.file;
+
             setFileState('uploading');
+            if (info.file.size > 10000000) {
+                message.error('파일 크기는 10MB 이하여야 합니다.');
+                setFileState('error');
+            }
+
             if (status !== 'uploading') {
                 // console.log('🔃', info.file, info.fileList);
             }
@@ -100,6 +106,14 @@ const PDFUpload = ({
         async beforeUpload(file) {
             console.log("beforeUpload's file", file, file.type);
             const formData = new FormData();
+
+            console.log('file size', file.size);
+            // 파일 크기 제한
+            if (file.size > 10000000) {
+                message.error('파일 크기는 10MB 이하여야 합니다.');
+                setFileState('error');
+                return false;
+            }
 
             const examSetting = {
                 multipleChoice: multipleChoice,
