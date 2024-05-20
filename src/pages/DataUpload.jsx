@@ -59,7 +59,7 @@ const DataUpload = () => {
         // credits 컬렉션에서 현재 사용자의 문서 가져오기
         const creditSnapshot = await getDocs(collection(db, 'credits'));
         creditSnapshot.forEach((doc) => {
-            console.log(`e ${doc.id} => ${doc.data()?.credit}`);
+            // console.log(`e ${doc.id} => ${doc.data()?.credit}`);
 
             if (doc.data().email === currentUser) {
                 creditDocId = doc.id;
@@ -67,7 +67,7 @@ const DataUpload = () => {
             }
         });
 
-        console.log('creditDocId', creditDocId);
+        // console.log('creditDocId', creditDocId);
 
         // credits 컬렉션에서 credit 차감
         if (creditDocId) {
@@ -79,7 +79,7 @@ const DataUpload = () => {
 
             setUserCredit(newCredit);
 
-            console.log('Credit deducted successfully', newCredit);
+            // console.log('Credit deducted successfully', newCredit);
         } else {
             console.error('User not found in credits collection');
         }
