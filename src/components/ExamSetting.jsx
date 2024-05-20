@@ -20,6 +20,41 @@ const ExamSetting = ({
     isLectureOnly,
     setIsLectureOnly,
 }) => {
+    const handleMultipleChoiceChange = (e) => {
+        const value = e.target.value;
+
+        if (value === '' || /^[0-9\b]+$/.test(value)) {
+            const numericValue = parseInt(value, 10);
+
+            if (numericValue >= 1 && numericValue <= 10) {
+                setMultipleChoice(numericValue);
+            } else if (numericValue < 1) {
+                setMultipleChoice(1);
+            } else if (numericValue > 10) {
+                setMultipleChoice(10);
+            } else {
+                setMultipleChoice('');
+            }
+        }
+    };
+
+    const handleShortAnswerChange = (e) => {
+        const value = e.target.value;
+
+        if (value === '' || /^[0-9\b]+$/.test(value)) {
+            const numericValue = parseInt(value, 10);
+
+            if (numericValue >= 1 && numericValue <= 10) {
+                setShortAnswer(numericValue);
+            } else if (numericValue < 1) {
+                setShortAnswer(1);
+            } else if (numericValue > 10) {
+                setShortAnswer(10);
+            } else {
+                setShortAnswer('');
+            }
+        }
+    };
     return (
         <UploadInfoContainer>
             <OverlayBox>How To Make?</OverlayBox>
@@ -33,11 +68,9 @@ const ExamSetting = ({
                     <SwitchInput
                         type='number'
                         min={1}
-                        max={20}
+                        max={10}
                         value={multipleChoice}
-                        onChange={(e) => {
-                            setMultipleChoice(e.target.value);
-                        }}
+                        onChange={handleMultipleChoiceChange}
                         style={{
                             width: '60px',
                             height: '20px',
@@ -51,12 +84,10 @@ const ExamSetting = ({
                     <SwitchInput
                         type='number'
                         min={1}
-                        max={20}
+                        max={10}
                         // defaultValue={2}
                         value={shortAnswer}
-                        onChange={(e) => {
-                            setShortAnswer(e.target.value);
-                        }}
+                        onChange={handleShortAnswerChange}
                         style={{
                             width: '60px',
                             height: '20px',
@@ -67,8 +98,7 @@ const ExamSetting = ({
 
                 <TextContainer>
                     <p style={{ marginBottom: '20px' }}>
-                        2. 학습 자료를 어떠한 방식으로 분석할지 
-                        선택해주세요.{' '}
+                        2. 학습 자료를 어떠한 방식으로 분석할지 선택해주세요.{' '}
                     </p>
                     <ToggleWrapper>
                         <SwitchWithText
@@ -120,7 +150,7 @@ const OverlayBox = styled.div`
 `;
 
 const UploadInfoContainer = styled.div`
-    position: relative; 
+    position: relative;
     width: 698px;
     height: 430px;
     border-radius: 10px;

@@ -112,6 +112,14 @@ const PDFUpload = ({
                 isLectureOnly: isLectureOnly,
             };
 
+            // examSetting에서 객관식 주관식 null 값은 기본 값으로 설정
+            if (!examSetting.multipleChoice) {
+                examSetting.multipleChoice = 2;
+            }
+            if (!examSetting.shortAnswer) {
+                examSetting.shortAnswer = 2;
+            }
+
             formData.append('file', file);
             formData.append('examSetting', JSON.stringify(examSetting));
 

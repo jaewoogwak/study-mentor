@@ -158,7 +158,7 @@ const DataUpload = () => {
                 {/*
                 데이터가 있으면, 크레딧이 남아있는지 확인하고 문제 생성 컴포넌트를 보여줍니다.
                 */}
-                {!data && userCredit > 0 ? (
+                {!data && (
                     <PDFUpload
                         examData={data}
                         setExamData={setData}
@@ -178,8 +178,12 @@ const DataUpload = () => {
                         setIsLectureOnly={setIsLectureOnly}
                         deductCredit={deductCredit}
                     />
-                ) : (
-                    <NoCreditMessage>크레딧이 부족합니다.</NoCreditMessage>
+                )}
+
+                {data && userCredit < 1 && (
+                    <NoCreditMessage>
+                        무료 사용 가능 횟수가 부족합니다.
+                    </NoCreditMessage>
                 )}
                 {/* <ProgressViewer /> */}
                 <CreateExam
