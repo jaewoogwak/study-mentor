@@ -85,8 +85,8 @@ const PDFUpload = ({
             const { status } = info.file;
 
             setFileState('uploading');
-            if (info.file.size > 10000000) {
-                message.error('파일 크기는 10MB 이하여야 합니다.');
+            if (info.file.size > 50000000) {
+                message.error('파일 크기는 50MB 이하여야 합니다.');
                 setFileState('error');
             }
 
@@ -109,8 +109,8 @@ const PDFUpload = ({
 
             console.log('file size', file.size);
             // 파일 크기 제한
-            if (file.size > 10000000) {
-                message.error('파일 크기는 10MB 이하여야 합니다.');
+            if (file.size > 50000000) {
+                message.error('파일 크기는 50MB 이하여야 합니다.');
                 setFileState('error');
                 return false;
             }
