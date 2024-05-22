@@ -561,9 +561,9 @@ const CreateExam = ({ data, setData, credits }) => {
                                                                           question
                                                                               .id
                                                                       ] ===
-                                                                      choice.split(
+                                                                      parseInt(choice.split(
                                                                           ''
-                                                                      )[0]
+                                                                      )[0])
                                                                     : null
                                                             }
                                                             {...register(
