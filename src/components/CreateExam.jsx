@@ -168,7 +168,7 @@ const CreateExam = ({ data, setData, credits }) => {
             let user_answers;
 
             if (question.type === 0) {
-                user_answers = answer.split('')[0];
+                user_answers = parseInt(answer.split('')[0]);
             } else if (question.type === 1) {
                 user_answers = data[`question_${index}`];
             }
