@@ -162,13 +162,13 @@ const CreateExam = ({ data, setData, credits }) => {
         setIsSubmitted(true);
 
         const testResults = [];
-
+   
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             let user_answers;
 
             if (question.type === 0) {
-                user_answers = parseInt(answer.split('')[0]);
+                user_answers = parseInt(answer.split('')[0]);  
             } else if (question.type === 1) {
                 user_answers = data[`question_${index}`];
             }
@@ -196,6 +196,7 @@ const CreateExam = ({ data, setData, credits }) => {
             }
 
             testResults.push(questionInfo);
+            console.log(testResults);
         });
 
         const feedbackResults = {
@@ -363,7 +364,7 @@ const CreateExam = ({ data, setData, credits }) => {
     return (
         // 채점 중이면 화면을 검게 만들고 채점중이라는 메시지를 띄워야함. 또한 로딩 스핀도 추가해야함.
         <Wrapper>
-            {isGrading && (
+            {isGrading && isSubmitted && (
                 <div
                     style={{
                         position: 'fixed',
@@ -450,11 +451,9 @@ const CreateExam = ({ data, setData, credits }) => {
                                         <QuestionText>
                                             {question.question}
                                             {errors[`question_${index}`] && (
-                                                <span
-                                                    style={{ color: 'green' }}
-                                                >
-                                                    {' '}
-                                                    *입력되지 않았습니다.
+                                                <span style={{ color: 'green' }}>
+                                                {' '}
+                                                입력되지 않았습니다.
                                                 </span>
                                             )}
                                         </QuestionText>
