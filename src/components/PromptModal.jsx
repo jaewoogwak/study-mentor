@@ -28,7 +28,7 @@ const PromptModal = ({
                 시험문제 스타일 설정하기
             </StyleButton>
             <Modal
-                title='시험문제 스타일 설정하기'
+                title={<span style={{ fontSize: '2px' }}>시험문제 스타일 설정하기</span>}
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
@@ -54,13 +54,14 @@ const StyleButton = styled.button`
     padding: 7px 12px;
 
     border-radius: 5px;
-    border: 3px #18a8f1 solid;
+    border: 3px #58CCFF solid;
 
     font-size: 16px;
     font-family: 'pretendard-Regular';
+    // font-weight: bold;
 
-    color: white;
-    background: #18a8f1;
+    color: black;
+    background: #B8E9FF;
 
     &:hover {
         background-color: #1187cf;
