@@ -28,7 +28,7 @@ const PromptModal = ({
                 시험문제 스타일 설정하기
             </StyleButton>
             <Modal
-                title={<span style={{ fontSize: '2px' }}>시험문제 스타일 설정하기</span>}
+                title={<span style={{ fontSize: '24px' }}>시험문제 스타일 설정하기</span>}
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
