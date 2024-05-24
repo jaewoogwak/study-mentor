@@ -6,6 +6,7 @@
 ## ChatGPT기반 스터디 멘토 서비스
 
 -   사용자의 학습자료를 분석하여 시험 문제 생성
+-   시험 문제를 풀고 제출하면 채점 및 피드백 제공
 -   대화형 챗봇 서비스 도입
 
 ### 주요 요소 기술
@@ -61,7 +62,7 @@ npm run dev
 | Styling              | Styled Components |
 | Data Fetching        | Axios             |
 | Auth                 | Firebase          |
-| Hosting              | AWS EC2           |
+| Hosting              | Netlify           |
 
 ## React + Vite
 
