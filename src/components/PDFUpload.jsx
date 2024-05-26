@@ -69,7 +69,7 @@ const PDFUpload = ({
 
         downloadFile();
     }, [fileState, examData, fileType, user, processState]);
-
+    
     const styles = {
         width: '700px',
         display: 'flex',

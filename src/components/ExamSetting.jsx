@@ -114,25 +114,8 @@ const ExamSetting = ({
 
                 <ModalContainer>
                     <p style={{ marginBottom: '20px' }}>
-                        3. 원하는 조건이 있다면, 프롬프트를 작성하세요.
+                        3. 원하는 조건이 있다면, 프롬프트를 추가로 작성해보세요.
                     </p>
-                    {/* <p style={{
-                        textAlign: "left", 
-                        fontSize: "15px", 
-                        color: "#1187CF",
-                        fontWeight: "bold",
-                        }}>
-                        문제는 이런식으로 생성해요:
-                    </p>
-                    <CustomPromptRecommandWrapper>
-                        <CustomPromptRecommand>
-                            이론 기반의 계산 문제를 만들어줘
-                        </CustomPromptRecommand>
-                        <CustomPromptRecommand>
-                            매우 어려운 난이도로 출제해줘
-                        </CustomPromptRecommand>
-                    </CustomPromptRecommandWrapper> */}
-
                     <PromptModal
                         prompt={prompt}
                         setPrompt={setPrompt}

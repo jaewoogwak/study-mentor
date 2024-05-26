@@ -25,7 +25,7 @@ const PromptModal = ({
     return (
         <>
             <StyleButton type='primary' onClick={showModal}>
-                시험문제 스타일 설정하기
+                시험문제 스타일 설정하러 가기
             </StyleButton>
             <Modal
                 title={<span style={{ fontSize: '24px' }}>시험문제 스타일 설정하기</span>}
@@ -33,6 +33,7 @@ const PromptModal = ({
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={800}
+                wrapClassName="custom-modal-center"
                 style={{
                     fontFamily: 'Pretendard-Regular',
                 }}
@@ -67,3 +68,4 @@ const StyleButton = styled.button`
         background-color: #1187cf;
     }
 `;
+
