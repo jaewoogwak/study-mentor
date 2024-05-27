@@ -19,9 +19,11 @@ const FullPageScroll = () => {
                 <FullPageSections>
                     <FullpageSection
                         style={{
-                            // backgroundColor: 'lime',
                             height: '100vh',
                             padding: '1em',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                         }}
                     >
                         <PageWrapper>
@@ -47,6 +49,9 @@ const FullPageScroll = () => {
                         style={{
                             backgroundColor: '#FFF9E8',
                             padding: '1em',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                         }}
                     >
                         <SecondContainer>
@@ -70,8 +75,9 @@ const FullPageScroll = () => {
                                         marginTop: '39px',
                                     }}
                                 >
-                                    자신이 학습한 내용이 담긴 이미지 혹은 PDF<br></br>{' '}
-                                    파일을 업로드하여 시험 문제를 만들어보세요!
+                                    자신이 학습한 내용이 담긴 이미지 혹은 PDF
+                                    <br></br> 파일을 업로드하여 시험 문제를
+                                    만들어보세요!
                                 </Text>
                                 <FileUploadLink
                                     onClick={() => {
@@ -90,6 +96,9 @@ const FullPageScroll = () => {
                         style={{
                             // backgroundColor: 'firebrick',
                             padding: '1em',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                         }}
                     >
                         <SecondContainer>
@@ -152,20 +161,22 @@ const Image = styled.img`
 
 const Text = styled.div`
     font-size: ${(props) => props.fontsize || '16px'};
-    line-Height: 1.5;
+    line-height: 1.5;
 `;
 
 /**********************************/
 /*      첫 번째 페이지 스타일       */
 const PageWrapper = styled.div`
     display: flex;
+    // 아이템 가운데 정렬
     align-items: center;
     justify-content: center;
+
     // padding-bottom: 50px;
 `;
 
 const FirstContainer = styled.div`
-    margin-top: 218px;
+    // margin-top: 218px;
     display: flex;
     /* flex-direction: column; */
     align-items: center;
@@ -179,7 +190,6 @@ const FirstContainer = styled.div`
 /*      두 번째 페이지 스타일       */
 
 const SecondContainer = styled.div`
-    margin-top: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -192,8 +202,8 @@ const FileUploadLink = styled.button`
     font-size: 22px;
     margin-top: 32px;
     cursor: pointer;
-    border: 3px #FD9F28 dotted;
-    background-color: #FFCD4A;
+    border: 3px #fd9f28 dotted;
+    background-color: #ffcd4a;
     padding: 10px 25px;
     border-radius: 10px;
 
@@ -201,6 +211,6 @@ const FileUploadLink = styled.button`
     font-weight: bold;
 
     &:hover {
-        background-color: #FD9F28; 
+        background-color: #fd9f28;
     }
 `;
