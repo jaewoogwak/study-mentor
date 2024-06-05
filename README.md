@@ -11,6 +11,20 @@
 
 ![alt text](src/assets/로그인화면.png)
 
+![alt text](<src/assets/시험 문제 설정 화면.png>)
+
+![alt text](<src/assets/시험 문제 스타일 설정 화면.png>)
+
+![alt text](<src/assets/시험 문제 화면2.png>)
+
+![alt text](<src/assets/채점 중 화면 .png>)
+
+![alt text](<src/assets/채점 완료 화면.png>)
+
+![alt text](<src/assets/피드백 화면.png>)
+
+![alt text](<src/assets/챗봇 화면.png>)
+
 ### 주요 요소 기술
 
 -   **OCR (Optical Character Recognition):** 사용자의 학습자료에서 텍스트를 추출합니다.
