@@ -11,8 +11,6 @@
 
 ![alt text](src/assets/로그인화면.png)
 
-![alt text](<src/assets/시험 문제 설정 화면.png>)
-
 ![alt text](<src/assets/시험 문제 스타일 설정 화면.png>)
 
 ![alt text](<src/assets/시험 문제 화면2.png>)
@@ -69,16 +67,13 @@ npm run dev
 | 전경호 | AI         |
 | 윤아현 | Web, AI    |
 
-## 🧑🏻‍🔧 Technology Stack
+## Service Architecture
 
-| Role                 | Type              |
-| -------------------- | ----------------- |
-| Library              | React             |
-| Programming Language | JavaScript        |
-| Styling              | Styled Components |
-| Data Fetching        | Axios             |
-| Auth                 | Firebase          |
-| Hosting              | Netlify           |
+| Client            | Server        | AI              | Infra             | Database        |
+| ----------------- | ------------- | --------------- | ----------------- | --------------- |
+| React(Javascript) | Flask(Python) | GPT-4o          | Ubuntu (server)   | Google Firebase |
+|                   |               | GPT3.5-turbo    | AWS S3 (web)      |                 |
+|                   |               | Embedding model | Netlify (hosting) |                 |
 
 ## React + Vite
 
