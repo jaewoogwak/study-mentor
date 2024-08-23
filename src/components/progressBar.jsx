@@ -13,7 +13,7 @@ const ProgressBar = () => {
     const [subCount, setSubCount] = useState(0);
     const [deleting, setDeleting] = useState(false);
     const [currentWord, setCurrentWord] = useState(1);
-    // 4번 기준 1.5번? 돌아감.
+    
     const word1 = ['잠시만 기다려주세요.', '문제 생성 중입니다..'];
     const word2 = ['시험은 한 번만 제출 가능하니,', '신중하게 풀어보세요.'];
     const word3 = ['정답을 확인한 뒤,', '틀린 문제에 대한 피드백을 받으세요.'];

@@ -42,6 +42,13 @@ const FullPageHeader = () => {
                 >
                     챗봇
                 </ChatbotLink>
+                <CheckListLink
+                    to='/checklist'
+                    activeClassName='activeLink'
+                    style={({ isActive }) => (isActive ? activeStyle : {})}
+                >
+                    오답목록
+                </CheckListLink>
             </HeaderItemWrapper>
             <Logout
                 onClick={() => {
@@ -128,6 +135,10 @@ const FileUploadLink = styled(NavLink)`
     color: black;
     text-decoration: none;
     font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
 `;
 
 const ChatbotLink = styled(NavLink)`
@@ -136,6 +147,22 @@ const ChatbotLink = styled(NavLink)`
     text-decoration: none;
     color: black;
     font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
+`;
+
+const CheckListLink = styled(NavLink)`
+    /* margin-left: 42px; */
+    font-size: 24px;
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
 `;
 
 const Logout = styled.div`

@@ -25,6 +25,7 @@ import {
     useNavigate,
     // useLocation,
 } from 'react-router-dom';
+
 import Info1Svg from '../assets/info1.svg';
 import Info2Svg from '../assets/info2.svg';
 import LogoSvg from '../assets/logo.svg';
@@ -303,8 +304,6 @@ const NewChatbotPage = () => {
         </Wrapper>
     );
 };
-
-const Test = styled.div``;
 
 export default NewChatbotPage;
 

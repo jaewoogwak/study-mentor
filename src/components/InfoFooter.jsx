@@ -7,10 +7,10 @@ const InfoFooter = () => {
             <FooterInfo>
                 <FooterContent>
                     © 2024 Graduation Work Project In KoreaTech. All rights reserved.
-                    <br />Members
+                    <br /> Members: JaeWoo Gwak, KunWoo Kim, JunGon Kim, AHyeon Yoon, KyeongHo Kim
                 </FooterContent>
                 <FooterContent>
-                    Contact Us: <a href="mailto:info@company.com">info@company.com</a>
+                    Contact Us: <a href="mailto:info@company.com">studymentor@koreatech.ac.kr</a>
                 </FooterContent>
             </FooterInfo>
         </BoxContainer>
