@@ -107,7 +107,7 @@ const DataUpload = () => {
             const credits = [];
             const creditSnapshot = await getDocs(collection(db, 'credits'));
             creditSnapshot.forEach((doc) => {
-                console.log(`e ${doc.id} => ${doc.data()?.credit}`);
+                // console.log(`e ${doc.id} => ${doc.data()?.credit}`);
 
                 if (doc.data().email === currentUser) {
                     credits.push(doc.data()?.credit);
