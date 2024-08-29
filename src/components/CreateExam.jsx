@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 
 import styled from 'styled-components';
@@ -13,11 +13,9 @@ import axios from 'axios';
 import generatePDF from 'react-to-pdf';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
-
+import { set } from 'firebase/database';
 import { Spin } from 'antd';
 import Spinner from './Spinner';
-
-import { set } from 'firebase/database';
 import { useChatStore } from '../contexts/store';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
@@ -64,6 +62,7 @@ const CreateExam = ({ data, setData, credits }) => {
 
     const [submitHovering, setSubmitHovering] = useState(false);
 
+    // 채점 중인지 아닌지
     const [isGrading, setIsGrading] = useState(false);
 
     const {
@@ -73,6 +72,7 @@ const CreateExam = ({ data, setData, credits }) => {
         setOutgoingMessage,
         setIncomingMessage,
         setQuestionData,
+        questionData,
     } = useChatStore();
     const { user, login, logout } = useAuth();
 
@@ -85,6 +85,7 @@ const CreateExam = ({ data, setData, credits }) => {
         formState: { errors },
     } = useForm();
 
+    // 1. Exam Data 가져오기
     useEffect(() => {
         if (data?.length > 0) {
             const filteredQuestions = data.map((item, index) => ({
@@ -122,6 +123,7 @@ const CreateExam = ({ data, setData, credits }) => {
         }
     }, [data]);
 
+    // 2. Loacal Storage 저장
     useEffect(() => {
         localStorage.setItem('radioAnswers', JSON.stringify(radioAnswers));
         localStorage.setItem('textAnswers', JSON.stringify(textAnswers));
@@ -160,13 +162,13 @@ const CreateExam = ({ data, setData, credits }) => {
         setIsSubmitted(true);
 
         const testResults = [];
-
+   
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             let user_answers;
 
             if (question.type === 0) {
-                user_answers = parseInt(answer.split('')[0]);
+                user_answers = parseInt(answer.split('')[0]);  
             } else if (question.type === 1) {
                 user_answers = data[`question_${index}`];
             }
@@ -194,12 +196,14 @@ const CreateExam = ({ data, setData, credits }) => {
             }
 
             testResults.push(questionInfo);
+            console.log(testResults);
         });
 
         const feedbackResults = {
             FeedBackResults: testResults,
         };
 
+        // server 통신
         axios({
             url: `${import.meta.env.VITE_API_URL}/feedback/`,
             method: 'POST',
@@ -211,7 +215,7 @@ const CreateExam = ({ data, setData, credits }) => {
         })
             .then((response) => {
                 setIsGrading(false);
-                getScore(response.data);
+                getScore(response.data); // 받은 data를 getScore 함수로 전달
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -219,10 +223,11 @@ const CreateExam = ({ data, setData, credits }) => {
             });
     };
 
+    // server에서 받은 정답과 비교해야 함
     const getScore = (AnswerJson) => {
         let correctCount = 0;
         const newResults = {};
-        const newFeedbackMessages = {};
+        const newFeedbackMessages = {}; // feedback message 저장
 
         AnswerJson.forEach((answer) => {
             newResults[answer.index] =
@@ -261,6 +266,85 @@ const CreateExam = ({ data, setData, credits }) => {
         });
     };
 
+    // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
+    const findChatId = async () => {
+        console.log('USER info', user);
+        const currentUser = user.email;
+        const chats = [];
+        const messageSnapshot = await getDocs(collection(db, 'chats'));
+        messageSnapshot.forEach((doc) => {
+            if (doc.data().email === currentUser) {
+                chats.push(doc.id);
+            }
+        });
+        return chats[0];
+    };
+
+    const handleGoToChatBot_withQuest = async (
+        qid,
+        ques,
+        chc,
+        user_answer,
+        correct_answer
+    ) => {
+        const questionData = {
+            question: ques,
+            choices: chc,
+            userAnswer: user_answer,
+            correctAnswer: correct_answer,
+        };
+
+        const { question, choices, userAnswer, correctAnswer } = questionData;
+
+        const formattedChoices = Array.isArray(choices) ? choices : ['빈칸'];
+
+        const prompt = `문제 질문: ${question}
+                선택지: ${formattedChoices.join(', ')}
+                정답: ${correctAnswer}
+                나의 답안: ${userAnswer}\n
+                정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
+
+        setOutgoingMessage(prompt);
+        setQuestionData(prompt);
+
+        navigate('/chatbot');
+        setIsTyping(true);
+
+        const res = await sendMessage(prompt);
+
+        setIncomingMessage(res);
+
+        // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾기
+        const id = await findChatId();
+
+        // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션에 메시지 추가하기
+        const currentUserMessage = {
+            message: prompt,
+            sender: 'user',
+            direction: 'outgoing',
+        };
+
+        const chatRef = doc(db, 'chats', id);
+
+        updateDoc(chatRef, {
+            messages: [
+                ...messages,
+                currentUserMessage,
+                {
+                    message: res,
+                    sender: 'ChatGPT',
+                },
+            ],
+        });
+        // localStorage.setItem('examQuestion', JSON.stringify(questionData));
+
+        setIsTyping(false);
+    };
+
+    const handleGoToChatBot = () => {
+        window.open(`/chatbot`, '_blank');
+    };
+
     const clearAllLocalStorage = () => {
         setRadioAnswers({});
         setTextAnswers({});
@@ -272,14 +356,14 @@ const CreateExam = ({ data, setData, credits }) => {
         setIsFeedbackOpen(false);
         setFeedbackMessages(false);
 
-        window.location.reload();
+        window.location.reload(); // 새로고침
     };
 
     Modal.setAppElement('#root');
 
     return (
+        // 채점 중이면 화면을 검게 만들고 채점중이라는 메시지를 띄워야함. 또한 로딩 스핀도 추가해야함.
         <Wrapper>
-            {/* Spinner code */}
             {isGrading && isSubmitted && (
                 <div
                     style={{
@@ -308,6 +392,7 @@ const CreateExam = ({ data, setData, credits }) => {
                         }}
                     >
                         <Spinner />
+                        {/* 화면 크기에 맞는 폰트 크기 필요*/}
                         <div
                             style={{
                                 fontSize: '1.2rem',
@@ -319,8 +404,6 @@ const CreateExam = ({ data, setData, credits }) => {
                     </div>
                 </div>
             )}
-
-            {/* PDF 저장, 다운로드 code */}
             {data?.length > 0 && (
                 <ButtonWrapper>
                     <PDFGenerateButton
@@ -328,9 +411,10 @@ const CreateExam = ({ data, setData, credits }) => {
                         onClickHandle={() => {
                             setData(null);
                             localStorage.removeItem('examData');
+                            // local storage 초기화 및 refresh
                             clearAllLocalStorage();
                         }}
-                    />
+                    ></PDFGenerateButton>
                     <PDFDownloadButton
                         text={'문제 다운로드 하기'}
                         onClickHandle={() =>
@@ -338,12 +422,12 @@ const CreateExam = ({ data, setData, credits }) => {
                                 filename: 'study-mentor.pdf',
                             })
                         }
-                    />
+                    ></PDFDownloadButton>
+                    {/* <CreditWrapper>사용 가능 횟수: {credits}</CreditWrapper> */}
                 </ButtonWrapper>
             )}
 
             {data?.length == 0 && <div>Loading...</div>}
-            
             {data?.length > 0 && (
                 <MakeTest ref={targetRef}>
                     <ExamTitle>
@@ -367,11 +451,9 @@ const CreateExam = ({ data, setData, credits }) => {
                                         <QuestionText>
                                             {question.question}
                                             {errors[`question_${index}`] && (
-                                                <span
-                                                    style={{ color: 'green' }}
-                                                >
-                                                    {' '}
-                                                    입력되지 않았습니다.
+                                                <span style={{ color: 'green' }}>
+                                                {' '}
+                                                입력되지 않았습니다.
                                                 </span>
                                             )}
                                         </QuestionText>
@@ -478,11 +560,9 @@ const CreateExam = ({ data, setData, credits }) => {
                                                                           question
                                                                               .id
                                                                       ] ===
-                                                                      parseInt(
-                                                                          choice.split(
-                                                                              ''
-                                                                          )[0]
-                                                                      )
+                                                                      parseInt(choice.split(
+                                                                          ''
+                                                                      )[0])
                                                                     : null
                                                             }
                                                             {...register(
@@ -594,7 +674,7 @@ const CreateExam = ({ data, setData, credits }) => {
                                                                 question.question,
                                                                 question.choices,
                                                                 userAnswer,
-                                                                question.correct_answer,
+                                                                question.correct_answer
                                                             );
                                                         }}
                                                     >
@@ -660,7 +740,6 @@ const CreateExam = ({ data, setData, credits }) => {
                     </StyledTest>
                 </MakeTest>
             )}
-
             {data?.length > 0 && (
                 <ClearBox onClick={clearAllLocalStorage}>
                     <ClearText>다시 풀기(새로고침)</ClearText>
@@ -861,7 +940,7 @@ const ButtonContainer = styled.div`
     justify-content: flex-end;
     padding-top: 20px;
     margin-top: 20px;
-    flex-wrap: wrap; /* 모바일에서 버튼이 줄바꿈 가능하도록 설정 */
+    flex-wrap: initial; /* 모바일에서 버튼이 줄바꿈 가능하도록 설정 */
 `;
 
 const SubmitButton = styled.button`
@@ -875,9 +954,10 @@ const SubmitButton = styled.button`
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-right: 10px;
     font-family: 'Pretendard-Regular';
-
+    margin-right: 30px;
+    margin-left: 10px;
+    
     &:hover {
         background: #c2c2c2;
     }
@@ -924,6 +1004,7 @@ const AnswerButton = styled.button`
     font-weight: bold;
     cursor: pointer;
     font-family: 'Pretendard-Regular';
+    margin-left: 20px;
 
     &:hover {
         background: #ffc67e;
