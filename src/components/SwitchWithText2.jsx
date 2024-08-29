@@ -40,8 +40,7 @@ const StyledButton = styled.button`
     color: ${({ isActive }) => (isActive ? '#FFFFFF' : '#000000')}; 
     transition: background-color 0.3s ease, color 0.3s ease;
 
-    &:hover,
-    &:active {
+    &:hover, &:active {
         background-color: #5D6DBE; 
         color: white;
     }

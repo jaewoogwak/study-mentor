@@ -131,11 +131,10 @@ const SwitchInput = styled.input`
 `;
 
 const TextContainer = styled.div`
-    // margin-top: 20px;
 `;
 
 const ModalContainer = styled.div`
-    // margin: 20px;
+
 `;
 
 const ToggleWrapper = styled.div`

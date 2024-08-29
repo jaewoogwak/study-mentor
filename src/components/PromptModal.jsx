@@ -53,17 +53,13 @@ export default PromptModal;
 
 // const StyleButton = styled.button`
 //     padding: 7px 12px;
-
 //     border-radius: 5px;
 //     border: 3px #58CCFF solid;
-
 //     font-size: 16px;
 //     font-family: 'pretendard-Regular';
 //     // font-weight: bold;
-
 //     color: black;
 //     background: #B8E9FF;
-
 //     &:hover {
 //         background-color: #1187cf;
 //     }

@@ -190,7 +190,7 @@ const DescriptionWrapper = styled.div`
 `;
 
 const InfoImg = styled.img`
-    width: 280px;
+    width: 285px;
 `;
 
 const InfoText = styled.p`
