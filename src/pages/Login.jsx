@@ -1,16 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import login_main from '../assets/login_main.png';
-import login_left_circle from '../assets/login_left_circle.png';
-import login_right_circle from '../assets/login_right_circle.png';
 
 import google from '../assets/google.png';
-import {
-    getAuth,
-    signInWithPopup,
-    GoogleAuthProvider,
-    createUserWithEmailAndPassword,
-} from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
@@ -21,7 +14,7 @@ const provider = new GoogleAuthProvider();
 const NewLoginPage = () => {
     const auth = getAuth();
     const navigate = useNavigate();
-    const { user, login, logout } = useAuth();
+    const { user, login } = useAuth();
 
     const handleGoogleLogin = () => {
         signInWithPopup(auth, provider)
@@ -36,19 +29,15 @@ const NewLoginPage = () => {
                     });
 
                     if (!users.includes(result.user.email)) {
-                        const docRef = await addDoc(collection(db, 'users'), {
+                        await addDoc(collection(db, 'users'), {
                             email: result.user.email,
                             uid: result.user.uid,
                         });
 
-                        // credits 컬렉션에도 추가
-                        const docRefCredits = await addDoc(
-                            collection(db, 'credits'),
-                            {
-                                email: result.user.email,
-                                credit: 3,
-                            }
-                        );
+                        await addDoc(collection(db, 'credits'), {
+                            email: result.user.email,
+                            credit: 3,
+                        });
                     }
 
                     navigate('/');
@@ -64,132 +53,118 @@ const NewLoginPage = () => {
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
             login(user);
-            // user && navigate('/');
         });
     }, []);
 
     return (
-        <Container>
-            <Title>Study Mentor</Title>
-            <Description>ChatGPT 기반 스터디 멘토 플랫폼</Description>
-            <LoginButton
-                onClick={() => {
-                    handleGoogleLogin();
-                }}
-            >
-                로그인
-            </LoginButton>
-            <LoginImageContainer>
-                <LoginLeftCircle
-                    src={login_left_circle}
-                    alt='login_left_circle'
-                />
-                <LoginImage src={login_main} alt='login_main' />
-                <LoginRightCircle
-                    src={login_right_circle}
-                    alt='login_right_circle'
-                />
-            </LoginImageContainer>
-        </Container>
+        <OuterContainer>
+            <InnerContainer>
+                <Title>Study Mentor</Title>
+                <Description>ChatGPT 기반 스터디 멘토 플랫폼</Description>
+                <LoginButton onClick={handleGoogleLogin}>로그인</LoginButton>
+                <LoginImageContainer>
+                    <LoginImage src={login_main} alt='login_main' />
+                </LoginImageContainer>
+            </InnerContainer>
+        </OuterContainer>
     );
 };
 
 export default NewLoginPage;
 
-const Container = styled.div`
+const OuterContainer = styled.div`
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100%;
     background-color: rgb(253, 253, 253);
+
+    box-sizing: border-box;
+`;
+
+const InnerContainer = styled.div`
+    width: 100%;
+    max-width: 500px; /* 화면 중앙의 최대 너비 */
+    padding: 20px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @media (max-width: 768px) {
+        max-width: 90%; /* 모바일에서의 너비 조정 */
+        padding: 10px;
+    }
 `;
 
 const Title = styled.div`
     color: #fd9f28;
-    padding: 0;
     text-align: center;
-    margin-top: 41px;
-
-    font-size: 100px;
-    font-style: normal;
+    margin-top: 20px;
+    font-size: 60px;
     font-weight: 900;
+
+    @media (max-width: 768px) {
+        font-size: 40px;
+        margin-top: 10px;
+    }
 `;
 
 const Description = styled.div`
     margin-top: 10px;
     color: #000;
-
     text-align: center;
-    // font-family: 'Anek Kannada';
-    font-size: 40px;
-    font-style: normal;
+    font-size: 24px;
     font-weight: 600;
-    line-height: normal;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
 
 const LoginButton = styled.button`
-    width: 168px;
-    height: 62px;
-    margin-top: 38px;
-    flex-shrink: 0;
-    border-radius: 60px;
+    width: 150px;
+    height: 50px;
+    margin-top: 20px;
+    border-radius: 30px;
     border: 1px solid #fd9f28;
     background: rgba(253, 159, 40, 0.5);
-
-    text-align: center;
-    // font-family: Abel;
-    font-size: 24px;
-    font-style: normal;
-
+    font-size: 18px;
     cursor: pointer;
     &:hover {
         background: #fd9f28;
         color: #fff;
     }
-`;
 
-const LoginFont = styled.div`
-    color: #000;
-
-    text-align: center;
-    font-family: Abel;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+    @media (max-width: 768px) {
+        width: 120px;
+        height: 40px;
+        font-size: 16px;
+    }
 `;
 
 const LoginImageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50%;
-    height: 100%;
+    width: 100%;
+    margin-top: 20px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        margin-top: 10px;
+    }
 `;
 
 const LoginImage = styled.img`
-    margin-top: 38px;
-    width: 550px;
+    width: 300px;
     object-fit: contain;
     z-index: 3;
-    top: 20px;
     position: relative;
-`;
 
-const LoginLeftCircle = styled.img`
-    position: relative;
-    top: 80px;
-    left: 40px;
-    z-index: 1;
-    width: 300px;
-`;
-
-const LoginRightCircle = styled.img`
-    width: 300px;
-    position: relative;
-    top: 20px;
-    right: 40px;
-    z-index: 1;
+    @media (max-width: 768px) {
+        width: 80%;
+    }
 `;

@@ -1,37 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import LogoSvg from '../assets/logo.svg';
 import logo2 from '../assets/logo2.png';
-import title from '../assets/title.png';
-
-import { Link, useNavigate, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { auth } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
     const activeStyle = {
         color: '#6392ff',
     };
 
     const { user, login, logout } = useAuth();
 
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <HeaderWrapper>
-            <HeaderItemWrapper>
-                <TitleWrapper
-                    onClick={() => {
-                        window.location.href = '/';
-                    }}
-                >
-                    <LogoSvgWrapper src={logo2} alt='logo' />
+            <TitleWrapper onClick={() => (window.location.href = '/')}>
+                <LogoSvgWrapper src={logo2} alt='logo' />
+                <Title>Study Mentor</Title>
+            </TitleWrapper>
 
-                    <Title>Study Mentor</Title>
-                </TitleWrapper>
+            <MenuIcon onClick={toggleMenu}>
+                <div />
+                <div />
+                <div />
+            </MenuIcon>
 
+            <NavLinksOverlay isOpen={isOpen} onClick={toggleMenu} />
+
+            <NavLinks isOpen={isOpen}>
                 <FileUploadLink
                     to='/upload'
                     activeClassName='activeLink'
                     style={({ isActive }) => (isActive ? activeStyle : {})}
+                    onClick={toggleMenu}
                 >
                     파일 업로드
                 </FileUploadLink>
@@ -39,6 +46,7 @@ const Header = () => {
                     to='/chatbot'
                     activeClassName='activeLink'
                     style={({ isActive }) => (isActive ? activeStyle : {})}
+                    onClick={toggleMenu}
                 >
                     챗봇
                 </ChatbotLink>
@@ -46,116 +54,159 @@ const Header = () => {
                     to='/checklist'
                     activeClassName='activeLink'
                     style={({ isActive }) => (isActive ? activeStyle : {})}
+                    onClick={toggleMenu}
                 >
                     오답목록
                 </CheckListLink>
-            </HeaderItemWrapper>
-            <Logout
-                onClick={() => {
-                    auth.signOut();
-                    logout();
-                    window.location.href = '/login';
-                }}
-            >
-                로그아웃
-            </Logout>
+                <Logout
+                    onClick={() => {
+                        auth.signOut();
+                        logout();
+                        window.location.href = '/login';
+                    }}
+                >
+                    로그아웃
+                </Logout>
+            </NavLinks>
         </HeaderWrapper>
     );
 };
 
 export default Header;
 
-const LogoSvgWrapper = styled.img`
-    width: 60px;
-`;
-
-const HeaderItemWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-`;
-
 const HeaderWrapper = styled.div`
-    width: 100vw;
-    /* z-index: 100; */
-    /* position: fixed; */
+    width: 100%;
+    max-width: 100vw;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    flex-wrap: wrap;
-
+    align-items: center;
+    padding: 0 20px;
     height: 80px;
     border-bottom: 1px solid #e0e0e0;
-
-    padding-right: 30px;
     background-color: white;
+    box-sizing: border-box; /* 요소의 너비와 높이를 포함하여 패딩과 테두리가 모두 포함되도록 설정 */
+
+    @media (max-width: 768px) {
+        padding: 0 15px;
+    }
 `;
 
-const Logo = styled.div`
-    margin-left: 45px;
-    cursor: pointer;
-`;
-
-const LogoImage = styled.img`
-    width: 230px;
-    height: 50px;
-`;
 const TitleWrapper = styled.div`
     display: flex;
     gap: 10px;
     align-items: center;
-    justify-content: center;
-    margin-left: 45px;
-
     cursor: pointer;
+`;
+
+const LogoSvgWrapper = styled.img`
+    width: 60px;
 `;
 
 const Title = styled.div`
     color: #fd9f28;
-
-    text-align: center;
     font-size: 40px;
-    font-style: normal;
     font-weight: 900;
     line-height: normal;
+
+    @media (max-width: 768px) {
+        font-size: 24px;
+    }
+`;
+
+const MenuIcon = styled.div`
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+
+    div {
+        width: 100%;
+        height: 3px;
+        background-color: black;
+    }
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
+`;
+
+const NavLinksOverlay = styled.div`
+    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+`;
+
+const NavLinks = styled.div`
+    display: flex;
+    gap: 50px;
+
+    @media (max-width: 768px) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 75%;
+        max-width: 300px;
+        height: 100%;
+        background-color: white;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        padding: 100px 20px;
+        box-sizing: border-box;
+        z-index: 20;
+        transform: ${({ isOpen }) =>
+            isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+        transition: transform 0.3s ease-in-out;
+    }
 `;
 
 const FileUploadLink = styled(NavLink)`
-    margin-left: 125px;
     font-size: 24px;
     color: black;
     text-decoration: none;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
 
 const ChatbotLink = styled(NavLink)`
-    /* margin-left: 42px; */
     font-size: 24px;
     text-decoration: none;
     color: black;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
 
 const CheckListLink = styled(NavLink)`
-    /* margin-left: 42px; */
     font-size: 24px;
     text-decoration: none;
     color: black;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
 
 const Logout = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: 42px;
     font-size: 24px;
-    text-decoration: none;
     color: black;
     cursor: pointer;
     font-weight: 600;
-    margin-right: 30px;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;
