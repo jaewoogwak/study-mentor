@@ -2,7 +2,12 @@ import React from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
-const ScoreModal = ({ isOpen, onRequestClose, scoreData, totalQuestion }) => {
+const ScoreModal = ({ 
+    isOpen, 
+    onRequestClose, 
+    scoreData, 
+    totalQuestion }) => {
+        
     const { score } = scoreData;
 
     return (

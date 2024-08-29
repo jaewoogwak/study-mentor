@@ -5,6 +5,7 @@ const { Dragger } = Upload;
 import { Document, Page, pdfjs } from 'react-pdf';
 
 import styled from 'styled-components';
+
 import { set } from 'firebase/database';
 import { getStorage, ref } from 'firebase/storage';
 import {
@@ -13,11 +14,18 @@ import {
     uploadBytesResumable,
     deleteObject,
 } from 'firebase/storage';
+import { 
+    doc, 
+    setDoc, 
+    collection, 
+    addDoc } from 'firebase/firestore';
+import { db } from '../services/firebase';
+
 import PDFViewer from './PDFViewer';
 import PDFDownload from './PDFDownload';
 import { useAuth } from '../contexts/AuthContext';
+
 import axios from 'axios';
-// import ProgressViewer from './ProgressViewer';
 import ProgressBar from '../components/progressBar';
 
 const PDFUpload = ({
@@ -70,6 +78,20 @@ const PDFUpload = ({
         downloadFile();
     }, [fileState, examData, fileType, user, processState]);
     
+    // firebase에 examData 저장 - 실패..
+    const saveExamToFirebase = async (data) => {
+        if (data) {
+            try {
+                const docRef = await addDoc(collection(db, 'exams'), data);
+                console.log('Document written with ID: ', docRef.id);
+            } catch (e) {
+                console.error('Error adding document: ', e);
+            }
+        } else {
+            console.error('No data to save');
+        }
+    };
+
     const styles = {
         width: '700px',
         display: 'flex',
@@ -156,7 +178,12 @@ const PDFUpload = ({
                     setFileType('pdf');
 
                     setExamData(response.data);
-                    // 로컬 스토리지에 data 저장
+
+                    // 1. Firebase에 examdata 저장
+                    saveExamToFirebase(response.data);
+                    console.log("ExamData save success in Firebase!")
+                    
+                    // 2. 로컬 스토리지에 examdata 저장
                     localStorage.setItem(
                         'examData',
                         JSON.stringify(response.data)
@@ -259,7 +286,8 @@ const PDFUpload = ({
         </PDFViewerWrapper>
     ) : fileState === 'error' ? (
         <StatusWrapper>
-            파일 업로드에 실패했어요. 다시 시도해 주세요.
+            파일 업로드에 실패했어요. <br/>
+            새로고침 후 다시 시도해 주세요.
         </StatusWrapper>
     ) : (
         <Dragger

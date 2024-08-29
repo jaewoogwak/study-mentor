@@ -13,9 +13,11 @@ import axios from 'axios';
 import generatePDF from 'react-to-pdf';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
-import { set } from 'firebase/database';
+
 import { Spin } from 'antd';
 import Spinner from './Spinner';
+
+import { set } from 'firebase/database';
 import { useChatStore } from '../contexts/store';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
@@ -74,6 +76,7 @@ const CreateExam = ({ data, setData, credits }) => {
         setQuestionData,
         questionData,
     } = useChatStore();
+
     const { user, login, logout } = useAuth();
 
     const targetRef = useRef();
@@ -362,8 +365,8 @@ const CreateExam = ({ data, setData, credits }) => {
     Modal.setAppElement('#root');
 
     return (
-        // 채점 중이면 화면을 검게 만들고 채점중이라는 메시지를 띄워야함. 또한 로딩 스핀도 추가해야함.
         <Wrapper>
+            {/* Spinner code */}
             {isGrading && isSubmitted && (
                 <div
                     style={{
@@ -404,6 +407,8 @@ const CreateExam = ({ data, setData, credits }) => {
                     </div>
                 </div>
             )}
+
+            {/* PDF 저장, 다운로드 code */}
             {data?.length > 0 && (
                 <ButtonWrapper>
                     <PDFGenerateButton
@@ -428,6 +433,7 @@ const CreateExam = ({ data, setData, credits }) => {
             )}
 
             {data?.length == 0 && <div>Loading...</div>}
+            
             {data?.length > 0 && (
                 <MakeTest ref={targetRef}>
                     <ExamTitle>
@@ -674,7 +680,7 @@ const CreateExam = ({ data, setData, credits }) => {
                                                                 question.question,
                                                                 question.choices,
                                                                 userAnswer,
-                                                                question.correct_answer
+                                                                question.correct_answer,
                                                             );
                                                         }}
                                                     >
@@ -740,6 +746,7 @@ const CreateExam = ({ data, setData, credits }) => {
                     </StyledTest>
                 </MakeTest>
             )}
+
             {data?.length > 0 && (
                 <ClearBox onClick={clearAllLocalStorage}>
                     <ClearText>다시 풀기(새로고침)</ClearText>
