@@ -1,5 +1,5 @@
 import { Switch, Button } from 'antd';
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ExamNumberInput from '../components/ExamNumberInput';
 import PromptModal from './PromptModal';
@@ -55,12 +55,13 @@ const ExamSetting = ({
             }
         }
     };
+
     return (
         <UploadInfoContainer>
             <OverlayBox>How To Make?</OverlayBox>
             <h1 style={{ marginTop: '10px' }}>시험 문제 생성 설정</h1>
             <p style={{ marginTop: '20px' }}>
-                1. 생성할 시험 문제 개수와 유형을 선택하세요. (혼합 선택 가능){' '}
+                1. 생성할 시험 문제 개수와 유형을 선택하세요. (혼합 선택 가능)
             </p>
             <SettingWrapper>
                 <SwitchWrapper>
@@ -71,11 +72,6 @@ const ExamSetting = ({
                         max={10}
                         value={multipleChoice}
                         onChange={handleMultipleChoiceChange}
-                        style={{
-                            width: '60px',
-                            height: '20px',
-                            fontSize: '15px',
-                        }}
                     />
                 </SwitchWrapper>
 
@@ -85,20 +81,14 @@ const ExamSetting = ({
                         type='number'
                         min={1}
                         max={10}
-                        // defaultValue={2}
                         value={shortAnswer}
                         onChange={handleShortAnswerChange}
-                        style={{
-                            width: '60px',
-                            height: '20px',
-                            fontSize: '15px',
-                        }}
                     />
                 </SwitchWrapper>
 
                 <TextContainer>
                     <p style={{ marginBottom: '20px' }}>
-                        2. 학습 자료를 어떠한 방식으로 분석할지 선택해주세요.{' '}
+                        2. 학습 자료를 어떠한 방식으로 분석할지 선택해주세요.
                     </p>
                     <ToggleWrapper>
                         <SwitchWithText
@@ -156,6 +146,12 @@ const UploadInfoContainer = styled.div`
     border-radius: 10px;
     border: 2px solid grey;
     padding: 30px 30px 50px 30px;
+
+    @media (max-width: 768px) {
+        width: 90%; /* 모바일에서는 전체 너비의 90%를 차지 */
+        padding: 20px; /* 모바일에서 패딩 조정 */
+        height: auto; /* 높이는 자동으로 조정 */
+    }
 `;
 
 const SettingWrapper = styled.div`
@@ -179,6 +175,11 @@ const SwitchInput = styled.input`
     padding: 5px;
     text-align: center;
     border: 2px solid;
+
+    @media (max-width: 768px) {
+        width: 50px; /* 모바일에서 입력 필드 너비 조정 */
+        height: 30px; /* 모바일에서 높이 조정 */
+    }
 `;
 
 const TextContainer = styled.div`
@@ -203,7 +204,7 @@ const CustomPromptRecommandWrapper = styled.div`
     align-items: center;
 
     text-align: center;
-    font-family: "GmarketSansMedium";
+    font-family: 'GmarketSansMedium';
 `;
 
 const CustomPromptRecommand = styled.div`

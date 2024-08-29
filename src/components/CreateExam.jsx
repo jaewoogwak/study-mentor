@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 
 import styled from 'styled-components';
@@ -13,7 +13,6 @@ import axios from 'axios';
 import generatePDF from 'react-to-pdf';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
-import { set } from 'firebase/database';
 import { Spin } from 'antd';
 import Spinner from './Spinner';
 import { useChatStore } from '../contexts/store';
@@ -62,7 +61,6 @@ const CreateExam = ({ data, setData, credits }) => {
 
     const [submitHovering, setSubmitHovering] = useState(false);
 
-    // 채점 중인지 아닌지
     const [isGrading, setIsGrading] = useState(false);
 
     const {
@@ -72,9 +70,8 @@ const CreateExam = ({ data, setData, credits }) => {
         setOutgoingMessage,
         setIncomingMessage,
         setQuestionData,
-        questionData,
     } = useChatStore();
-    const { user, login, logout } = useAuth();
+    const { user } = useAuth();
 
     const targetRef = useRef();
 
@@ -85,7 +82,6 @@ const CreateExam = ({ data, setData, credits }) => {
         formState: { errors },
     } = useForm();
 
-    // 1. Exam Data 가져오기
     useEffect(() => {
         if (data?.length > 0) {
             const filteredQuestions = data.map((item, index) => ({
@@ -123,7 +119,6 @@ const CreateExam = ({ data, setData, credits }) => {
         }
     }, [data]);
 
-    // 2. Loacal Storage 저장
     useEffect(() => {
         localStorage.setItem('radioAnswers', JSON.stringify(radioAnswers));
         localStorage.setItem('textAnswers', JSON.stringify(textAnswers));
@@ -162,13 +157,13 @@ const CreateExam = ({ data, setData, credits }) => {
         setIsSubmitted(true);
 
         const testResults = [];
-   
+
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             let user_answers;
 
             if (question.type === 0) {
-                user_answers = parseInt(answer.split('')[0]);  
+                user_answers = parseInt(answer.split('')[0]);
             } else if (question.type === 1) {
                 user_answers = data[`question_${index}`];
             }
@@ -196,14 +191,12 @@ const CreateExam = ({ data, setData, credits }) => {
             }
 
             testResults.push(questionInfo);
-            console.log(testResults);
         });
 
         const feedbackResults = {
             FeedBackResults: testResults,
         };
 
-        // server 통신
         axios({
             url: `${import.meta.env.VITE_API_URL}/feedback/`,
             method: 'POST',
@@ -215,7 +208,7 @@ const CreateExam = ({ data, setData, credits }) => {
         })
             .then((response) => {
                 setIsGrading(false);
-                getScore(response.data); // 받은 data를 getScore 함수로 전달
+                getScore(response.data);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -223,11 +216,10 @@ const CreateExam = ({ data, setData, credits }) => {
             });
     };
 
-    // server에서 받은 정답과 비교해야 함
     const getScore = (AnswerJson) => {
         let correctCount = 0;
         const newResults = {};
-        const newFeedbackMessages = {}; // feedback message 저장
+        const newFeedbackMessages = {};
 
         AnswerJson.forEach((answer) => {
             newResults[answer.index] =
@@ -266,85 +258,6 @@ const CreateExam = ({ data, setData, credits }) => {
         });
     };
 
-    // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
-    const findChatId = async () => {
-        console.log('USER info', user);
-        const currentUser = user.email;
-        const chats = [];
-        const messageSnapshot = await getDocs(collection(db, 'chats'));
-        messageSnapshot.forEach((doc) => {
-            if (doc.data().email === currentUser) {
-                chats.push(doc.id);
-            }
-        });
-        return chats[0];
-    };
-
-    const handleGoToChatBot_withQuest = async (
-        qid,
-        ques,
-        chc,
-        user_answer,
-        correct_answer
-    ) => {
-        const questionData = {
-            question: ques,
-            choices: chc,
-            userAnswer: user_answer,
-            correctAnswer: correct_answer,
-        };
-
-        const { question, choices, userAnswer, correctAnswer } = questionData;
-
-        const formattedChoices = Array.isArray(choices) ? choices : ['빈칸'];
-
-        const prompt = `문제 질문: ${question}
-                선택지: ${formattedChoices.join(', ')}
-                정답: ${correctAnswer}
-                나의 답안: ${userAnswer}\n
-                정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
-
-        setOutgoingMessage(prompt);
-        setQuestionData(prompt);
-
-        navigate('/chatbot');
-        setIsTyping(true);
-
-        const res = await sendMessage(prompt);
-
-        setIncomingMessage(res);
-
-        // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾기
-        const id = await findChatId();
-
-        // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션에 메시지 추가하기
-        const currentUserMessage = {
-            message: prompt,
-            sender: 'user',
-            direction: 'outgoing',
-        };
-
-        const chatRef = doc(db, 'chats', id);
-
-        updateDoc(chatRef, {
-            messages: [
-                ...messages,
-                currentUserMessage,
-                {
-                    message: res,
-                    sender: 'ChatGPT',
-                },
-            ],
-        });
-        // localStorage.setItem('examQuestion', JSON.stringify(questionData));
-
-        setIsTyping(false);
-    };
-
-    const handleGoToChatBot = () => {
-        window.open(`/chatbot`, '_blank');
-    };
-
     const clearAllLocalStorage = () => {
         setRadioAnswers({});
         setTextAnswers({});
@@ -356,13 +269,12 @@ const CreateExam = ({ data, setData, credits }) => {
         setIsFeedbackOpen(false);
         setFeedbackMessages(false);
 
-        window.location.reload(); // 새로고침
+        window.location.reload();
     };
 
     Modal.setAppElement('#root');
 
     return (
-        // 채점 중이면 화면을 검게 만들고 채점중이라는 메시지를 띄워야함. 또한 로딩 스핀도 추가해야함.
         <Wrapper>
             {isGrading && isSubmitted && (
                 <div
@@ -392,7 +304,6 @@ const CreateExam = ({ data, setData, credits }) => {
                         }}
                     >
                         <Spinner />
-                        {/* 화면 크기에 맞는 폰트 크기 필요*/}
                         <div
                             style={{
                                 fontSize: '1.2rem',
@@ -411,10 +322,9 @@ const CreateExam = ({ data, setData, credits }) => {
                         onClickHandle={() => {
                             setData(null);
                             localStorage.removeItem('examData');
-                            // local storage 초기화 및 refresh
                             clearAllLocalStorage();
                         }}
-                    ></PDFGenerateButton>
+                    />
                     <PDFDownloadButton
                         text={'문제 다운로드 하기'}
                         onClickHandle={() =>
@@ -422,8 +332,7 @@ const CreateExam = ({ data, setData, credits }) => {
                                 filename: 'study-mentor.pdf',
                             })
                         }
-                    ></PDFDownloadButton>
-                    {/* <CreditWrapper>사용 가능 횟수: {credits}</CreditWrapper> */}
+                    />
                 </ButtonWrapper>
             )}
 
@@ -451,9 +360,11 @@ const CreateExam = ({ data, setData, credits }) => {
                                         <QuestionText>
                                             {question.question}
                                             {errors[`question_${index}`] && (
-                                                <span style={{ color: 'green' }}>
-                                                {' '}
-                                                입력되지 않았습니다.
+                                                <span
+                                                    style={{ color: 'green' }}
+                                                >
+                                                    {' '}
+                                                    입력되지 않았습니다.
                                                 </span>
                                             )}
                                         </QuestionText>
@@ -560,9 +471,11 @@ const CreateExam = ({ data, setData, credits }) => {
                                                                           question
                                                                               .id
                                                                       ] ===
-                                                                      parseInt(choice.split(
-                                                                          ''
-                                                                      )[0])
+                                                                      parseInt(
+                                                                          choice.split(
+                                                                              ''
+                                                                          )[0]
+                                                                      )
                                                                     : null
                                                             }
                                                             {...register(
@@ -753,40 +666,54 @@ export default CreateExam;
 
 const Wrapper = styled.div`
     margin-top: 10px;
+    padding: 0 10px; /* 모바일에 맞게 패딩 추가 */
 `;
 
 const ButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
     gap: 10px;
+    flex-wrap: wrap; /* 모바일에 맞게 버튼을 줄바꿈 가능하도록 설정 */
 `;
 
 const MakeTest = styled.div`
     padding: 20px;
     margin: 50px auto 20px auto;
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
     border: 3px solid;
+    box-sizing: border-box; /* 모바일에 맞게 박스 크기를 조정 */
 `;
 
 const ExamTitle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap; /* 모바일에서 로고와 제목이 겹치지 않도록 설정 */
 `;
 
 const Title = styled.div`
     color: #000;
     text-align: center;
-    font-size: 45px;
+    font-size: 32px; /* 모바일에 맞게 폰트 크기 조정 */
     font-style: normal;
     font-weight: bold;
     line-height: normal;
+
+    @media (min-width: 768px) {
+        font-size: 45px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const LogoImg = styled.img`
-    height: 70px;
+    height: 50px; /* 모바일에 맞게 로고 크기 조정 */
     width: auto;
-    margin-right: 20px;
+    margin-right: 10px;
+
+    @media (min-width: 768px) {
+        height: 70px; /* 데스크탑에서는 기존 크기 */
+        margin-right: 20px;
+    }
 `;
 
 const Info = styled.div`
@@ -795,14 +722,22 @@ const Info = styled.div`
     align-items: center;
     gap: 10px;
     margin: 25px 0 20px 10px;
-    font-size: 20px;
+    font-size: 18px; /* 모바일에 맞게 폰트 크기 조정 */
+
+    @media (min-width: 768px) {
+        font-size: 20px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const InfoLine = styled.div`
     display: inline-block;
     border-bottom: 2px solid black;
-    width: 150px;
+    width: 100px; /* 모바일에 맞게 너비 조정 */
     height: 20px;
+
+    @media (min-width: 768px) {
+        width: 150px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const Line = styled.div`
@@ -814,9 +749,13 @@ const Line = styled.div`
 `;
 
 const StyledTest = styled.form`
-    margin-left: 20px;
+    margin-left: 0;
     padding: 20px;
     box-sizing: border-box;
+
+    @media (min-width: 768px) {
+        margin-left: 20px; /* 데스크탑에서는 기존 마진 */
+    }
 `;
 
 const TestContainer = styled.div`
@@ -837,14 +776,20 @@ const QuestionRow = styled.div`
     align-items: center;
     margin-bottom: 10px;
     position: relative;
+    flex-wrap: wrap; /* 모바일에서 줄바꿈 가능하도록 설정 */
 `;
 
 const IndexText = styled.a`
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px; /* 모바일에 맞게 폰트 크기 조정 */
     margin-right: 8px;
+
     &.incorrect {
         color: red;
+    }
+
+    @media (min-width: 768px) {
+        font-size: 20px; /* 데스크탑에서는 기존 크기 */
     }
 `;
 
@@ -853,15 +798,24 @@ const ImageOverlay = styled.img`
     top: 50%;
     transform: translate(-50%, -50%);
     left: 10px;
-    width: 50px;
-    height: 50px;
+    width: 30px; /* 모바일에 맞게 이미지 크기 조정 */
+    height: 30px;
+
+    @media (min-width: 768px) {
+        width: 50px; /* 데스크탑에서는 기존 크기 */
+        height: 50px;
+    }
 `;
 
 const QuestionText = styled.a`
     flex: 1;
     text-align: left;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
+
+    @media (min-width: 768px) {
+        font-size: 18px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const QuestionDetails = styled.div`
@@ -872,17 +826,21 @@ const QuestionDetails = styled.div`
 const RadioLabel = styled.label`
     margin-bottom: 5px;
     text-align: left;
-    font-size: 17px;
+    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
     cursor: pointer;
 
     input[type='radio'] {
         margin-right: 10px;
         transform: scale(1.2);
     }
+
+    @media (min-width: 768px) {
+        font-size: 17px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const TextInput = styled.input`
-    width: 50%;
+    width: 100%; /* 모바일에서 입력 필드가 화면에 맞게 조정되도록 설정 */
     padding: 12px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -895,15 +853,17 @@ const ButtonContainer = styled.div`
     justify-content: flex-end;
     padding-top: 20px;
     margin-top: 20px;
+    flex-wrap: wrap; /* 모바일에서 버튼이 줄바꿈 가능하도록 설정 */
 `;
 
 const SubmitButton = styled.button`
-    width: 120px;
+    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
     border: 3px solid #787878;
     background: #eeeeee;
-    font-size: 18px;
+    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -916,6 +876,10 @@ const SubmitButton = styled.button`
 
     &:active {
         background: #9e9e9e;
+    }
+
+    @media (min-width: 768px) {
+        font-size: 18px; /* 데스크탑에서는 기존 크기 */
     }
 `;
 
@@ -930,20 +894,25 @@ const WarningMessage = styled.div`
     margin-bottom: 10px;
     border: 2px #fd8a69 solid;
     border-radius: 10px;
-    font-size: 17px;
+    font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     white-space: nowrap;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     z-index: 10;
+
+    @media (min-width: 768px) {
+        font-size: 17px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const AnswerButton = styled.button`
-    width: 120px;
+    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
     border: 3px solid #ffc67e;
     background: #feebb6;
-    font-size: 18px;
+    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
     font-family: 'Pretendard-Regular';
@@ -955,15 +924,20 @@ const AnswerButton = styled.button`
     &:active {
         background: #ffc67e;
     }
+
+    @media (min-width: 768px) {
+        font-size: 18px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const QuestButton = styled.button`
-    width: 120px;
+    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
     border: 3px solid #ffab93;
     background: #ffe1d9;
-    font-size: 18px;
+    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -977,21 +951,28 @@ const QuestButton = styled.button`
     &:active {
         background: #ffab93;
     }
+
+    @media (min-width: 768px) {
+        font-size: 18px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const ExplainHelp = styled.p`
-    font-size: 15px;
+    font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
     text-align: left;
     padding: 15px;
     margin: 15px 0;
     border: 4px #fd9f28 dotted;
     background-color: #fff3e3;
     border-radius: 5px;
+
+    @media (min-width: 768px) {
+        font-size: 15px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const ClearBox = styled.div`
     text-align: right;
-    // margin-bottom: 50px;
     margin-right: 30px;
 `;
 
@@ -1025,19 +1006,23 @@ const ChatBotButton = styled.button`
     font-family: 'Pretendard-Regular';
     font-size: 15px;
     font-weight: bold;
+
+    @media (min-width: 768px) {
+        font-size: 16px;
+    }
 `;
 
 const CreditWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; // 추가
+    align-items: center;
     font-size: 16px;
-    color: #333; // 텍스트 색상 추가
-    background-color: #f9f9f9; // 배경 색상 추가
-    padding: 20px; // 패딩 추가
-    border-radius: 10px; // 모서리 둥글게
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // 그림자 추가
-    margin-bottom: 20px; // 하단 여백 추가
-    text-align: center; // 텍스트 중앙 정렬
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center;
 `;
