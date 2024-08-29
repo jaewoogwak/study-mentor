@@ -1,6 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-// import './NewChatbotPage.css';
-
 import { auth, db } from '../services/firebase';
 import {
     collection,
@@ -10,37 +8,23 @@ import {
     doc,
     getDoc,
 } from 'firebase/firestore';
-
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {
     MainContainer,
     ChatContainer,
     MessageList,
     Message,
-    MessageInput,
     TypingIndicator,
 } from '@chatscope/chat-ui-kit-react';
-import {
-    Link,
-    useNavigate,
-    // useLocation,
-} from 'react-router-dom';
-
-import Info1Svg from '../assets/info1.svg';
-import Info2Svg from '../assets/info2.svg';
-import LogoSvg from '../assets/logo.svg';
-import ChatMentor from '../assets/chat_mentor.png'
-
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar';
-
 import '../styles/ChatBotCustom.css';
-import { onAuthStateChanged } from 'firebase/auth';
 import { useAuth } from '../contexts/AuthContext';
-import { set } from 'firebase/database';
 import Header from '../components/Header';
 import InfoFooter from '../components/InfoFooter';
 import { useChatStore } from '../contexts/store';
+import ChatMentor from '../assets/chat_mentor.png';
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -63,41 +47,29 @@ const NewChatbotPage = () => {
             sender: 'user',
         };
 
-        console.log('handle send', messages);
-
-        // 메시지 목록에 새 메시지 추가
         setMessages([...messages, newMessage]);
 
         setIsTyping(true);
 
-        // 서버로 메시지 전송
         await sendTextToServer(message);
     };
 
-    // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
     const findChatId = async () => {
-        // console.log('user', user.email);
         const currentUser = user.email;
         const chats = [];
         const messageSnapshot = await getDocs(collection(db, 'chats'));
         messageSnapshot.forEach((doc) => {
-            console.log(`e ${doc.id} => ${doc.data()?.email}`);
-
             if (doc.data().email === currentUser) {
                 chats.push(doc.id);
             }
         });
-        console.log('chats id ', chats[0]);
         return chats[0];
     };
 
     async function sendTextToServer(text) {
-        console.log('sendTextToServer', text);
         const address = `${
             import.meta.env.VITE_API_URL
         }/chatbot/question-answer`;
-
-        console.log('address', address, import.meta.env.VITE_API_URL);
 
         await fetch(address, {
             method: 'POST',
@@ -124,10 +96,7 @@ const NewChatbotPage = () => {
                     },
                 ]);
 
-                // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾기
                 const id = await findChatId();
-
-                // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션에 메시지 추가하기
                 const currentUserMessage = {
                     message: text,
                     sender: 'user',
@@ -148,7 +117,6 @@ const NewChatbotPage = () => {
 
                 setIsTyping(false);
             })
-
             .catch((error) => console.error('Error:', error));
     }
 
@@ -162,12 +130,9 @@ const NewChatbotPage = () => {
         });
 
         const getMessages = async () => {
-            console.log('getMessages');
             const currentUserFBId = await findChatId();
 
-            // chats에 유저 채팅 정보가 없으면 새로 생성
             if (!currentUserFBId) {
-                console.log('유저정보없다');
                 const docRef = await addDoc(collection(db, 'chats'), {
                     email: user.email,
                     messages: [
@@ -178,19 +143,15 @@ const NewChatbotPage = () => {
                         },
                     ],
                 });
-                console.log('Document written with ID: ', docRef.id);
             }
 
-            // 유저의 메시지 가져오기
             const chatRef = doc(db, 'chats', currentUserFBId);
             const chatSnapshot = await getDoc(chatRef);
 
             if (chatSnapshot.exists()) {
                 const chatData = chatSnapshot.data();
-                console.log('Document data:', chatData);
                 const messages = chatData.messages;
 
-                // 시험문제 페이지에서 질문하기를 눌러서 questionData가 있으면 그것까지 messages에 추가
                 if (questionData) {
                     messages.push({
                         message: questionData,
@@ -199,39 +160,11 @@ const NewChatbotPage = () => {
                     });
                     setQuestionData(null);
                 }
-                console.log('##### messages', messages);
                 setMessages(messages);
-            } else {
-                console.log('No such document!');
-            }
-        };
-
-        const QuestionMessages = async () => {
-            // 시험 문제 페이지에서 질문하기를 눌러서 LocalStorage에 저장한 문제가 있으면 챗봇에게 전송
-            const storedQuestion = localStorage.getItem('examQuestion');
-            if (storedQuestion) {
-                const { question, choices, userAnswer, correctAnswer } =
-                    JSON.parse(storedQuestion);
-
-                const formattedChoices = Array.isArray(choices)
-                    ? choices
-                    : ['빈칸'];
-
-                const prompt = `문제 질문: ${question}
-                선택지: ${formattedChoices.join(', ')}
-                정답: ${correctAnswer}
-                나의 답안: ${userAnswer}\n
-                정답과 나의 답안을 비교하여 자세한 설명을 해줘.`;
-
-                await handleSend(prompt);
-
-                localStorage.removeItem('examQuestion');
             }
         };
 
         getMessages();
-
-        // QuestionMessages();
     }, [user, login, navigate, setMessages]);
 
     return (
@@ -240,33 +173,31 @@ const NewChatbotPage = () => {
             <Main>
                 {messages.length === 1 ? (
                     <ChatListWraper>
-                            <InfoWrapper>
-                                <ChatWrapper>
-                                    <MainImg src={ChatMentor} alt='chatmentor' />
-                                    <TextContainer>
-                                        <MainText>Chatting with a Mentor</MainText>
-                                        <p style = {{fontSize: '17px'}}>모르는 것에 대해 자유롭게 질문해보세요.</p>
-                                    </TextContainer>
-                                </ChatWrapper>
-
-                                {/* <InfoBox src={Info2Svg} alt='info2' />
-                                <InfoText>이런 방식으로 질문해요</InfoText> */}
-
-                                <QuestionList>
-                                    <ImageTypeWrapper>
-                                        <InfoText>
-                                            Python class의 개념에 대해
-                                            <br /> 객관식 문제를 만들어줘
-                                        </InfoText>
-                                    </ImageTypeWrapper>
-                                    <ImageTypeWrapper>
-                                        <InfoText>
-                                            내가 입력한 파일에서 <br />
-                                            주관식 문제를 만들어줘
-                                        </InfoText>
-                                    </ImageTypeWrapper>
-                                </QuestionList>
-                            </InfoWrapper>
+                        <InfoWrapper>
+                            <ChatWrapper>
+                                <MainImg src={ChatMentor} alt='chatmentor' />
+                                <TextContainer>
+                                    <MainText>Chatting with a Mentor</MainText>
+                                    <p style={{ fontSize: '17px' }}>
+                                        모르는 것에 대해 자유롭게 질문해보세요.
+                                    </p>
+                                </TextContainer>
+                            </ChatWrapper>
+                            <QuestionList>
+                                <ImageTypeWrapper>
+                                    <InfoText>
+                                        Python class의 개념에 대해
+                                        <br /> 객관식 문제를 만들어줘
+                                    </InfoText>
+                                </ImageTypeWrapper>
+                                <ImageTypeWrapper>
+                                    <InfoText>
+                                        내가 입력한 파일에서 <br />
+                                        주관식 문제를 만들어줘
+                                    </InfoText>
+                                </ImageTypeWrapper>
+                            </QuestionList>
+                        </InfoWrapper>
                         <SearchBar
                             placeholder={'챗봇에게 물어볼 질문을 작성해주세요'}
                             onSend={handleSend}
@@ -285,7 +216,6 @@ const NewChatbotPage = () => {
                                     }
                                 >
                                     {messages.map((message, i) => {
-                                        console.log(message);
                                         return (
                                             <Message key={i} model={message} />
                                         );
@@ -312,37 +242,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Logo = styled.div`
-    margin-left: 45px;
-`;
-
-const Title = styled.div`
-    margin-left: 17px;
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 18px 18px;
-`;
-
-const FileUploadLink = styled(Link)`
-    margin-left: 125px;
-    font-size: 24px;
-    color: #ab41ff;
-    text-decoration: none;
-`;
-
-const ChatbotLink = styled(Link)`
-    margin-left: 42px;
-    font-size: 24px;
-    text-decoration: none;
-    color: black;
-`;
-
-const MainWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    height: calc(100vh - 74px);
-`;
-
 const Main = styled.main`
     display: flex;
     flex-direction: column;
@@ -360,62 +259,82 @@ const InfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    // width: 320px;
-    wdith: 100%;
+    width: 100%;
     height: 500px;
+
+    @media (max-width: 768px) {
+        padding: 20px;
+        height: auto; /* 모바일에서는 높이 자동 조정 */
+    }
 `;
 
 const ChatWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    
     gap: 30px;
     margin-top: 140px;
     margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        flex-direction: column; /* 모바일에서는 수직 정렬 */
+        margin-top: 20px;
+        margin-bottom: 20px;
+        gap: 10px; /* 간격 조정 */
+    }
 `;
 
 const TextContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+    text-align: center; /* 모바일에서 텍스트 중앙 정렬 */
+
+    @media (max-width: 768px) {
+        gap: 5px; /* 모바일에서는 간격 조정 */
+    }
 `;
 
 const MainImg = styled.img`
     width: 90px;
     height: 90px;
+
+    @media (max-width: 768px) {
+        width: 70px;
+        height: 70px; /* 모바일에서는 이미지 크기 조정 */
+    }
 `;
 
 const MainText = styled.h2`
     font-size: 35px;
-`;
 
-const InfoBox = styled.img`
-    width: 47px;
-    height: 47px;
-    margin-bottom: 15px;
+    @media (max-width: 768px) {
+        font-size: 24px; /* 모바일에서는 폰트 크기 조정 */
+    }
 `;
 
 const InfoText = styled.div`
     font-size: 18px;
     font-weight: 500;
     line-height: 30px;
+    text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 16px; /* 모바일에서는 폰트 크기 조정 */
+        line-height: 24px; /* 모바일에서 줄 간격 조정 */
+    }
 `;
 
 const QuestionList = styled.div`
     display: flex;
     gap: 17px;
     margin-top: 140px;
-`;
 
-const QuestionWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 320px;
-    height: 92px;
-    background-color: #fff0f6;
-    border-radius: 10px;
+    @media (max-width: 768px) {
+        flex-direction: column; /* 모바일에서는 수직 정렬 */
+        margin-top: 20px;
+        gap: 10px; /* 간격 조정 */
+    }
 `;
 
 const ImageTypeWrapper = styled.div`
@@ -426,6 +345,11 @@ const ImageTypeWrapper = styled.div`
     height: 85px;
     background-color: #f0f8ff;
     border-radius: 10px;
+
+    @media (max-width: 768px) {
+        width: 100%; /* 모바일에서는 너비 100% */
+        height: 60px; /* 모바일에서는 높이 조정 */
+    }
 `;
 
 const Container = styled.div`
@@ -436,12 +360,22 @@ const Container = styled.div`
     gap: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
+
+    @media (max-width: 768px) {
+        gap: 10px; /* 모바일에서는 간격 조정 */
+        padding-top: 10px; /* 상단 패딩 조정 */
+        padding-bottom: 10px; /* 하단 패딩 조정 */
+    }
 `;
 
 const MainContainerWrapper = styled(MainContainer)`
     width: 700px;
-    // 높이는 화면에 따라 조절해야함. 바닥에서 20px 떨어지게 하기
     height: 70vh;
     margin: 0 auto;
     border: none;
+
+    @media (max-width: 768px) {
+        width: 100%; /* 모바일에서는 너비 100% */
+        height: 60vh; /* 모바일에서는 높이 조정 */
+    }
 `;

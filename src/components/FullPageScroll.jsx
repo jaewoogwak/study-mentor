@@ -94,7 +94,6 @@ const FullPageScroll = () => {
                     </FullpageSection>
                     <FullpageSection
                         style={{
-                            // backgroundColor: 'firebrick',
                             padding: '1em',
                             display: 'flex',
                             alignItems: 'center',
@@ -147,9 +146,8 @@ const FullPageScroll = () => {
 export default FullPageScroll;
 
 const Wrapper = styled.div`
-    /* display: flex; */
-
-    /* z-index: 10; */
+    width: 100%;
+    height: 100%;
 `;
 
 /**********************************/
@@ -157,31 +155,47 @@ const Wrapper = styled.div`
 const Image = styled.img`
     width: ${(props) => props.width || '100%'};
     height: ${(props) => props.height || '80%'};
+
+    @media (max-width: 768px) {
+        width: 100%; /* 모바일에서 이미지가 화면에 맞게 조정 */
+        height: auto;
+        margin-top: 20px;
+    }
 `;
 
 const Text = styled.div`
     font-size: ${(props) => props.fontsize || '16px'};
     line-height: 1.5;
+
+    @media (max-width: 768px) {
+        font-size: ${(props) =>
+            props.fontsize ? `calc(${props.fontsize} * 0.75)` : '14px'};
+        text-align: center;
+    }
 `;
 
 /**********************************/
 /*      첫 번째 페이지 스타일       */
 const PageWrapper = styled.div`
     display: flex;
-    // 아이템 가운데 정렬
     align-items: center;
     justify-content: center;
 
-    // padding-bottom: 50px;
+    @media (max-width: 768px) {
+        flex-direction: column; /* 모바일에서 수직 정렬 */
+    }
 `;
 
 const FirstContainer = styled.div`
-    // margin-top: 218px;
     display: flex;
-    /* flex-direction: column; */
     align-items: center;
     justify-content: center;
     gap: 96px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 20px;
+    }
 `;
 
 /**********************************/
@@ -194,10 +208,14 @@ const SecondContainer = styled.div`
     align-items: center;
     justify-content: center;
     gap: 96px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 20px;
+    }
 `;
 
 const FileUploadLink = styled.button`
-    // color: white;
     text-decoration: none;
     font-size: 22px;
     margin-top: 32px;
@@ -206,11 +224,15 @@ const FileUploadLink = styled.button`
     background-color: #ffcd4a;
     padding: 10px 25px;
     border-radius: 10px;
-
     font-family: 'Pretendard-Regular';
     font-weight: bold;
 
     &:hover {
         background-color: #fd9f28;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+        padding: 8px 20px;
     }
 `;

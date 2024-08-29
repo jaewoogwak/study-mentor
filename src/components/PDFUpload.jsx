@@ -164,12 +164,16 @@ const PDFUpload = ({
                     ? '/upload/pdf'
                     : '/upload/image';
 
+            // fb 토큰 가져오기
+            const token = await user.getIdToken();
+
             axios({
                 url: `${import.meta.env.VITE_API_URL}${type}`,
                 method: 'POST',
                 responseType: 'json',
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
                 },
                 data: formData,
             })
