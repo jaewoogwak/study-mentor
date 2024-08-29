@@ -25,7 +25,7 @@ const PromptModal = ({
     return (
         <>
             <StyleButton type='primary' onClick={showModal}>
-                시험문제 스타일 설정하러 가기
+                스타일 설정
             </StyleButton>
             <Modal
                 title={<span style={{ fontSize: '24px' }}>시험문제 스타일 설정하기</span>}
@@ -51,21 +51,35 @@ const PromptModal = ({
 };
 export default PromptModal;
 
+// const StyleButton = styled.button`
+//     padding: 7px 12px;
+
+//     border-radius: 5px;
+//     border: 3px #58CCFF solid;
+
+//     font-size: 16px;
+//     font-family: 'pretendard-Regular';
+//     // font-weight: bold;
+
+//     color: black;
+//     background: #B8E9FF;
+
+//     &:hover {
+//         background-color: #1187cf;
+//     }
+// `;
+
 const StyleButton = styled.button`
-    padding: 7px 12px;
-
-    border-radius: 5px;
-    border: 3px #58CCFF solid;
-
+    padding: 10px 20px;
     font-size: 16px;
-    font-family: 'pretendard-Regular';
-    // font-weight: bold;
+    font-family: 'Pretendard-Regular';
+    border: 2px solid #1187CF;
+    border-radius: 5px;
+    background-color: white;
 
-    color: black;
-    background: #B8E9FF;
-
-    &:hover {
-        background-color: #1187cf;
+    &:hover,
+    &:active {
+        background-color: #1187CF; 
+        color: white;
     }
 `;
-

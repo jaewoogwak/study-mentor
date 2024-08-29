@@ -185,7 +185,7 @@ const PDFUpload = ({
 
                     // 1. Firebase에 examdata 저장
                     saveExamToFirebase(response.data);
-                    console.log("ExamData save success in Firebase!")
+                    // console.log("ExamData save success in Firebase!")
                     
                     // 2. 로컬 스토리지에 examdata 저장
                     localStorage.setItem(
@@ -297,7 +297,11 @@ const PDFUpload = ({
         <Dragger
             height={144}
             {...props}
-            style={styles}
+            style={{
+                fontFamily: 'Pretendard-Regular',
+                padding: '0px 100px',
+                backgroundColor: '#F5F6FF',
+            }}
             // action='http://
         >
             <p className='ant-upload-drag-icon'>
