@@ -147,8 +147,6 @@ const DataUpload = () => {
                     />
                 )}
 
-                <DivisionLine />
-
                 <CreateExam
                     data={data}
                     setData={setData}
@@ -264,18 +262,4 @@ const SettingButton = styled.button`
         background-color: #5D6DBE; 
         color: white;
     }
-`;
-
-const DivisionLine = styled.div`
-  border-top: 2px dashed #444444;
-  margin: 40px auto;
-  width: 400px;
-  height: 0px;
-  
-  &:after {
-    content: "◆";
-    position: relative;
-    top: -9px;
-    left: calc(50%, 7px);
-  }
 `;

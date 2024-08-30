@@ -109,7 +109,7 @@ const ProgressBar = () => {
     return (
         <ProgressContainer>
             <div>
-                <Lottie style={{marginBottom: '20px'}}
+                <Lottie style={{marginBottom: '10px'}}
                     options={currentWord === 1 ? options1 : currentWord === 2 ? options2 : currentWord === 3 ? options3 : options4}
                     height={currentWord === 1 ? options1.height : currentWord === 2 ? options2.height : currentWord === 3 ? options3.height : options4.height}
                     width={currentWord === 1 ? options1.width : currentWord === 2 ? options2.width : currentWord === 3 ? options3.width : options4.width}

@@ -404,27 +404,31 @@ const CreateExam = ({ data, setData, credits }) => {
                     </div>
                 </div>
             )}
+            
             {data?.length > 0 && (
-                <ButtonWrapper>
-                    <PDFGenerateButton
-                        text={'문제 새로 생성하기'}
-                        onClickHandle={() => {
-                            setData(null);
-                            localStorage.removeItem('examData');
-                            // local storage 초기화 및 refresh
-                            clearAllLocalStorage();
-                        }}
-                    ></PDFGenerateButton>
-                    <PDFDownloadButton
-                        text={'문제 다운로드 하기'}
-                        onClickHandle={() =>
-                            generatePDF(targetRef, {
-                                filename: 'study-mentor.pdf',
-                            })
-                        }
-                    ></PDFDownloadButton>
-                    {/* <CreditWrapper>사용 가능 횟수: {credits}</CreditWrapper> */}
-                </ButtonWrapper>
+                <>
+                    <DivisionLine />
+                    <ButtonWrapper>
+                        <PDFGenerateButton
+                            text={'문제 새로 생성하기'}
+                            onClickHandle={() => {
+                                setData(null);
+                                localStorage.removeItem('examData');
+                                // local storage 초기화 및 refresh
+                                clearAllLocalStorage();
+                            }}
+                        ></PDFGenerateButton>
+                        <PDFDownloadButton
+                            text={'문제 다운로드 하기'}
+                            onClickHandle={() =>
+                                generatePDF(targetRef, {
+                                    filename: 'study-mentor.pdf',
+                                })
+                            }
+                        ></PDFDownloadButton>
+                        {/* <CreditWrapper>사용 가능 횟수: {credits}</CreditWrapper> */}
+                    </ButtonWrapper>
+                </>
             )}
 
             {data?.length == 0 && <div>Loading...</div>}
@@ -750,6 +754,20 @@ const CreateExam = ({ data, setData, credits }) => {
 };
 
 export default CreateExam;
+
+const DivisionLine = styled.div`
+  border-top: 2px dashed #444444;
+  margin: 40px auto;
+  width: 400px;
+  height: 0px;
+  
+  &:after {
+    content: "◆";
+    position: relative;
+    top: -9px;
+    left: calc(50%, 7px);
+  }
+`;
 
 const Wrapper = styled.div`
     margin-top: 10px;
