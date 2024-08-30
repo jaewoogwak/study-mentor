@@ -39,7 +39,7 @@ const PromptInput = ({
                 onChange={onChangePrompt}
                 placeholder='ex) 어떤 이론의 등장 배경과 문제점과 한계를 묻는 문제 중심으로 만들고 싶어.'
                 style={{
-                    height: 200,
+                    height: 100,
                     resize: 'none',
                     marginBottom: 32,
                 }}
@@ -56,7 +56,7 @@ const PromptInput = ({
                         onChange={onChangeImagePrompt}
                         placeholder='ex) 강의 자료의 이미지는 주로 그래프나 표로 제공된다 이러한 이미지를 분석하는 문제를 만들고 싶어.'
                         style={{
-                            height: 200,
+                            height: 100,
                             resize: 'none',
                             marginBottom: 32,
                             fontFamily: 'Pretendard-Regular'

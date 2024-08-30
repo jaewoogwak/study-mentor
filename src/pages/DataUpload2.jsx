@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -30,6 +30,10 @@ const DataUpload = () => {
     const [isTextCentered, setIsTextCentered] = useState(false);
     const [isLectureOnly, setIsLectureOnly] = useState(0);
     const [userCredit, setUserCredit] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(0);
+    
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     const deductCredit = async () => {
         const currentUser = user.email;
@@ -91,13 +95,15 @@ const DataUpload = () => {
         <Wrapper>
             <Header />
             <MainWrapper>
+
+                <CreditWrapper>무료 사용 가능 횟수: {userCredit}</CreditWrapper>
+
                 <DescriptionWrapper>
                     <InfoImg src={LogoImg} alt="LogoImg" />
                     <InfoText>학습자료를 업로드하여 시험문제를 생성하세요!</InfoText>
                 </DescriptionWrapper>
                 
-                <CreditWrapper>무료 사용 가능 횟수: {userCredit}</CreditWrapper>
-                
+                <SettingButton onClick={openModal}>시험 설정하기</SettingButton>
                 <ExamSetting 
                     prompt={prompt}
                     setPrompt={setPrompt}
@@ -115,8 +121,10 @@ const DataUpload = () => {
                     setIsTextCentered={setIsTextCentered}
                     isLectureOnly={isLectureOnly}
                     setIsLectureOnly={setIsLectureOnly}
+                    isOpen={isModalOpen} 
+                    onClose={closeModal}
                 />
-
+          
                 {!data && (
                     <PDFUpload
                         examData={data}
@@ -138,6 +146,8 @@ const DataUpload = () => {
                         deductCredit={deductCredit}
                     />
                 )}
+
+                <DivisionLine />
 
                 <CreateExam
                     data={data}
@@ -166,7 +176,7 @@ const MainWrapper = styled.div`
     flex: 1;
     height: calc(100vh - 80px);
     align-items: center;
-    margin-top: 50px;
+    margin-top: 30px;
 
     @media (max-width: 768px) {
         padding-top: 20px;
@@ -180,7 +190,7 @@ const DescriptionWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 30px;
-    margin-bottom: 40px;
+    margin-top: 25px;
 
     @media (max-width: 768px) {
         flex-direction: column; /* 모바일에서는 수직 정렬 */
@@ -208,7 +218,7 @@ const CreditWrapper = styled.div`
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     text-align: center;
 
     @media (max-width: 768px) {
@@ -234,4 +244,38 @@ const NoCreditMessage = styled.div`
         padding: 10px; /* 패딩 조정 */
         margin-top: 15px; /* 상단 여백 조정 */
     }
+`;
+
+const SettingButton = styled.button`
+    width: 680px;
+    margin: 35px 0 10px 0;
+    padding: 10px 20px;
+
+    border-radius: 20px;
+    border: 1px;
+    
+    font-size: 16px;
+    font-family: 'Pretendard-Regular';
+    color: white;
+
+    background-color: #3A4CA8;
+
+    &:hover, &:active {
+        background-color: #5D6DBE; 
+        color: white;
+    }
+`;
+
+const DivisionLine = styled.div`
+  border-top: 2px dashed #444444;
+  margin: 40px auto;
+  width: 400px;
+  height: 0px;
+  
+  &:after {
+    content: "◆";
+    position: relative;
+    top: -9px;
+    left: calc(50%, 7px);
+  }
 `;

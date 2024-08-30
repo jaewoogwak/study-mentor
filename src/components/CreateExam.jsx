@@ -760,6 +760,7 @@ const ButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
     gap: 10px;
+    // margin-top: 5px;
     flex-wrap: wrap; /* 모바일에 맞게 버튼을 줄바꿈 가능하도록 설정 */
 `;
 

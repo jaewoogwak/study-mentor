@@ -33,15 +33,15 @@ const StyledButton = styled.button`
     padding: 10px 20px;
     font-size: 16px;
     font-family: 'Pretendard-Regular';
-    border: 2px dashed #5D6DBE;
+    border: 2px dashed #00C1AE;
     border-radius: 5px;
     cursor: pointer;
-    background-color: ${({ isActive }) => (isActive ? '#5D6DBE' : '#FFFFFF')}; 
+    background-color: ${({ isActive }) => (isActive ? '#00C1AE' : '#FFFFFF')}; 
     color: ${({ isActive }) => (isActive ? '#FFFFFF' : '#000000')}; 
     transition: background-color 0.3s ease, color 0.3s ease;
 
     &:hover, &:active {
-        background-color: #5D6DBE; 
+        background-color: #00C1AE; 
         color: white;
     }
 `;

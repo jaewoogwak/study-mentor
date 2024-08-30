@@ -127,16 +127,17 @@ export default ProgressBar;
 
 const ProgressContainer = styled.div`
     // padding-bottom: 30px;
+    margin-top: 20px;
 `;
 
 const LoadingText = styled.div`
     font-size: 22px;
-    font-family: 'GmarketSansMedium';
+    font-family: 'Dovemayo_gothic';
     padding-bottom: 5px;
 `;
 
 const LoadingSubText = styled.div`
     font-size: 22px;
-    font-family: 'GmarketSansMedium';
+    font-family: 'Dovemayo_gothic';
     margin-bottom: 30px;
 `;

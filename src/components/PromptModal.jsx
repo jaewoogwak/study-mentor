@@ -35,7 +35,9 @@ const PromptModal = ({
                 width={800}
                 wrapClassName="custom-modal-center"
                 style={{
+                    top: '10%',
                     fontFamily: 'Pretendard-Regular',
+                    
                 }}
             >
                 <PromptInput
@@ -69,13 +71,13 @@ const StyleButton = styled.button`
     padding: 10px 20px;
     font-size: 16px;
     font-family: 'Pretendard-Regular';
-    border: 2px solid #1187CF;
+    border: 2px solid #2FA599;
     border-radius: 5px;
     background-color: white;
 
     &:hover,
     &:active {
-        background-color: #1187CF; 
+        background-color: #2FA599; 
         color: white;
     }
 `;

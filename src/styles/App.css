@@ -38,13 +38,13 @@ p {
     font-style: normal;
 }
   
-/* @font-face {
+@font-face {
     font-family: 'Dovemayo_gothic';
     font-weight: 400;
     font-display: swap;
     src: local('Dovemayo_gothic'),
         url('./fonts/Dovemayo_gothic.ttf') format('truetype');
-} */
+}
 
 /* Assuming you're using a class named 'custom-switch' to style your Switch component */
 .custom-switch .ant-switch-inner {
