@@ -21,7 +21,7 @@ import ChatbotPage from './pages/ChatbotPage.jsx';
 
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import MainPage from './pages/MainPage.jsx';
-import DataUpload from './pages/DataUpload2.jsx';
+import DataUpload from './pages/DataUpload.jsx';
 
 import CheckListPage from './pages/CheckListPage.jsx';
 

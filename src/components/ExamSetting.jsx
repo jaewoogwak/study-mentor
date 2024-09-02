@@ -1,12 +1,15 @@
 import { Switch, Button } from 'antd';
-import React from 'react';
+import { useEffect } from 'react';
+import Modal from 'react-modal';
+
 import styled from 'styled-components';
+
+import ExamSheetImg from '../assets/ExamSheetOption.png'
 import ExamNumberInput from '../components/ExamNumberInput';
 import PromptModal from './PromptModal';
 import SwitchWithText from './SwitchWithText';
-import ExamGenToggle from './ExamGenToggle';
 
-const ExamSetting = ({
+const ExamSetting2 = ({
     prompt,
     setPrompt,
     imagePrompt,
@@ -19,7 +22,10 @@ const ExamSetting = ({
     setIsTextCentered,
     isLectureOnly,
     setIsLectureOnly,
+    isOpen, 
+    onClose,
 }) => {
+
     const handleMultipleChoiceChange = (e) => {
         const value = e.target.value;
 
@@ -28,12 +34,16 @@ const ExamSetting = ({
 
             if (numericValue >= 1 && numericValue <= 10) {
                 setMultipleChoice(numericValue);
+                localStorage.setItem('multipleChoice', numericValue); // Save to localStorage
             } else if (numericValue < 1) {
                 setMultipleChoice(1);
+                localStorage.setItem('multipleChoice', 1); // Save to localStorage
             } else if (numericValue > 10) {
                 setMultipleChoice(10);
+                localStorage.setItem('multipleChoice', 10); // Save to localStorage
             } else {
                 setMultipleChoice('');
+                localStorage.removeItem('multipleChoice'); // Remove from localStorage if invalid
             }
         }
     };
@@ -46,121 +56,140 @@ const ExamSetting = ({
 
             if (numericValue >= 1 && numericValue <= 10) {
                 setShortAnswer(numericValue);
+                localStorage.setItem('shortAnswer', numericValue); // Save to localStorage
             } else if (numericValue < 1) {
                 setShortAnswer(1);
+                localStorage.setItem('shortAnswer', 1); // Save to localStorage
             } else if (numericValue > 10) {
                 setShortAnswer(10);
+                localStorage.setItem('shortAnswer', 10); // Save to localStorage
             } else {
                 setShortAnswer('');
+                localStorage.removeItem('shortAnswer'); // Remove from localStorage if invalid
             }
         }
     };
 
+    // Load values from localStorage when the component mounts
+    useEffect(() => {
+        const savedMultipleChoice = localStorage.getItem('multipleChoice');
+        if (savedMultipleChoice !== null) {
+            setMultipleChoice(parseInt(savedMultipleChoice, 10));
+        }
+
+        const savedShortAnswer = localStorage.getItem('shortAnswer');
+        if (savedShortAnswer !== null) {
+            setShortAnswer(parseInt(savedShortAnswer, 10));
+        }
+    }, [setMultipleChoice, setShortAnswer]);
+
     return (
-        <UploadInfoContainer>
-            <OverlayBox>How To Make?</OverlayBox>
-            <h1 style={{ marginTop: '10px' }}>시험 문제 생성 설정</h1>
-            <p style={{ marginTop: '20px' }}>
-                1. 생성할 시험 문제 개수와 유형을 선택하세요. (혼합 선택 가능)
-            </p>
-            <SettingWrapper>
-                <SwitchWrapper>
-                    객관식
-                    <SwitchInput
-                        type='number'
-                        min={1}
-                        max={10}
-                        value={multipleChoice}
-                        onChange={handleMultipleChoiceChange}
-                    />
-                </SwitchWrapper>
+        <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                contentLabel="Exam Setting Options"
+                style={{
+                    content: {
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '500px', 
+                        height: '520px',
+                        textAlign: 'center',
+                        border: '2px solid',
+                        borderRadius: '10px',
+                        fontFamily: 'Pretendard-Regular',
+                    }
+                }}                
+            >   
+                <InfoWrapper>
+                    <InfoImg src={ExamSheetImg} alt="ExamSheetImg" />
+                    <h2>Exam Setting Options</h2>
+                </InfoWrapper>
+                <SettingWrapper>
+                    <TextSetting>몇 개의 문제를 생성하고 싶으신가요?</TextSetting>
+                    <SwitchWrapper>
+                        객관식
+                        <SwitchInput
+                            type='number'
+                            min={1}
+                            max={10}
+                            value={multipleChoice}
+                            onChange={handleMultipleChoiceChange}
+                        />
 
-                <SwitchWrapper>
-                    주관식
-                    <SwitchInput
-                        type='number'
-                        min={1}
-                        max={10}
-                        value={shortAnswer}
-                        onChange={handleShortAnswerChange}
-                    />
-                </SwitchWrapper>
+                        주관식
+                        <SwitchInput
+                            type='number'
+                            min={1}
+                            max={10}
+                            value={shortAnswer}
+                            onChange={handleShortAnswerChange}
+                        />
+                    </SwitchWrapper>
 
-                <TextContainer>
-                    <p style={{ marginBottom: '20px' }}>
-                        2. 학습 자료를 어떠한 방식으로 분석할지 선택해주세요.
-                    </p>
-                    <ToggleWrapper>
-                        <SwitchWithText
+                    <div>
+                        <TextSetting>학습자료가 어떤 형식인가요?</TextSetting>
+                        <ToggleWrapper>
+                            <SwitchWithText
+                                isTextCentered={isTextCentered}
+                                setIsTextCentered={setIsTextCentered}
+                            />
+                        </ToggleWrapper>
+                    </div>
+
+                    <div>
+                        <TextSettingV2>원하는 스타일이 있다면, 버튼을 눌러 설정해보세요.</TextSettingV2>
+                        <PromptModal
+                            prompt={prompt}
+                            setPrompt={setPrompt}
+                            imagePrompt={imagePrompt}
+                            setImagePrompt={setImagePrompt}
                             isTextCentered={isTextCentered}
-                            setIsTextCentered={setIsTextCentered}
                         />
-                        <ExamGenToggle
-                            isLectureOnly={isLectureOnly}
-                            setIsLectureOnly={setIsLectureOnly}
-                        />
-                    </ToggleWrapper>
-                </TextContainer>
+                    </div>
 
-                <ModalContainer>
-                    <p style={{ marginBottom: '20px' }}>
-                        3. 원하는 조건이 있다면, 프롬프트를 추가로 작성해보세요.
-                    </p>
-                    <PromptModal
-                        prompt={prompt}
-                        setPrompt={setPrompt}
-                        imagePrompt={imagePrompt}
-                        setImagePrompt={setImagePrompt}
-                        isTextCentered={isTextCentered}
-                    />
-                </ModalContainer>
-            </SettingWrapper>
-        </UploadInfoContainer>
+                    <ApplyButton onClick={onClose}>적용하기</ApplyButton>
+
+                </SettingWrapper>
+
+        </Modal>
     );
 };
 
-export default ExamSetting;
+export default ExamSetting2;
 
-const OverlayBox = styled.div`
-    position: absolute;
-    top: -15px;
-    left: 20px;
-    width: 150px;
-    height: 15px;
-    font-weight: bold;
-    background-color: white;
-    border: 2px solid;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    display: flex;
+const InfoWrapper = styled.div`
+    display: flex;  
+    flex-direction: row;
+    margin-top: 5px;
+    align-items: center; 
     justify-content: center;
-    align-items: center;
 `;
 
-const UploadInfoContainer = styled.div`
-    position: relative;
-    width: 698px;
-    height: 440px;
-    border-radius: 10px;
-    border: 2px solid grey;
-    padding: 30px 30px 50px 30px;
-
-    @media (max-width: 768px) {
-        width: 90%; /* 모바일에서는 전체 너비의 90%를 차지 */
-        padding: 20px; /* 모바일에서 패딩 조정 */
-        height: auto; /* 높이는 자동으로 조정 */
-    }
-`;
+const InfoImg = styled.img`
+    width: 80px;
+    margin-right: 10px;
+`
 
 const SettingWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
     padding: 20px;
     justify-content: center;
     align-items: center;
+`;
+
+const TextSetting = styled.p`
+    margin-top: 10px;
+`;
+
+const TextSettingV2 = styled.p`
+    margin-bottom: 20px;
 `;
 
 const SwitchWrapper = styled.div`
@@ -171,8 +200,8 @@ const SwitchWrapper = styled.div`
 `;
 
 const SwitchInput = styled.input`
-    border-radius: 10px;
-    padding: 5px;
+    border-radius: 5px;
+    padding: 10px 15px;
     text-align: center;
     border: 2px solid;
 
@@ -182,14 +211,6 @@ const SwitchInput = styled.input`
     }
 `;
 
-const TextContainer = styled.div`
-    margin-top: 20px;
-`;
-
-const ModalContainer = styled.div`
-    margin: 20px;
-`;
-
 const ToggleWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -197,28 +218,20 @@ const ToggleWrapper = styled.div`
     align-items: center;
 `;
 
-const CustomPromptRecommandWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 14px;
-    align-items: center;
+const ApplyButton = styled.button`
+    width: 400px;
+    margin-top: 30px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px;
+    background-color: #7DB249;
+    color: white;
+    font-family: 'Pretendard-Regular';
+    font-size: 16px;
 
-    text-align: center;
-    font-family: 'GmarketSansMedium';
-`;
-
-const CustomPromptRecommand = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    background: #b6dcee;
-    color: #000;
-    padding: 10px 5px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
-    text-align: center;
-    width: 310px;
-    margin-bottom: 20px;
-`;
+    &:hover,
+    &:active {
+        background-color: #AFD485; 
+        color: white;
+    }
+`

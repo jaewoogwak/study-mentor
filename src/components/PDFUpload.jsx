@@ -262,7 +262,7 @@ const PDFUpload = ({
         </PDFViewerWrapper>
     ) : fileState === 'error' ? (
         <StatusWrapper>
-            파일 업로드에 실패했어요. <br />
+            ⛔ 파일 업로드에 실패했어요. <br />
             새로고침 후 다시 시도해 주세요.
         </StatusWrapper>
     ) : (
@@ -306,6 +306,7 @@ const StatusWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     font-size: 24px;
+    margin-top: 30px;
 `;
 
 const DownloadBtn = styled.button`
