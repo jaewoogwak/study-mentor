@@ -34,12 +34,12 @@ const Wrapper = styled.div`
 const InfoContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin: 50px;
+    margin: 30px;
 `;
 
 const InfoBox = styled.div` 
     width: 700px;
-    margin: 10px;
+    // margin: 10px;
     padding: 30px;
     background: #B8E9FF;
     border-radius: 12px;
@@ -47,7 +47,6 @@ const InfoBox = styled.div`
 
 const TextCustom = styled.p`
     font-size: 18px;
-    padding-top: 10px;
 `;
 
 const ListContainer = styled.div`

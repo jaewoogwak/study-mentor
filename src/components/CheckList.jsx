@@ -1,95 +1,104 @@
-import { useContext, useEffect, useState } from 'react';
-
-import { auth, db } from '../services/firebase';
-
-import {
-    collection,
-    addDoc,
-    getDocs,
-    updateDoc,
-    doc,
-    getDoc,
-} from 'firebase/firestore';
-
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import {
-    MainContainer,
-    ChatContainer,
-    MessageList,
-    Message,
-    MessageInput,
-    TypingIndicator,
-} from '@chatscope/chat-ui-kit-react';
-import {
-    Link,
-    useNavigate,
-    // useLocation,
-} from 'react-router-dom';
-
-import { onAuthStateChanged } from 'firebase/auth';
-import { useAuth } from '../contexts/AuthContext';
-import { set } from 'firebase/database';
-
-import logo from '../assets/logo.png';
-
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../services/firebase';
 
 const CheckList = () => {
-
-    const { user, login } = useAuth();
     const [documents, setDocuments] = useState([]);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((usr) => {
-            login(usr);
-
-            if (!usr) {
-                navigate('/login');
-            }
-        });
-
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-    }, [login, navigate]);
+    const [selectedQuestion, setSelectedQuestion] = useState(null);
+    const [answers, setAnswers] = useState({});
 
     useEffect(() => {
         const fetchDocuments = async () => {
             try {
-                // 컬렉션 참조 생성
                 const colRef = collection(db, 'exams');
-                
-                // 모든 문서 데이터 가져오기
                 const querySnapshot = await getDocs(colRef);
-                
-                // 문서 데이터를 상태에 저장
-                const docsArray = querySnapshot.docs.map(doc => ({
+
+                const docs = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-                setDocuments(docsArray);
-            } catch (e) {
-                console.error('Error getting documents:', e);
+
+                setDocuments(docs);
+            } catch (error) {
+                console.error('Error fetching documents:', error);
             }
         };
 
         fetchDocuments();
     }, []);
 
+    const handleShowAnswer = (question) => {
+        setSelectedQuestion(prev => (prev === question ? null : question));
+    };
+
+    const handleRadioChange = (questionIndex, choiceIndex) => {
+        setAnswers(prevAnswers => ({
+            ...prevAnswers,
+            [`q${questionIndex}`]: choiceIndex
+        }));
+    };
+
+    const handleTextChange = (questionIndex, event) => {
+        setAnswers(prevAnswers => ({
+            ...prevAnswers,
+            [`q${questionIndex}`]: event.target.value
+        }));
+    };
+
     return (
         <Wrapper>
             {documents.length > 0 ? (
                 documents.map(doc => (
-                    <div key={doc.id}>
-                        <h3>Document ID: {doc.id}</h3>
-                        <CheckTest>
-                            <ExamTitle>
-                                <LogoImg src={logo} alt='logo' />
-                                <Title>Study Mentor Exam</Title>
-                            </ExamTitle>
-                            
-                        </CheckTest>
-                    </div>
+                    <DocumentContainer key={doc.id}>
+                        <h2>Document ID: {doc.id}</h2>
+                        {doc.items && doc.items.length > 0 ? (
+                            doc.items.map((item, index) => (
+                                <QuestionContainer key={index}>
+                                    <QuestionTitle>
+                                        <h3>Question {index + 1}</h3>
+                                        <p>{item.question}</p>
+                                    </QuestionTitle>
+                                    {item.case === 0 ? (
+                                        <ChoicesList>
+                                            {Array.isArray(item.choices) && item.choices.map((choice, i) => (
+                                                <ChoiceItem key={i}>
+                                                    <input
+                                                        type="radio"
+                                                        id={`q${index}_c${i}`}
+                                                        name={`q${index}`}
+                                                        checked={answers[`q${index}`] === i}
+                                                        onChange={() => handleRadioChange(index, i)}
+                                                    />
+                                                    <label htmlFor={`q${index}_c${i}`}>{choice}</label>
+                                                </ChoiceItem>
+                                            ))}
+                                        </ChoicesList>
+                                    ) : (
+                                        <TextInputContainer>
+                                            <input
+                                                type="text"
+                                                value={answers[`q${index}`] || ''}
+                                                onChange={(e) => handleTextChange(index, e)}
+                                            />
+                                        </TextInputContainer>
+                                    )}
+                                    <ShowAnswerButton onClick={() => handleShowAnswer(item)}>
+                                        {selectedQuestion === item ? 'Hide Answer' : 'Show Answer'}
+                                    </ShowAnswerButton>
+                                    {selectedQuestion === item && (
+                                        <AnswerDetails>
+                                            <p><strong>Intent:</strong> {item.intent}</p>
+                                            <p><strong>Explanation:</strong> {item.explanation}</p>
+                                            <p><strong>Correct Answer:</strong> {item.correct_answer}</p>
+                                        </AnswerDetails>
+                                    )}
+                                </QuestionContainer>
+                            ))
+                        ) : (
+                            <p>No items found</p>
+                        )}
+                    </DocumentContainer>
                 ))
             ) : (
                 <p>No documents found</p>
@@ -103,33 +112,71 @@ export default CheckList;
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     padding: 20px;
 `;
 
-const CheckTest = styled.div`
+const DocumentContainer = styled.div`
     padding: 20px;
-    margin: 50px auto 20px auto;
+    margin: 20px;
     width: 100%;
-    max-width: 800px; 
-    border: 3px solid black; 
-    box-sizing: border-box;  
+    max-width: 800px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
 `;
 
-const ExamTitle = styled.div`
+const QuestionContainer = styled.div`
+    margin-top: 20px;
+    margin-bottom: 30px;
+`;
+
+const QuestionTitle = styled.div`
+    margin-bottom: 10px;
+`;
+
+const ChoicesList = styled.div`
+    margin-bottom: 10px;
+`;
+
+const ChoiceItem = styled.div`
+    margin-bottom: 5px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-wrap: wrap; 
+    label {
+        margin-left: 8px;
+    }
 `;
 
-const LogoImg = styled.img`
-    width: 50px;
-    height: auto; 
+const TextInputContainer = styled.div`
+    margin-bottom: 10px;
+    input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
 `;
 
-const Title = styled.div`
-   margin-left: 10px;
-   font-family: 'Pretendard-Regular'; 
-   font-size: 24px; 
+const ShowAnswerButton = styled.button`
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    
+    &:hover {
+        background-color: #0056b3;
+    }
+`;
+
+const AnswerDetails = styled.div`
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
 `;
