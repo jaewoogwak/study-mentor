@@ -174,7 +174,7 @@ const MainWrapper = styled.div`
     flex: 1;
     height: calc(100vh - 80px);
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
 
     @media (max-width: 768px) {
         padding-top: 20px;

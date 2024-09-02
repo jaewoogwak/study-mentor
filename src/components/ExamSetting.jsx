@@ -70,7 +70,6 @@ const ExamSetting2 = ({
         }
     };
 
-    // Load values from localStorage when the component mounts
     useEffect(() => {
         const savedMultipleChoice = localStorage.getItem('multipleChoice');
         if (savedMultipleChoice !== null) {
@@ -165,7 +164,7 @@ export default ExamSetting2;
 const InfoWrapper = styled.div`
     display: flex;  
     flex-direction: row;
-    margin-top: 5px;
+    margin-top: 10px;
     align-items: center; 
     justify-content: center;
 `;
@@ -220,7 +219,7 @@ const ToggleWrapper = styled.div`
 
 const ApplyButton = styled.button`
     width: 400px;
-    margin-top: 30px;
+    margin-top: 28px;
     padding: 10px 20px;
     border-radius: 20px;
     border: 1px;

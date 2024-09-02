@@ -80,18 +80,25 @@ const PDFUpload = ({
     
     // firebase에 examData 저장 - 실패..
     const saveExamToFirebase = async (data) => {
-        if (data) {
-            try {
-                const docRef = await addDoc(collection(db, 'exams'), data);
+        try {
+            // 배열인지 확인
+            const isArray = Array.isArray(data);
+    
+            // 배열일 경우 객체로 변환
+            const savedata = isArray ? { items: data } : data;
+    
+            // 데이터가 비어 있지 않은지 확인
+            if (savedata && Object.keys(savedata).length > 0) {
+                const docRef = await addDoc(collection(db, 'exams'), savedata);
                 console.log('Document written with ID: ', docRef.id);
-            } catch (e) {
-                console.error('Error adding document: ', e);
+            } else {
+                console.error('No data to save');
             }
-        } else {
-            console.error('No data to save');
+        } catch (e) {
+            console.error('Error adding document: ', e.message);  // 에러 메시지 출력
         }
     };
-
+      
     const styles = {
         width: '700px',
         display: 'flex',
