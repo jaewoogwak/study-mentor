@@ -28,8 +28,8 @@ const ProgressBar = () => {
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice'
         },
-        height: 150,
-        width: 150   
+        height: 130,
+        width: 130   
     };
 
     const options2 = {
@@ -39,8 +39,8 @@ const ProgressBar = () => {
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice'
         },
-        height: 200, 
-        width: 200   
+        height: 180, 
+        width: 180   
     };
 
     const options3 = {
@@ -50,8 +50,8 @@ const ProgressBar = () => {
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice'
         },
-        height: 200, 
-        width: 200   
+        height: 180, 
+        width: 180   
     };
 
     const options4 = {
@@ -132,12 +132,12 @@ const ProgressContainer = styled.div`
 
 const LoadingText = styled.div`
     font-size: 22px;
-    font-family: 'Dovemayo_gothic';
+    font-family: 'Pretendard-Regular';
     padding-bottom: 5px;
 `;
 
 const LoadingSubText = styled.div`
     font-size: 22px;
-    font-family: 'Dovemayo_gothic';
+    font-family: 'Pretendard-Regular';
     margin-bottom: 30px;
 `;
