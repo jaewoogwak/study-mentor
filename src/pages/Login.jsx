@@ -60,7 +60,7 @@ const NewLoginPage = () => {
         <OuterContainer>
             <InnerContainer>
                 <Title>Study Mentor</Title>
-                <Description>ChatGPT 기반 스터디 멘토 플랫폼</Description>
+                <Description>생성형 AI 기반 스터디 멘토 서비스</Description>
                 <LoginButton onClick={handleGoogleLogin}>로그인</LoginButton>
                 <LoginImageContainer>
                     <LoginImage src={login_main} alt='login_main' />
