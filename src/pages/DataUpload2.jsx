@@ -16,7 +16,6 @@ import InfoFooter from '../components/InfoFooter';
 
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 
-
 const DataUpload = () => {
     const navigate = useNavigate();
     const { user, logout, login } = useAuth();
@@ -31,7 +30,7 @@ const DataUpload = () => {
     const [isLectureOnly, setIsLectureOnly] = useState(0);
     const [userCredit, setUserCredit] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(0);
-    
+
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
@@ -95,16 +94,17 @@ const DataUpload = () => {
         <Wrapper>
             <Header />
             <MainWrapper>
-
                 <CreditWrapper>무료 사용 가능 횟수: {userCredit}</CreditWrapper>
 
                 <DescriptionWrapper>
-                    <InfoImg src={LogoImg} alt="LogoImg" />
-                    <InfoText>학습자료를 업로드하여 시험문제를 생성하세요!</InfoText>
+                    <InfoImg src={LogoImg} alt='LogoImg' />
+                    <InfoText>
+                        학습자료를 업로드하여 시험문제를 생성하세요!
+                    </InfoText>
                 </DescriptionWrapper>
-                
+
                 <SettingButton onClick={openModal}>시험 설정하기</SettingButton>
-                <ExamSetting 
+                <ExamSetting
                     prompt={prompt}
                     setPrompt={setPrompt}
                     imagePrompt={imagePrompt}
@@ -121,10 +121,10 @@ const DataUpload = () => {
                     setIsTextCentered={setIsTextCentered}
                     isLectureOnly={isLectureOnly}
                     setIsLectureOnly={setIsLectureOnly}
-                    isOpen={isModalOpen} 
+                    isOpen={isModalOpen}
                     onClose={closeModal}
                 />
-          
+
                 {!data && (
                     <PDFUpload
                         examData={data}
@@ -152,7 +152,6 @@ const DataUpload = () => {
                     setData={setData}
                     credits={userCredit}
                 />
-
             </MainWrapper>
             <InfoFooter />
         </Wrapper>
@@ -191,7 +190,6 @@ const DescriptionWrapper = styled.div`
     margin-top: 25px;
 
     @media (max-width: 768px) {
-        flex-direction: column; /* 모바일에서는 수직 정렬 */
         gap: 10px;
         margin-bottom: 20px;
     }
@@ -199,10 +197,21 @@ const DescriptionWrapper = styled.div`
 
 const InfoImg = styled.img`
     width: 285px;
+
+    @media (max-width: 768px) {
+        width: 100%; /* 모바일에서는 이미지를 가로 크기에 맞춤 */
+        max-width: 285px; /* 최대 너비 제한 */
+    }
 `;
 
 const InfoText = styled.p`
     font-size: 22px;
+    text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 18px; /* 모바일에서는 글자 크기 조정 */
+        padding: 0 10px; /* 좌우 패딩 추가 */
+    }
 `;
 
 const CreditWrapper = styled.div`
@@ -251,15 +260,21 @@ const SettingButton = styled.button`
 
     border-radius: 20px;
     border: 1px;
-    
+
     font-size: 16px;
     font-family: 'Pretendard-Regular';
     color: white;
 
-    background-color: #3A4CA8;
+    background-color: #3a4ca8;
 
-    &:hover, &:active {
-        background-color: #5D6DBE; 
+    &:hover,
+    &:active {
+        background-color: #5d6dbe;
         color: white;
+    }
+
+    @media (max-width: 768px) {
+        width: 90%; /* 모바일에서는 너비를 부모 요소의 90%로 설정 */
+        max-width: 680px; /* 최대 너비 제한 */
     }
 `;

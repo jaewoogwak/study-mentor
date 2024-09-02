@@ -14,11 +14,7 @@ import {
     uploadBytesResumable,
     deleteObject,
 } from 'firebase/storage';
-import { 
-    doc, 
-    setDoc, 
-    collection, 
-    addDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 
 import PDFViewer from './PDFViewer';
@@ -43,7 +39,6 @@ const PDFUpload = ({
 }) => {
     const [fileState, setFileState] = React.useState(null);
     const [fileType, setFileType] = React.useState(null);
-    // const [data, setData] = React.useState(null);
     const [pdfFile, setPdfFile] = React.useState(null);
     const { user, login, logout } = useAuth();
     const [processState, setProcessState] = React.useState(null);
@@ -52,8 +47,6 @@ const PDFUpload = ({
         const downloadFile = async () => {
             try {
                 const storage = getStorage();
-
-                // 유저 이름으로 파일 이름을 만들어서 저장
 
                 if (user) {
                     const fileNames = user.email.split('@')[0];
@@ -77,8 +70,7 @@ const PDFUpload = ({
 
         downloadFile();
     }, [fileState, examData, fileType, user, processState]);
-    
-    // firebase에 examData 저장 - 실패..
+
     const saveExamToFirebase = async (data) => {
         if (data) {
             try {
@@ -90,13 +82,6 @@ const PDFUpload = ({
         } else {
             console.error('No data to save');
         }
-    };
-
-    const styles = {
-        width: '700px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
     };
 
     const props = {
@@ -116,7 +101,6 @@ const PDFUpload = ({
                 // console.log('🔃', info.file, info.fileList);
             }
             if (status === 'done') {
-                // console.log('👍', info.file.response);
                 message.success(
                     `${info.file.name} file uploaded successfully.`
                 );
@@ -130,7 +114,6 @@ const PDFUpload = ({
             const formData = new FormData();
 
             console.log('file size', file.size);
-            // 파일 크기 제한
             if (file.size > 50000000) {
                 message.error('파일 크기는 50MB 이하여야 합니다.');
                 setFileState('error');
@@ -148,7 +131,6 @@ const PDFUpload = ({
                 isLectureOnly: isLectureOnly,
             };
 
-            // examSetting에서 객관식 주관식 null 값은 기본 값으로 설정
             if (!examSetting.multipleChoice) {
                 examSetting.multipleChoice = 2;
             }
@@ -164,7 +146,6 @@ const PDFUpload = ({
                     ? '/upload/pdf'
                     : '/upload/image';
 
-            // fb 토큰 가져오기
             const token = await user.getIdToken();
 
             axios({
@@ -183,27 +164,20 @@ const PDFUpload = ({
 
                     setExamData(response.data);
 
-                    // 1. Firebase에 examdata 저장
                     saveExamToFirebase(response.data);
-                    // console.log("ExamData save success in Firebase!")
-                    
-                    // 2. 로컬 스토리지에 examdata 저장
+
                     localStorage.setItem(
                         'examData',
                         JSON.stringify(response.data)
                     );
 
                     deductCredit();
-                    // setPdfFile(response.data);
-                    // uploadFileToFirebase(response.data);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                     message.error('Failed to upload PDF file.');
                     setFileState('error');
                 });
-
-            // return false; // Prevent default upload behavior
         },
     };
 
@@ -259,7 +233,6 @@ const PDFUpload = ({
         <PDFViewerWrapper>
             <GeneratePDFBtn
                 onClick={() => {
-                    // firebase에 저장된 파일 삭제
                     const storage = getStorage();
                     const fileNames = user.email.split('@')[0];
                     const storageRef = ref(
@@ -272,13 +245,12 @@ const PDFUpload = ({
                             setFileState(null);
                             setPdfFile(null);
                             setFileType(null);
-                            setData(null);
+                            setExamData(null);
                         })
                         .catch((error) => {
                             console.error('Error:', error);
                         });
 
-                    // 로컬 스토리지에 저장된 데이터 삭제
                     localStorage.removeItem('examData');
                 }}
             >
@@ -290,31 +262,32 @@ const PDFUpload = ({
         </PDFViewerWrapper>
     ) : fileState === 'error' ? (
         <StatusWrapper>
-            파일 업로드에 실패했어요. <br/>
+            파일 업로드에 실패했어요. <br />
             새로고침 후 다시 시도해 주세요.
         </StatusWrapper>
     ) : (
-        <Dragger
-            height={144}
-            {...props}
-            style={{
-                fontFamily: 'Pretendard-Regular',
-                padding: '0px 100px',
-                backgroundColor: '#F5F6FF',
-            }}
-            // action='http://
-        >
-            <p className='ant-upload-drag-icon'>
-                <InboxOutlined />
-            </p>
-            <p className='ant-upload-text'>
-                클릭하거나 이미지 또는 PDF 파일을 이곳으로 드래그하여
-                업로드하세요.
-            </p>
-            <p className='ant-upload-hint'>
-                파일은 한 번에 최대 10개까지 업로드할 수 있습니다.
-            </p>
-        </Dragger>
+        <DraggerWrapper>
+            <Dragger
+                {...props}
+                style={{
+                    fontFamily: 'Pretendard-Regular',
+                    padding: '0px 100px',
+                    backgroundColor: '#F5F6FF',
+                    height: '144px',
+                }}
+            >
+                <p className='ant-upload-drag-icon'>
+                    <InboxOutlined />
+                </p>
+                <p className='ant-upload-text'>
+                    클릭하거나 이미지 또는 PDF 파일을 이곳으로 드래그하여
+                    업로드하세요.
+                </p>
+                <p className='ant-upload-hint'>
+                    파일은 한 번에 최대 10개까지 업로드할 수 있습니다.
+                </p>
+            </Dragger>
+        </DraggerWrapper>
     );
 };
 
@@ -326,7 +299,6 @@ const PDFViewerWrapper = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    /* height: 100%; */
 `;
 
 const StatusWrapper = styled.div`
@@ -363,5 +335,22 @@ const GeneratePDFBtn = styled.button`
     margin-top: 20px;
     &:hover {
         color: #ff6b6b;
+    }
+`;
+
+const DraggerWrapper = styled.div`
+    width: 700px;
+    display: flex;
+    justify-content: center;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        padding: 0 10px; /* 모바일에서 좌우 패딩 추가 */
+    }
+
+    @media (max-width: 768px) {
+        .ant-upload {
+            height: 200px !important; /* 모바일에서 높이 조정 */
+        }
     }
 `;
