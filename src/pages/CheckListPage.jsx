@@ -17,7 +17,7 @@ const CheckListPage = () => {
                     </InfoBox>
                 </InfoContainer>
                 <ListContainer>
-                    {/* <CheckList /> */}
+                    <CheckList />
                 </ListContainer>
             <InfoFooter />
         </Wrapper>

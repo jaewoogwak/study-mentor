@@ -44,6 +44,7 @@ const PDFUpload = ({
     const [processState, setProcessState] = React.useState(null);
 
     useEffect(() => {
+
         const downloadFile = async () => {
             try {
                 const storage = getStorage();
@@ -73,21 +74,28 @@ const PDFUpload = ({
 
     const saveExamToFirebase = async (data) => {
         try {
-            // 배열인지 확인
+
+            if (!user) {
+                console.error('User is not authenticated');
+                return;
+            }
+            
+            const userId = user.uid;
             const isArray = Array.isArray(data);
-    
-            // 배열일 경우 객체로 변환
             const savedata = isArray ? { items: data } : data;
     
-            // 데이터가 비어 있지 않은지 확인
             if (savedata && Object.keys(savedata).length > 0) {
-                const docRef = await addDoc(collection(db, 'exams'), savedata);
-                console.log('Document written with ID: ', docRef.id);
+                // Create a new document ID
+                const docId = `exam_${new Date().getTime()}`;
+                const userDocRef = doc(db, 'users', userId, 'exams', docId);
+    
+                await setDoc(userDocRef, savedata);
+                console.log('Document written for user ID:', userId, 'Document ID:', docId);
             } else {
                 console.error('No data to save');
             }
         } catch (e) {
-            console.error('Error adding document: ', e.message);  // 에러 메시지 출력
+            console.error('Error adding document:', e.message);  // 에러 메시지 출력
         }
     };
       

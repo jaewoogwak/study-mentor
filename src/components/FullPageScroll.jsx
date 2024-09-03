@@ -30,9 +30,9 @@ const FullPageScroll = () => {
                             <FirstContainer>
                                 <Text
                                     fontsize='32px'
-                                    style={{ fontWeight: 'bold' }}
+                                    style={{ fontWeight: '500' }}
                                 >
-                                    시험 문제는 스터디 멘토와 함께!<br></br>{' '}
+                                    시험 문제는 스터디 멘토와 함께!<br />{' '}
                                     방금 공부한 내용을 시험해보세요.
                                 </Text>
 
@@ -63,7 +63,7 @@ const FullPageScroll = () => {
                             />
                             <div>
                                 <Text
-                                    fontsize='40px'
+                                    fontsize='35px'
                                     style={{ fontWeight: 'bold' }}
                                 >
                                     시험 문제 만들기
@@ -71,7 +71,7 @@ const FullPageScroll = () => {
                                 <Text
                                     fontsize='30px'
                                     style={{
-                                        fontWeight: '300',
+                                        fontWeight: '500',
                                         marginTop: '39px',
                                     }}
                                 >
@@ -103,7 +103,7 @@ const FullPageScroll = () => {
                         <SecondContainer>
                             <div>
                                 <Text
-                                    fontsize='40px'
+                                    fontsize='35px'
                                     style={{ fontWeight: 'bold' }}
                                 >
                                     1:1 질문하기
@@ -111,7 +111,7 @@ const FullPageScroll = () => {
                                 <Text
                                     fontsize='30px'
                                     style={{
-                                        fontWeight: '300',
+                                        fontWeight: '500',
                                         marginTop: '39px',
                                     }}
                                 >
