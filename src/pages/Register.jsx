@@ -33,7 +33,7 @@ const Register = () => {
             // firebase db credits 추가
             const docRefCredits = await addDoc(collection(db, 'credits'), {
                 email,
-                credit: 3,
+                credit: 10,
             });
 
             navigate('/login');
