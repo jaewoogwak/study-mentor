@@ -198,7 +198,7 @@ const DocButton = styled.button`
     border: none;
     font-size: 17px; 
     font-family: "GmarketSansMedium";
-    background-color: rgba(253, 138, 105, 0.3); /* RGB 색상 + 투명도 (0.5) */
+    background-color: rgba(253, 138, 105, 0.3);
     cursor: pointer; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     transition: box-shadow 0.3s ease;
