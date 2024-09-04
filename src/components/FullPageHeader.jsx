@@ -58,6 +58,13 @@ const FullPageHeader = () => {
                 >
                     오답목록
                 </CheckListLink>
+                <GuestBook
+                    onClick={() => {
+                        window.location.href = '/guestbook';
+                    }}
+                >
+                    방명록
+                </GuestBook>
                 <Logout
                     onClick={() => {
                         auth.signOut();
@@ -215,6 +222,21 @@ const CheckListLink = styled(NavLink)`
 `;
 
 const Logout = styled.div`
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
+const GuestBook = styled.div`
     font-size: 24px;
     color: black;
     cursor: pointer;

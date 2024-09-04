@@ -83,6 +83,11 @@ const router = createBrowserRouter([
         element: <Register />,
         errorElement: <ErrorPage />,
     },
+    {
+        path: '/guestbook',
+        element: <></>,
+        errorElement: <ErrorPage />,
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
