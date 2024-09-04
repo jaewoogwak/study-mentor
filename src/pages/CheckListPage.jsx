@@ -38,7 +38,7 @@ const InfoContainer = styled.div`
 `;
 
 const InfoBox = styled.div` 
-    width: 700px;
+    width: 750px;
     // margin: 10px;
     padding: 30px;
     background: #B8E9FF;

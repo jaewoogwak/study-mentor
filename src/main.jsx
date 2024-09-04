@@ -18,6 +18,7 @@ import NewChatbotPage from './pages/ChatbotPage.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ChatbotPage from './pages/ChatbotPage.jsx';
+import GuestBookPage from './pages/GuestBookPage.jsx'
 
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import MainPage from './pages/MainPage.jsx';
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/guestbook',
-        element: <></>,
+        element: <GuestBookPage />,
         errorElement: <ErrorPage />,
     },
 ]);
