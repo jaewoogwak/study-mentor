@@ -11,7 +11,7 @@ import 'firebase/database';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: 'AIzaSyBy9BEx2OmMXpumZ68yduFEoqwHRyz5hHw',
+    apiKey: import.meta.env.VITE_FB_KEY,
     authDomain: 'chat-8d7b2.firebaseapp.com',
     projectId: 'chat-8d7b2',
     storageBucket: 'chat-8d7b2.appspot.com',
