@@ -10,7 +10,7 @@ lerna-debug.log*
 node_modules
 .env
 .vite.config.js
-services/firebase.js
+firebase.js
 
 
 # dist
