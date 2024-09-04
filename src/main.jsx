@@ -26,31 +26,6 @@ import DataUpload from './pages/DataUpload.jsx';
 import CheckListPage from './pages/CheckListPage.jsx';
 
 const queryClient = new QueryClient();
-const address = 'http://13.124.221.128:5000/';
-const localAddress = 'http://127.0.0.1:5000/';
-
-function Example() {
-    const { isPending, error, data } = useQuery({
-        queryKey: ['repoData'],
-        queryFn: () => fetch(address).then((res) => res.json()),
-    });
-
-    if (isPending) return 'Loading...';
-
-    if (error) return 'An error has occurred: ' + error.message;
-
-    console.log(data);
-
-    return (
-        <div>
-            <h1>{data.name}</h1>
-            <p>{data.description}</p>
-            <strong>👀 {data.subscribers_count}</strong>{' '}
-            <strong>✨ {data.stargazers_count}</strong>{' '}
-            <strong>🍴 {data.forks_count}</strong>
-        </div>
-    );
-}
 
 const router = createBrowserRouter([
     {
