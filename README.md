@@ -1,13 +1,7 @@
-# Web
+# Study-mentor: 생성형 AI기반 스터디 멘토 서비스
 
 -   2024년 1학기 컴퓨터공학부 졸업설계 프로젝트 프론트엔드 저장소
--   [백엔드 저장소 바로가기](https://github.com/jaewoogwak/flask-server)
-
-## ChatGPT기반 스터디 멘토 서비스
-
--   사용자의 학습자료를 분석하여 시험 문제 생성
--   시험 문제를 풀고 제출하면 채점 및 피드백 제공
--   대화형 챗봇 서비스 도입
+-   디지털 혁신 페스타 2024 참가 작품
 
 ![alt text](src/assets/로그인화면.png)
 
@@ -23,13 +17,20 @@
 
 ![alt text](<src/assets/챗봇 화면.png>)
 
-### 주요 요소 기술
+## Tech Stack
 
--   **OCR (Optical Character Recognition):** 사용자의 학습자료에서 텍스트를 추출합니다.
-
--   **AI Chatbot:** OpenAI API를 사용하여 사용자의 질문에 답변하며 대화할 수 있습니다. 시험 문제에 관해 질문하면 해당 문제에 대해 답변할 수 있습니다.
-
--   **Embedding:** 텍스트 데이터를 밀집된 벡터 공간에 표현하는 임베딩 기술 적용하였습니다. 사용자의 질문과 저장된 데이터 간의 유사성 비교하여 응답 생성이 용이해집니다.
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 
 ## Installation
 
