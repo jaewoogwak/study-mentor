@@ -19,9 +19,9 @@ const ReadGuestBook = () => {
                     const data = doc.data();
                     const date = data.timestamp.toDate();
                     const formattedDate = date.toLocaleDateString('en-US', {
-                        weekday: 'short',
                         year: 'numeric',
-                        month: 'short'
+                        month: 'short',
+                        day: 'numeric',
                     });
     
                     return {
