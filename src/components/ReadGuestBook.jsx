@@ -21,8 +21,7 @@ const ReadGuestBook = () => {
                     const formattedDate = date.toLocaleDateString('en-US', {
                         weekday: 'short',
                         year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
+                        month: 'short'
                     });
     
                     return {
