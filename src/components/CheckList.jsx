@@ -198,7 +198,7 @@ const DocButton = styled.button`
     border: none;
     font-size: 17px; 
     font-family: "GmarketSansMedium";
-    background-color: rgba(253, 138, 105, 0.3);
+    background-color: #FFEAE4;
     cursor: pointer; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     transition: box-shadow 0.3s ease;
@@ -207,7 +207,6 @@ const DocButton = styled.button`
         box-shadow: 0 7px 13px rgba(0, 0, 0, 0.3); 
     }
 `;
-
 
 const InfoContainer = styled.div`
     display: flex;           
@@ -331,7 +330,7 @@ const DeleteButton = styled.button`
     font-size: 16px;  
 
     &:hover {
-        background-color: #0056b3;
+        background-color: #FD6F22;
     }
 `;
 

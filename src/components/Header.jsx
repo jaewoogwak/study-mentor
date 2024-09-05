@@ -60,6 +60,7 @@ const Header = () => {
                 </CheckListLink>
 
                 <GuestBook
+                    
                     onClick={() => {
                         window.location.href = '/guestbook';
                     }}
