@@ -47,8 +47,8 @@ const WriteGuestBook = () => {
     return (
         <Wrapper>
             <BookContainer onSubmit={handleSubmit}>
-                <h2 style={{margin: "20px 0px 30px 0px"}}>👣 방명록 작성하기</h2>
                 <NameContainer>
+                    <HeadingText>Step 1.</HeadingText>
                     <CustomText>표시될 이름을 정해주세요.</CustomText>
                     <Namelabel>
                         <input
@@ -91,6 +91,7 @@ const WriteGuestBook = () => {
                 )}
 
                 <TextContainer>
+                    <HeadingText>Step 2.</HeadingText>
                     <CustomText>하고 싶은 말을 남겨주세요. (최소 10, 최대 200글자)</CustomText>
                     <textarea
                         value={message}
@@ -123,14 +124,21 @@ const Wrapper = styled.div`
 `;
 
 const BookContainer = styled.form`
+    padding: 20px 0px;
 `;
 
 const NameContainer = styled.div`
     flex-direction: row;
 `;
 
+const HeadingText = styled.p`
+    font-weight: 600;
+    font-size: 23px;
+    margin: 10px 0px;
+`;
+
 const CustomText = styled.p`
-    font-size: 20px;
+    font-size: 22px;
     margin: 20px 0px;
 `;
 

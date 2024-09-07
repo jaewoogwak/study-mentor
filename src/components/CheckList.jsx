@@ -21,28 +21,32 @@ const CheckList = () => {
                 fetchDocuments(user.uid);
             } else {
                 setUser(null);
-                setLoading(false); // Stop loading if no user is authenticated
+                setLoading(false); 
             }
         });
 
-        return () => unsubscribe(); // Clean up the listener
+        return () => unsubscribe(); 
     }, []);
 
     const fetchDocuments = async (userId) => {
         try {
             const colRef = collection(db, 'users', userId, 'exams');
             const querySnapshot = await getDocs(colRef);
-
-            const docs = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-
+    
+            const docs = querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : null
+                };
+            });
+    
             setDocuments(docs);
-            setLoading(false); // Stop loading when documents are fetched
+            setLoading(false); 
         } catch (error) {
             console.error('Error fetching documents:', error);
-            setLoading(false); // Stop loading if there is an error
+            setLoading(false); 
         }
     };
 
@@ -80,11 +84,11 @@ const CheckList = () => {
     };
 
     if (loading) {
-        return <p>Loading...</p>; // Show loading state
+        return <h2>Loading...</h2>; 
     }
 
     if (!user) {
-        return <p>로그인 필요</p>; // Handle case where user is not authenticated
+        return <h2>로그인 필요</h2>; 
     }
 
 
@@ -95,7 +99,7 @@ const CheckList = () => {
                     <div key={doc.id}>
                         <DocContainer>
                             <DocButton onClick={() => handleToggleDocument(doc.id)} style={{ cursor: 'pointer' }}>
-                                Document ID: {doc.id}
+                            {doc.createdAt ? doc.createdAt.toLocaleString() : 'No Timestamp'}
                             </DocButton>
                         </DocContainer>
                         {expandedDocId === doc.id && (
@@ -161,7 +165,7 @@ const CheckList = () => {
                     </div>
                 ))
             ) : (
-                <QuestionText>Loading ... </QuestionText>
+                <WarningMessages>데이터가 없습니다. <br /> 시험문제를 먼저 생성해보세요. </WarningMessages>
             )}
         </Wrapper>
     );
@@ -334,3 +338,6 @@ const DeleteButton = styled.button`
     }
 `;
 
+const WarningMessages = styled.p`
+    font-size: 23px;
+`;

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Header from '../components/Header'; 
 import InfoFooter from '../components/InfoFooter'
 import WriteGuestBook from '../components/WriteGuestBook';
@@ -7,6 +7,12 @@ import ReadGuestBook from '../components/ReadGuestBook';
 import styled from 'styled-components';
 
 const CheckListPage = () => {
+
+    const [showWriteGuestBook, setShowWriteGuestBook] = useState(false);
+
+    const handleButtonClick = () => {
+        setShowWriteGuestBook(prev => !prev);
+    };
 
     return (
         <Wrapper>
@@ -18,7 +24,12 @@ const CheckListPage = () => {
                 </InfoBox>
             </InfoContainer>
             <WriteContainer>
-                <WriteGuestBook />
+                <h2 style={{margin: "20px 0px 30px 0px"}}>👣 방명록 작성하기</h2>
+                <p style = {{fontSize: "20px", marginBottom: "20px"}}>아래의 버튼을 눌러 방명록을 작성해주세요.</p>
+                <WriteButton onClick={handleButtonClick}>
+                    {showWriteGuestBook ? '방명록 작성 취소' : '방명록 작성하러 가기'}
+                </WriteButton>
+                {showWriteGuestBook && <WriteGuestBook />}
             </WriteContainer>
             <DivisionLine />
             <ReadContainer>
@@ -56,6 +67,28 @@ const TextCustom = styled.p`
 
 const WriteContainer = styled.div`
     display: flex;
+    flex-direction: column; 
+    align-items: center;
+`;
+
+const WriteButton = styled.button`
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    width: 800px;
+    height: 50px;
+    font-size: 20px;
+    font-family: "Pretendard-Regular";
+    background-color: #B8E6E1;
+    color: #333; 
+
+    &:hover {
+        background-color: #82CBC4;
+    }
+`;
+
+const ReadContainer = styled.div`
+    display: flex;
     justify-content: center;       
 `;
 
@@ -71,9 +104,4 @@ const DivisionLine = styled.div`
     top: -9px;
     left: calc(50%, 7px);
   }
-`;
-
-const ReadContainer = styled.div`
-    display: flex;
-    justify-content: center;       
 `;

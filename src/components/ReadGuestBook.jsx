@@ -28,13 +28,12 @@ const ReadGuestBook = () => {
                         id: doc.id,
                         ...data,
                         timestamp: {
-                            original: date,      // Keep the original date object for sorting
-                            formatted: formattedDate // Formatted date for display
+                            original: date,      
+                            formatted: formattedDate
                         }
                     };
                 });
     
-                // Sort using the original date object
                 entriesList.sort((a, b) => b.timestamp.original - a.timestamp.original);
     
                 setEntries(entriesList);
@@ -68,7 +67,7 @@ const ReadGuestBook = () => {
         <Wrapper>
             <h2 style={{ margin: "10px 0px 30px 0px" }}>🗣 방명록 목록</h2>
             {entries.length === 0 ? (
-                <p style={{ fontSize: "20px" }}>현재 작성된 방명록이 없습니다. <br /> 방명록을 작성해보세요.</p>
+                <p style={{ fontSize: "23px" }}>현재 작성된 방명록이 없습니다. <br /> 방명록을 작성해보세요.</p>
             ) : (
                 <>
                     <BookTable>

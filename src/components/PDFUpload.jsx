@@ -85,17 +85,21 @@ const PDFUpload = ({
             const savedata = isArray ? { items: data } : data;
     
             if (savedata && Object.keys(savedata).length > 0) {
-                // Create a new document ID
                 const docId = `exam_${new Date().getTime()}`;
                 const userDocRef = doc(db, 'users', userId, 'exams', docId);
-    
-                await setDoc(userDocRef, savedata);
+                
+                const dataWithTimestamp = {
+                    ...savedata,
+                    createdAt: serverTimestamp(), 
+                };
+
+                await setDoc(userDocRef, dataWithTimestamp);
                 console.log('Document written for user ID:', userId, 'Document ID:', docId);
             } else {
                 console.error('No data to save');
             }
         } catch (e) {
-            console.error('Error adding document:', e.message);  // 에러 메시지 출력
+            console.error('Error adding document:', e.message);  
         }
     };
       
