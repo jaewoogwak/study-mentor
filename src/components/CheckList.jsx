@@ -91,7 +91,6 @@ const CheckList = () => {
         return <h2>로그인 필요</h2>; 
     }
 
-
     return (
         <Wrapper>
             {documents.length > 0 ? (
