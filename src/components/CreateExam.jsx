@@ -178,7 +178,20 @@ const CreateExam = ({ data, setData, credits }) => {
             }
     
             const userId = user.uid;
-            let docId = generatedExamId ? `exam_${generatedExamId}` : `exam_${uuidv4()}`;
+            let docId;
+    
+            // Generate a new ID if generatedExamId is null or "null"
+            if (!generatedExamId || generatedExamId === "null") {
+                const newExamId = uuidv4();
+                docId = `exam_${newExamId}`;
+                localStorage.setItem('generatedExamId', newExamId);
+                setGeneratedExamId(newExamId);
+            } else {
+                docId = `exam_${generatedExamId}`;
+            }
+    
+            console.log('Generated Document ID:', docId);
+    
             const userDocRef = doc(db, 'users', userId, 'exams', docId);
     
             const docContent = {
@@ -194,11 +207,6 @@ const CreateExam = ({ data, setData, credits }) => {
             await setDoc(userDocRef, docContent, { merge: true });
             console.log('Exam and feedback saved for user ID:', userId, 'Document ID:', docId);
     
-            if (!generatedExamId) {
-                const newExamId = docId.split('_')[1];  
-                localStorage.setItem('generatedExamId', newExamId);
-                setGeneratedExamId(newExamId);
-            }
         } catch (e) {
             console.error('Error adding document:', e.message);
         }

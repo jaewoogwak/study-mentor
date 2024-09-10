@@ -41,9 +41,10 @@ const CheckList = () => {
                 setLoading(false);
                 return;
             }
-    
+            
             const ExamDocs = examSnapshot.docs.map(doc => {
                 const data = doc.data();
+                console.log(data)
                 const date = data.timestamp.toDate();
                 const formattedDate = date.toLocaleDateString('en-US', {
                     year: 'numeric',
