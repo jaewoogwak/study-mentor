@@ -69,6 +69,7 @@ const ModalText = styled.h3`
 `;
 
 const ModalButton = styled.button`
+    font-family: "Pretendard-Regular";
     width: 80px;
     height: 30px;
     font-size: 15px;

@@ -14,7 +14,7 @@ import {
     uploadBytesResumable,
     deleteObject,
 } from 'firebase/storage';
-import { serverTimestamp, doc, setDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 
 import PDFViewer from './PDFViewer';
@@ -72,36 +72,36 @@ const PDFUpload = ({
         downloadFile();
     }, [fileState, examData, fileType, user, processState]);
 
-    const saveExamToFirebase = async (data) => {
-        try {
-
-            if (!user) {
-                console.error('User is not authenticated');
-                return;
-            }
-            
-            const userId = user.uid;
-            const isArray = Array.isArray(data);
-            const savedata = isArray ? { items: data } : data;
+    // const saveExamToFirebase = async (data) => {
+    //     try {
     
-            if (savedata && Object.keys(savedata).length > 0) {
-                const docId = `exam_${new Date().getTime()}`;
-                const userDocRef = doc(db, 'users', userId, 'exams', docId);
-                
-                const dataWithTimestamp = {
-                    ...savedata,
-                    createdAt: serverTimestamp(), 
-                };
-
-                await setDoc(userDocRef, dataWithTimestamp);
-                console.log('Document written for user ID:', userId, 'Document ID:', docId);
-            } else {
-                console.error('No data to save');
-            }
-        } catch (e) {
-            console.error('Error adding document:', e.message);  
-        }
-    };
+    //         if (!user) {
+    //             console.error('User is not authenticated');
+    //             return;
+    //         }
+    
+    //         const userId = user.uid;
+    //         const isArray = Array.isArray(data);
+    //         const savedata = isArray ? { items: data } : data;
+    
+    //         if (savedata && Object.keys(savedata).length > 0) {
+    //             const docId = `exam_${new Date().getTime()}`;
+    //             const userDocRef = doc(db, 'users', userId, 'exams', docId);
+    
+    //             const docContent = {
+    //                 ...savedata,
+    //                 timestamp: new Date(),  
+    //             };
+    
+    //             await setDoc(userDocRef, docContent);
+    //             console.log('Document written for user ID:', userId, 'Document ID:', docId);
+    //         } else {
+    //             console.error('No data to save');
+    //         }
+    //     } catch (e) {
+    //         console.error('Error adding document:', e.message);
+    //     }
+    // };    
       
     const styles = {
         width: '700px',
@@ -189,8 +189,7 @@ const PDFUpload = ({
                     setFileType('pdf');
 
                     setExamData(response.data);
-
-                    saveExamToFirebase(response.data);
+                    // saveExamToFirebase(response.data);
 
                     localStorage.setItem(
                         'examData',

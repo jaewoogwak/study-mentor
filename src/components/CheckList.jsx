@@ -8,11 +8,14 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 const CheckList = () => {
     const [documents, setDocuments] = useState([]);
-    const [selectedQuestion, setSelectedQuestion] = useState(null);
+    const [allAnswersVisible, setAllAnswersVisible] = useState(false);
     const [answers, setAnswers] = useState({});
     const [expandedDocId, setExpandedDocId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [entries, setEntries] = useState([]);
+    const entriesPerPage = 15;
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,28 +33,64 @@ const CheckList = () => {
 
     const fetchDocuments = async (userId) => {
         try {
-            const colRef = collection(db, 'users', userId, 'exams');
-            const querySnapshot = await getDocs(colRef);
+            const examColRef = collection(db, 'users', userId, 'exams');
+            const examSnapshot = await getDocs(examColRef);
     
-            const docs = querySnapshot.docs.map(doc => {
+            if (examSnapshot.empty) {
+                console.log('No documents found.');
+                setLoading(false);
+                return;
+            }
+    
+            const ExamDocs = examSnapshot.docs.map(doc => {
                 const data = doc.data();
+                const date = data.timestamp.toDate();
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                });
+
                 return {
                     id: doc.id,
-                    ...data,
-                    createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : null
+                    examData: data.examData || {},
+                    feedbackData: data.feedbackData || {},
+                    timestamp: {
+                        original: date,
+                        formatted: formattedDate,
+                    },
                 };
             });
     
-            setDocuments(docs);
-            setLoading(false); 
+            console.log('ExamDocs with FeedbackData:', ExamDocs);
+            setDocuments(ExamDocs);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching documents:', error);
             setLoading(false); 
         }
     };
 
-    const handleShowAnswer = (question) => {
-        setSelectedQuestion(prev => (prev === question ? null : question));
+    const handleToggleDocument = (id) => {
+        setExpandedDocId(expandedDocId === id ? null : id);
+    };
+
+    const handleShowAllAnswers = (docId) => {
+        setAllAnswersVisible(!allAnswersVisible);
+    };
+
+    const handleDeleteDocument = async (docId) => {
+        try {
+            if (user) {
+                await deleteDoc(doc(db, 'users', user.uid, 'exams', docId));
+                await deleteDoc(doc(db, 'users', user.uid, 'feedbacks', docId));
+                setDocuments(prevDocuments => prevDocuments.filter(doc => doc.id !== docId));
+            }
+        } catch (error) {
+            console.error('Error deleting document:', error);
+        }
     };
 
     const handleRadioChange = (questionIndex, choiceIndex) => {
@@ -68,19 +107,14 @@ const CheckList = () => {
         }));
     };
 
-    const handleDeleteDocument = async (docId) => {
-        try {
-            if (user) {
-                await deleteDoc(doc(db, 'users', user.uid, 'exams', docId));
-                setDocuments(prevDocuments => prevDocuments.filter(doc => doc.id !== docId));
-            }
-        } catch (error) {
-            console.error('Error deleting document:', error);
-        }
-    };
+    const totalPages = Math.ceil(entries.length / entriesPerPage);
 
-    const handleToggleDocument = (id) => {
-        setExpandedDocId(expandedDocId === id ? null : id);
+    const startIndex = (currentPage - 1) * entriesPerPage;
+    const endIndex = startIndex + entriesPerPage;
+    const currentEntries = entries.slice(startIndex, endIndex);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     if (loading) {
@@ -98,60 +132,70 @@ const CheckList = () => {
                     <div key={doc.id}>
                         <DocContainer>
                             <DocButton onClick={() => handleToggleDocument(doc.id)} style={{ cursor: 'pointer' }}>
-                            {doc.createdAt ? doc.createdAt.toLocaleString() : 'No Timestamp'}
+                                <p style={{ fontSize: "20px" }}>Exam (Date: {doc.timestamp?.formatted || 'No Date'})</p>
                             </DocButton>
                         </DocContainer>
                         {expandedDocId === doc.id && (
                             <DocumentContainer>
                                 <InfoContainer>
-                                    <LogoImg src={CheckListLogo} alt="Checklist Logo" />
-                                    <h1>재시험 (Doc ID: {doc.id})</h1>
+                                    {/* <LogoImg src={CheckListLogo} alt="Checklist Logo" /> */}
+                                    <h1 style={{fontSize: "40px"}}>재시험</h1>
+                                    {/* <p style={{ fontSize: "23px" }}>{doc.timestamp?.formatted || 'No Date'}</p> */}
                                 </InfoContainer>
                                 <Line />
-                                {doc.items && doc.items.length > 0 ? (
-                                    doc.items.map((item, index) => (
-                                        <QuestionContainer key={index}>
-                                            <QuestionTitle>
-                                                <IndexText>Question {index + 1}.</IndexText>
-                                                <QuestionText>{item.question}</QuestionText>
-                                            </QuestionTitle>
-                                            {item.case === 0 ? (
-                                                <ChoicesList>
-                                                    {Array.isArray(item.choices) && item.choices.map((choice, i) => (
-                                                        <ChoiceItem key={i}>
+                                {doc.examData && Object.keys(doc.examData).length > 0 ? (
+                                    <>
+                                        {Object.entries(doc.examData).map(([index, item]) => {
+                                            const isCorrect = doc.feedbackData?.[index]?.isCorrect;
+                                            const questionColor = isCorrect === 1 ? '#3A4CA8' : isCorrect === 0 ? '#FF1801' : '#3A4CA8';
+    
+                                            return (
+                                                <QuestionContainer key={index}>
+                                                    <QuestionTitle style={{ color: questionColor }}>
+                                                        <IndexText>Question {parseInt(index) + 1}.</IndexText>
+                                                        <QuestionText>{item.question}</QuestionText>
+                                                    </QuestionTitle>
+                                                    {item.type === 0 ? (
+                                                        <ChoicesList>
+                                                            {Array.isArray(item.choices) ? (
+                                                                item.choices.map((choice, i) => (
+                                                                    <ChoiceItem key={i}>
+                                                                        <input
+                                                                            type="radio"
+                                                                            id={`q${index}_c${i}`}
+                                                                            name={`q${index}`}
+                                                                            onChange={() => handleRadioChange(index, i)}
+                                                                        />
+                                                                        <label htmlFor={`q${index}_c${i}`}>{choice}</label>
+                                                                    </ChoiceItem>
+                                                                ))
+                                                            ) : (
+                                                                <p>{item.choices}</p>
+                                                            )}
+                                                        </ChoicesList>
+                                                    ) : (
+                                                        <TextInputContainer>
                                                             <input
-                                                                type="radio"
-                                                                id={`q${index}_c${i}`}
-                                                                name={`q${index}`}
-                                                                onChange={() => handleRadioChange(index, i)}
+                                                                type="text"
+                                                                value={answers[`q${index}`] || ''}
+                                                                onChange={(e) => handleTextChange(index, e)}
                                                             />
-                                                            <label htmlFor={`q${index}_c${i}`}>{choice}</label>
-                                                        </ChoiceItem>
-                                                    ))}
-                                                </ChoicesList>
-                                            ) : (
-                                                <TextInputContainer>
-                                                    <input
-                                                        type="text"
-                                                        value={answers[`q${index}`] || ''}
-                                                        onChange={(e) => handleTextChange(index, e)}
-                                                    />
-                                                </TextInputContainer>
-                                            )}
-                                            <DetailsContainer>
-                                                <ShowAnswerButton onClick={() => handleShowAnswer(item)}>
-                                                    {selectedQuestion === item ? '답안 숨기기' : '답안 보기'}
-                                                </ShowAnswerButton>
-                                                {selectedQuestion === item && (
-                                                    <AnswerDetails>
-                                                        <DeatailsText><strong>답:</strong> {item.correct_answer}</DeatailsText>
-                                                        <DeatailsText><strong>설명:</strong> {item.explanation}</DeatailsText>
-                                                        <DeatailsText><strong>출제 의도:</strong> {item.intent}</DeatailsText>
-                                                    </AnswerDetails>
-                                                )}
-                                            </DetailsContainer>
-                                        </QuestionContainer>
-                                    ))
+                                                        </TextInputContainer>
+                                                    )}
+                                                    {allAnswersVisible && (
+                                                        <AnswerDetails>
+                                                            <DetailsText><strong>답:</strong> {item.correct_answer}</DetailsText>
+                                                            <DetailsText><strong>설명:</strong> {item.explanation}</DetailsText>
+                                                            <DetailsText><strong>출제 의도:</strong> {item.intent}</DetailsText>
+                                                        </AnswerDetails>
+                                                    )}
+                                                </QuestionContainer>
+                                            );
+                                        })}
+                                        <ShowAllButton onClick={() => handleShowAllAnswers(doc.id)}>
+                                            {allAnswersVisible ? '답안 숨기기' : '답안 보기'}
+                                        </ShowAllButton>
+                                    </>
                                 ) : (
                                     <p>No items found</p>
                                 )}
@@ -166,11 +210,25 @@ const CheckList = () => {
             ) : (
                 <WarningMessages>데이터가 없습니다. <br /> 시험문제를 먼저 생성해보세요. </WarningMessages>
             )}
+
+            {/* 페이지 네비게이션 */}
+            <Pagination>
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <PageButton
+                        key={index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                        style={{ backgroundColor: currentPage === index + 1 ? '#ddd' : 'white' }}
+                        >
+                            {index + 1}
+                        </PageButton>
+                ))}
+            </Pagination>
         </Wrapper>
     );
 };
 
 export default CheckList;
+
 
 const DashedLine = styled.div`
     margin: 30px 0px;
@@ -220,7 +278,8 @@ const InfoContainer = styled.div`
 `;
 
 const LogoImg = styled.img`
-    width: 70px;
+    width: 90px;
+    margin-right: 20px;
 `;
 
 const DocumentContainer = styled.div`  
@@ -290,14 +349,14 @@ const DetailsContainer = styled.div`
     margin-bottom: 50x;
 `;
 
-const ShowAnswerButton = styled.button`
+const ShowAllButton  = styled.button`
+    width: 100%;
     font-family: 'Pretendard-Regular';
-    margin-top: 20px;
-    padding: 10px 25px;
+    margin-top: 60px;
+    padding: 15px 25px;
     border: none;
-    border-radius: 4px;
-    background-color: #7DB249;
-    color: white;
+    border-radius: 10px;
+    background-color: #AFD485;
     cursor: pointer;
     font-size: 16px;
     display: block;      
@@ -305,6 +364,7 @@ const ShowAnswerButton = styled.button`
 
     &:hover {
         background-color: #568A35;
+        color: white;
     }
 `;
 
@@ -317,26 +377,42 @@ const AnswerDetails = styled.div`
     background-color: #f9f9f9;
 `;
 
-const DeatailsText = styled.p`
+const DetailsText = styled.p`
     margin-bottom: 3px;
     font-size: 17px;
 `;
 
 const DeleteButton = styled.button`
     font-family: 'Pretendard-Regular';
-    padding: 10px 25px;
+    padding: 10px 22px;
     border: none;
     border-radius: 4px;
-    background-color: #FD9F28;
-    color: white;
+    background-color: #EEEEE;
     cursor: pointer;
-    font-size: 16px;  
+    font-size: 16px;
+     margin-left: auto; 
+    display: block;     
 
     &:hover {
         background-color: #FD6F22;
+        color: white;
     }
 `;
 
 const WarningMessages = styled.p`
     font-size: 23px;
+`;
+
+const Pagination = styled.div`
+    margin: 30px;
+    text-align: center;
+`;
+
+const PageButton = styled.button`
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    margin-right: 10px;
+    border-radius: 4px;
 `;

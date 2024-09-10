@@ -11,13 +11,15 @@ import logo from '../assets/logo.png';
 
 import axios from 'axios';
 import generatePDF from 'react-to-pdf';
+import { v4 as uuidv4 } from 'uuid';
 import PDFDownloadButton from './PDFDownloadButton';
 import PDFGenerateButton from './PDFGenerateButton';
 import { set } from 'firebase/database';
 import { Spin } from 'antd';
 import Spinner from './Spinner';
+
 import { useChatStore } from '../contexts/store';
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, setDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -62,8 +64,11 @@ const CreateExam = ({ data, setData, credits }) => {
 
     const [submitHovering, setSubmitHovering] = useState(false);
 
-    // 채점 중인지 아닌지
     const [isGrading, setIsGrading] = useState(false);
+    
+    const [generatedExamId, setGeneratedExamId] = useState(() => {
+        return localStorage.getItem('generatedExamId') || null;
+    });
 
     const {
         messages,
@@ -74,6 +79,7 @@ const CreateExam = ({ data, setData, credits }) => {
         setQuestionData,
         questionData,
     } = useChatStore();
+
     const { user, login, logout } = useAuth();
 
     const targetRef = useRef();
@@ -97,17 +103,17 @@ const CreateExam = ({ data, setData, credits }) => {
                 question: item.question,
                 intent: item.intent,
             }));
-
+    
             setQuestions(filteredQuestions);
-
+    
             const loadedRadioAnswers =
                 JSON.parse(localStorage.getItem('radioAnswers')) || {};
             const loadedTextAnswers =
                 JSON.parse(localStorage.getItem('textAnswers')) || {};
-
+    
             const initialRadioAnswers = {};
             const initialTextAnswers = {};
-
+    
             filteredQuestions.forEach((question) => {
                 if (question.type === 0) {
                     initialRadioAnswers[question.id] =
@@ -117,11 +123,12 @@ const CreateExam = ({ data, setData, credits }) => {
                         loadedTextAnswers[question.id] || '';
                 }
             });
-
+    
             setRadioAnswers(initialRadioAnswers);
             setTextAnswers(initialTextAnswers);
         }
     }, [data]);
+    
 
     // 2. Loacal Storage 저장
     useEffect(() => {
@@ -146,6 +153,10 @@ const CreateExam = ({ data, setData, credits }) => {
             'feedbackMessages',
             JSON.stringify(feedbackMessages)
         );
+        localStorage.setItem(
+            'generatedExamId',
+            generatedExamId
+        );
     }, [
         radioAnswers,
         textAnswers,
@@ -156,23 +167,58 @@ const CreateExam = ({ data, setData, credits }) => {
         showQuestionButton,
         isFeedbackOpen,
         feedbackMessages,
+        generatedExamId,
     ]);
+
+    const saveDataToFirebase = async (examData, feedbackData) => {
+        try {
+            if (!user) {
+                console.error('User is not authenticated');
+                return;
+            }
+    
+            const userId = user.uid;
+            let docId = generatedExamId ? `exam_${generatedExamId}` : `exam_${uuidv4()}`;
+            const userDocRef = doc(db, 'users', userId, 'exams', docId);
+    
+            const docContent = {
+                examData: {
+                    ...examData,
+                },
+                feedbackData: {
+                    ...feedbackData,
+                },
+                timestamp: new Date(),
+            };
+    
+            await setDoc(userDocRef, docContent, { merge: true });
+            console.log('Exam and feedback saved for user ID:', userId, 'Document ID:', docId);
+    
+            if (!generatedExamId) {
+                const newExamId = docId.split('_')[1];  
+                localStorage.setItem('generatedExamId', newExamId);
+                setGeneratedExamId(newExamId);
+            }
+        } catch (e) {
+            console.error('Error adding document:', e.message);
+        }
+    };
 
     const onSubmit = (data) => {
         setIsSubmitted(true);
-
+    
         const testResults = [];
-   
+       
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             let user_answers;
-
+    
             if (question.type === 0) {
                 user_answers = parseInt(answer.split('')[0]);  
             } else if (question.type === 1) {
                 user_answers = data[`question_${index}`];
             }
-
+    
             const questionInfo = {
                 index: index,
                 question: question.question,
@@ -182,7 +228,7 @@ const CreateExam = ({ data, setData, credits }) => {
                 explanation: question.explanation,
                 intent: question.intent,
             };
-
+    
             if (question.type === 0) {
                 setRadioAnswers((prevRadioAnswers) => ({
                     ...prevRadioAnswers,
@@ -194,16 +240,15 @@ const CreateExam = ({ data, setData, credits }) => {
                     [question.id]: user_answers,
                 }));
             }
-
+    
             testResults.push(questionInfo);
-            console.log(testResults);
         });
-
+    
         const feedbackResults = {
             FeedBackResults: testResults,
         };
-
-        // server 통신
+    
+        // 서버 통신
         axios({
             url: `${import.meta.env.VITE_API_URL}/feedback/`,
             method: 'POST',
@@ -213,16 +258,19 @@ const CreateExam = ({ data, setData, credits }) => {
             },
             data: feedbackResults,
         })
-            .then((response) => {
-                setIsGrading(false);
-                getScore(response.data); // 받은 data를 getScore 함수로 전달
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting Exam.');
-            });
+        .then((response) => {
+            setIsGrading(false);
+            getScore(response.data);
+            // filteredQuestions와 response.data를 함께 저장
+            saveDataToFirebase(questions, response.data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting Exam.');
+        });
     };
-
+    
+      
     // server에서 받은 정답과 비교해야 함
     const getScore = (AnswerJson) => {
         let correctCount = 0;
@@ -345,6 +393,13 @@ const CreateExam = ({ data, setData, credits }) => {
         window.open(`/chatbot`, '_blank');
     };
 
+    const handlePDFGenerateClick = () => {
+        setGeneratedExamId(null);
+        setData(null);  
+        localStorage.removeItem('examData');  
+        clearAllLocalStorage();  
+    };
+
     const clearAllLocalStorage = () => {
         setRadioAnswers({});
         setTextAnswers({});
@@ -411,12 +466,7 @@ const CreateExam = ({ data, setData, credits }) => {
                     <ButtonWrapper>
                         <PDFGenerateButton
                             text={'문제 새로 생성하기'}
-                            onClickHandle={() => {
-                                setData(null);
-                                localStorage.removeItem('examData');
-                                // local storage 초기화 및 refresh
-                                clearAllLocalStorage();
-                            }}
+                            onClickHandle={handlePDFGenerateClick} 
                         ></PDFGenerateButton>
                         <PDFDownloadButton
                             text={'문제 다운로드 하기'}

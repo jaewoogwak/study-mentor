@@ -13,7 +13,8 @@ const CheckListPage = () => {
                 <InfoContainer>
                     <InfoBox>
                         <h3>🔶 이 페이지는 앞서 풀어본 문제에 대한 목록입니다.</h3>
-                        <TextCustom>각 시험지에 대해 틀린 부분은 빨간색으로 표시되어 있으니, 다시 한 번 풀어보세요!</TextCustom>          
+                        <TextCustom>각 시험지에 대해 틀린 부분은 빨간색으로 표시되어 있으니, 다시 한 번 풀어보세요!</TextCustom>        
+                        <TextCustom style={{color: "red",}}>※ 채점 기능은 따로 제공하지 않습니다.</TextCustom>      
                     </InfoBox>
                 </InfoContainer>
                 <ListContainer>
@@ -47,6 +48,7 @@ const InfoBox = styled.div`
 
 const TextCustom = styled.p`
     font-size: 18px;
+    margin-top: 10px;
 `;
 
 const ListContainer = styled.div`
