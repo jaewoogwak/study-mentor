@@ -179,8 +179,7 @@ const CreateExam = ({ data, setData, credits }) => {
     
             const userId = user.uid;
             let docId;
-    
-            // Generate a new ID if generatedExamId is null or "null"
+
             if (!generatedExamId || generatedExamId === "null") {
                 const newExamId = uuidv4();
                 docId = `exam_${newExamId}`;

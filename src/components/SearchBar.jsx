@@ -12,7 +12,7 @@ const Wrapper = styled.input`
     border-radius: 16px;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     padding-left: 20px;
 
     font-size: 16px;
@@ -32,6 +32,7 @@ const SearchBar = ({ placeholder, onSend }) => {
         }
     };
     return (
+        <>
         <Wrapper
             type='text'
             placeholder={placeholder}
@@ -39,6 +40,9 @@ const SearchBar = ({ placeholder, onSend }) => {
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleKeyDown}
         ></Wrapper>
+        <p style={{fontSize: "13px", margin: "0px", color: "#9E9E9E"}}>채팅에 있어, 실수가 발생할 가능성이 있습니다.</p>
+        </>
+        
     );
 };
 

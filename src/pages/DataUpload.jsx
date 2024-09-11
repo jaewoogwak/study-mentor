@@ -125,6 +125,9 @@ const DataUpload = () => {
                     onClose={closeModal}
                 />
 
+                <p style={{fontSize: "13px", margin: "12px 0px", color: "#9E9E9E"}}>수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에 일부 오류가 포함될 가능성도 있습니다.</p>
+
+
                 {!data && (
                     <PDFUpload
                         examData={data}

@@ -8,26 +8,37 @@ import styled from 'styled-components';
 const CheckListPage = () => {
 
     return (
-        <Wrapper>
-            <Header />
-                <InfoContainer>
-                    <InfoBox>
-                        <h3>🔶 이 페이지는 앞서 풀어본 문제에 대한 목록입니다.</h3>
-                        <TextCustom>각 시험지에 대해 틀린 부분은 빨간색으로 표시되어 있으니, 다시 한 번 풀어보세요!</TextCustom>        
-                        <TextCustom style={{color: "red",}}>※ 채점 기능은 따로 제공하지 않습니다.</TextCustom>      
-                    </InfoBox>
-                </InfoContainer>
-                <ListContainer>
-                    <CheckList />
-                </ListContainer>
-            <InfoFooter />
-        </Wrapper>
+        <>
+            <Wrapper>
+                <Header />
+                <Content>
+                    <InfoContainer>
+                        <InfoBox>
+                            <h3>🔶 이 페이지는 앞서 풀어본 문제에 대한 목록입니다.</h3>
+                            <TextCustom>다시 한 번 풀어보면서, 시험 내용을 복기해보세요.</TextCustom>        
+                            <TextCustom style={{color: "red",}}>※ 채점 기능은 따로 제공하지 않습니다.</TextCustom>      
+                        </InfoBox>
+                    </InfoContainer>
+                    <ListContainer>
+                        <CheckList />
+                    </ListContainer>
+                </Content>
+                <InfoFooter />
+            </Wrapper>
+        </>
     );
 }
 
 export default CheckListPage;
 
 const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+`;
+
+const Content = styled.div`
+    flex-grow: 1; 
     display: flex;
     flex-direction: column;
 `;
@@ -40,7 +51,6 @@ const InfoContainer = styled.div`
 
 const InfoBox = styled.div` 
     width: 750px;
-    // margin: 10px;
     padding: 30px;
     background: #B8E9FF;
     border-radius: 12px;

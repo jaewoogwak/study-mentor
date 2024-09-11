@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import CheckListLogo from '../assets/checklistlogo.png'
+import logo from '../assets/logo.png';
 
 import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
@@ -139,16 +139,20 @@ const CheckList = () => {
                         {expandedDocId === doc.id && (
                             <DocumentContainer>
                                 <InfoContainer>
-                                    {/* <LogoImg src={CheckListLogo} alt="Checklist Logo" /> */}
-                                    <h1 style={{fontSize: "40px"}}>재시험</h1>
-                                    {/* <p style={{ fontSize: "23px" }}>{doc.timestamp?.formatted || 'No Date'}</p> */}
+                                    <ExamTitle>
+                                        <LogoImg src={logo} alt='logo' />
+                                        <Title>ReExamination</Title>
+                                    </ExamTitle>
+                                    <Info>
+                                        학번 : <InfoLine /> 이름 : <InfoLine />
+                                    </Info>
                                 </InfoContainer>
                                 <Line />
                                 {doc.examData && Object.keys(doc.examData).length > 0 ? (
                                     <>
                                         {Object.entries(doc.examData).map(([index, item]) => {
                                             const isCorrect = doc.feedbackData?.[index]?.isCorrect;
-                                            const questionColor = isCorrect === 1 ? '#3A4CA8' : isCorrect === 0 ? '#FF1801' : '#3A4CA8';
+                                            const questionColor = isCorrect === 1 ? '#2973FF' : isCorrect === 0 ? '#FF1801' : '#2973FF';
     
                                             return (
                                                 <QuestionContainer key={index}>
@@ -272,15 +276,65 @@ const DocButton = styled.button`
 
 const InfoContainer = styled.div`
     display: flex;           
-    flex-direction: row;     
+    flex-direction: column;     
     align-items: center;   
     justify-content: center; 
     gap: 10px;            
 `;
 
+const ExamTitle = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* 모바일에서 로고와 제목이 겹치지 않도록 설정 */
+`;
+
+const Title = styled.div`
+    color: #000;
+    text-align: center;
+    font-size: 32px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+
+    @media (min-width: 768px) {
+        font-size: 45px; /* 데스크탑에서는 기존 크기 */
+    }
+`;
+
 const LogoImg = styled.img`
-    width: 90px;
-    margin-right: 20px;
+    height: 50px; /* 모바일에 맞게 로고 크기 조정 */
+    width: auto;
+    margin-right: 10px;
+
+    @media (min-width: 768px) {
+        height: 70px; /* 데스크탑에서는 기존 크기 */
+        margin-right: 20px;
+    }
+`;
+
+const Info = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 25px 0 20px 10px;
+    font-size: 18px; /* 모바일에 맞게 폰트 크기 조정 */
+
+    @media (min-width: 768px) {
+        font-size: 20px; /* 데스크탑에서는 기존 크기 */
+    }
+`;
+
+const InfoLine = styled.div`
+    display: inline-block;
+    border-bottom: 2px solid black;
+    width: 100px; /* 모바일에 맞게 너비 조정 */
+    height: 20px;
+
+    @media (min-width: 768px) {
+        width: 150px; /* 데스크탑에서는 기존 크기 */
+    }
 `;
 
 const DocumentContainer = styled.div`  
@@ -395,8 +449,8 @@ const DeleteButton = styled.button`
     display: block;     
 
     &:hover {
-        background-color: #FD6F22;
-        color: white;
+        background-color: #C2C2C2;
+
     }
 `;
 
