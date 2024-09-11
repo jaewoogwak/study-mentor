@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import logo from '../assets/logo.png';
 
-import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -34,17 +34,18 @@ const CheckList = () => {
     const fetchDocuments = async (userId) => {
         try {
             const examColRef = collection(db, 'users', userId, 'exams');
-            const examSnapshot = await getDocs(examColRef);
+            // Firestore에서 timestamp 필드 기준으로 내림차순 정렬
+            const examQuery = query(examColRef, orderBy('timestamp', 'desc'));
+            const examSnapshot = await getDocs(examQuery);
     
             if (examSnapshot.empty) {
                 console.log('No documents found.');
                 setLoading(false);
                 return;
             }
-            
-            const ExamDocs = examSnapshot.docs.map(doc => {
+    
+            const ExamDocs = examSnapshot.docs.map((doc) => {
                 const data = doc.data();
-                console.log(data)
                 const date = data.timestamp.toDate();
                 const formattedDate = date.toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -53,7 +54,7 @@ const CheckList = () => {
                     hour: 'numeric',
                     minute: 'numeric',
                 });
-
+    
                 return {
                     id: doc.id,
                     examData: data.examData || {},
@@ -70,7 +71,7 @@ const CheckList = () => {
             setLoading(false);
         } catch (error) {
             console.error('Error fetching documents:', error);
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
