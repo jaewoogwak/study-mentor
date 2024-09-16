@@ -75,21 +75,21 @@ const PDFUpload = ({
 
             // setFileState('uploading');
 
-            // ip check
-            function isAllowedIP(ip) {
-                const allowedIPs = ['211.57.219.176/24']; // 학교 네트워크 IP 범위
-                return allowedIPs.some((allowedRange) =>
-                    ip.startsWith(allowedRange.split('/')[0])
-                );
-            }
-            const response = await axios.get('https://jsonip.com/');
-            console.log('IP:', response.data.ip);
-            if (!isAllowedIP(response.data.ip)) {
-                message.error('학교 네트워크에서만 접근 가능합니다.');
-                console.error('학교 네트워크에서만 접근 가능합니다.');
-                setFileState('error'); // 상태를 error로 설정
-                return false; // 업로드 중단
-            }
+            // // ip check
+            // function isAllowedIP(ip) {
+            //     const allowedIPs = ['211.57.219.176/24']; // 학교 네트워크 IP 범위
+            //     return allowedIPs.some((allowedRange) =>
+            //         ip.startsWith(allowedRange.split('/')[0])
+            //     );
+            // }
+            // const response = await axios.get('https://jsonip.com/');
+            // console.log('IP:', response.data.ip);
+            // if (!isAllowedIP(response.data.ip)) {
+            //     message.error('학교 네트워크에서만 접근 가능합니다.');
+            //     console.error('학교 네트워크에서만 접근 가능합니다.');
+            //     setFileState('error'); // 상태를 error로 설정
+            //     return false; // 업로드 중단
+            // }
 
             if (info.file.size > 50000000) {
                 message.error('파일 크기는 50MB 이하여야 합니다.');
