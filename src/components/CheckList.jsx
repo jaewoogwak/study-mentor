@@ -256,18 +256,13 @@ const Wrapper = styled.div`
 
     @media (max-width: 768px) {
         padding: 10px;
+        width: 90%;
     }
 `;
 
 const DocContainer = styled.div`
     margin-bottom: 30px;
     margin-top: 20px;
-
-    @media (max-width: 768px) {
-        width: 100%;
-        font-size: 15px;
-        height: 50px;
-    }
 `;
 
 const DocButton = styled.button`
@@ -280,7 +275,7 @@ const DocButton = styled.button`
     background-color: #FFEAE4;
     cursor: pointer; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-    transition: box-shadow 0.3s ease;
+    transition: all 0.3s ease; 
 
     &:hover {
         box-shadow: 0 7px 13px rgba(0, 0, 0, 0.3); 
@@ -300,7 +295,7 @@ const DocButton = styled.button`
         font-size: 20px; 
         
         @media (max-width: 768px) {
-        font-size: 12px;
+            font-size: 12px;
         }
     }
 `;

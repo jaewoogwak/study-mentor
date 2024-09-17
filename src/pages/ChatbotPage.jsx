@@ -322,6 +322,7 @@ const InfoText = styled.div`
     @media (max-width: 768px) {
         font-size: 16px; /* 모바일에서는 폰트 크기 조정 */
         line-height: 24px; /* 모바일에서 줄 간격 조정 */
+        padding: 10px;
     }
 `;
 

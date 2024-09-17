@@ -28,6 +28,11 @@ const BoxContainer = styled.div`
     width: 100%; 
     box-sizing: border-box; 
     margin-top: 70px;
+
+    @media (max-width: 768px) { /* Adjust this breakpoint as needed */
+        padding: 10px;
+        margin-top: 50px;
+    }
 `;
 
 const FooterInfo = styled.div`
@@ -37,4 +42,9 @@ const FooterInfo = styled.div`
 const FooterContent = styled.h3`
     font-size: 13px;
     margin: 5px 0; /* 상하 마진 조정 */
+
+    @media (max-width: 768px) {
+        font-size: 8px; /* Adjust font size on smaller screens */
+        margin: 3px 0; /* Adjust margin on smaller screens */
+    }
 `;
