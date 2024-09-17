@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 const CheckList = () => {
     const [documents, setDocuments] = useState([]);
-    const [allAnswersVisible, setAllAnswersVisible] = useState(false);
+    const [answersVisibility, setAnswersVisibility] = useState({}); 
     const [answers, setAnswers] = useState({});
     const [expandedDocId, setExpandedDocId] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -34,7 +34,6 @@ const CheckList = () => {
     const fetchDocuments = async (userId) => {
         try {
             const examColRef = collection(db, 'users', userId, 'exams');
-            // Firestore에서 timestamp 필드 기준으로 내림차순 정렬
             const examQuery = query(examColRef, orderBy('timestamp', 'desc'));
             const examSnapshot = await getDocs(examQuery);
     
@@ -79,8 +78,12 @@ const CheckList = () => {
         setExpandedDocId(expandedDocId === id ? null : id);
     };
 
+    // 특정 문서의 답안 보기를 토글하는 함수
     const handleShowAllAnswers = (docId) => {
-        setAllAnswersVisible(!allAnswersVisible);
+        setAnswersVisibility(prevState => ({
+            ...prevState,
+            [docId]: !prevState[docId], 
+        }));
     };
 
     const handleDeleteDocument = async (docId) => {
@@ -134,7 +137,7 @@ const CheckList = () => {
                     <div key={doc.id}>
                         <DocContainer>
                             <DocButton onClick={() => handleToggleDocument(doc.id)} style={{ cursor: 'pointer' }}>
-                                <p style={{ fontSize: "20px" }}>Exam (Date: {doc.timestamp?.formatted || 'No Date'})</p>
+                                <p>Exam (Date: {doc.timestamp?.formatted || 'No Date'})</p>
                             </DocButton>
                         </DocContainer>
                         {expandedDocId === doc.id && (
@@ -153,7 +156,7 @@ const CheckList = () => {
                                     <>
                                         {Object.entries(doc.examData).map(([index, item]) => {
                                             const isCorrect = doc.feedbackData?.[index]?.isCorrect;
-                                            const questionColor = isCorrect === 1 ? '#2973FF' : isCorrect === 0 ? '#FF1801' : '#2973FF';
+                                            const questionColor = isCorrect === 1 ? 'blue' : isCorrect === 0 ? 'red' : 'blue';
     
                                             return (
                                                 <QuestionContainer key={index}>
@@ -181,14 +184,14 @@ const CheckList = () => {
                                                         </ChoicesList>
                                                     ) : (
                                                         <TextInputContainer>
-                                                            <input
+                                                            <StyledInput
                                                                 type="text"
                                                                 value={answers[`q${index}`] || ''}
                                                                 onChange={(e) => handleTextChange(index, e)}
                                                             />
                                                         </TextInputContainer>
                                                     )}
-                                                    {allAnswersVisible && (
+                                                    {answersVisibility[doc.id] && (
                                                         <AnswerDetails>
                                                             <DetailsText><strong>답:</strong> {item.correct_answer}</DetailsText>
                                                             <DetailsText><strong>설명:</strong> {item.explanation}</DetailsText>
@@ -199,7 +202,7 @@ const CheckList = () => {
                                             );
                                         })}
                                         <ShowAllButton onClick={() => handleShowAllAnswers(doc.id)}>
-                                            {allAnswersVisible ? '답안 숨기기' : '답안 보기'}
+                                            {answersVisibility[doc.id] ? '답안 숨기기' : '답안 보기'}
                                         </ShowAllButton>
                                     </>
                                 ) : (
@@ -235,7 +238,6 @@ const CheckList = () => {
 
 export default CheckList;
 
-
 const DashedLine = styled.div`
     margin: 30px 0px;
     border-top: 2px dashed #C2C2C2; 
@@ -251,11 +253,21 @@ const Line = styled.div`
 const Wrapper = styled.div`
     flex-direction: column;
     padding: 20px;
+
+    @media (max-width: 768px) {
+        padding: 10px;
+    }
 `;
 
 const DocContainer = styled.div`
     margin-bottom: 30px;
     margin-top: 20px;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        font-size: 15px;
+        height: 50px;
+    }
 `;
 
 const DocButton = styled.button`
@@ -273,6 +285,24 @@ const DocButton = styled.button`
     &:hover {
         box-shadow: 0 7px 13px rgba(0, 0, 0, 0.3); 
     }
+
+    &:active {
+        box-shadow: 0 7px 13px rgba(0, 0, 0, 0.3); 
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        font-size: 15px;
+        height: 50px;
+    }
+
+    p {
+        font-size: 20px; 
+        
+        @media (max-width: 768px) {
+        font-size: 12px;
+        }
+    }
 `;
 
 const InfoContainer = styled.div`
@@ -280,36 +310,41 @@ const InfoContainer = styled.div`
     flex-direction: column;     
     align-items: center;   
     justify-content: center; 
-    gap: 10px;            
+    gap: 10px;      
+    
+    @media (max-width: 768px) {
+        gap: 5px;
+        font-size: 13px;
+    }
 `;
 
 const ExamTitle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap; /* 모바일에서 로고와 제목이 겹치지 않도록 설정 */
+    flex-wrap: wrap; 
 `;
 
 const Title = styled.div`
     color: #000;
     text-align: center;
-    font-size: 32px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 23px; 
     font-style: normal;
     font-weight: bold;
     line-height: normal;
 
     @media (min-width: 768px) {
-        font-size: 45px; /* 데스크탑에서는 기존 크기 */
+        font-size: 45px; 
     }
 `;
 
 const LogoImg = styled.img`
-    height: 50px; /* 모바일에 맞게 로고 크기 조정 */
+    height: 45px; 
     width: auto;
     margin-right: 10px;
 
     @media (min-width: 768px) {
-        height: 70px; /* 데스크탑에서는 기존 크기 */
+        height: 70px;
         margin-right: 20px;
     }
 `;
@@ -320,55 +355,81 @@ const Info = styled.div`
     align-items: center;
     gap: 10px;
     margin: 25px 0 20px 10px;
-    font-size: 18px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 15px;
 
     @media (min-width: 768px) {
-        font-size: 20px; /* 데스크탑에서는 기존 크기 */
+        font-size: 20px; 
     }
 `;
 
 const InfoLine = styled.div`
     display: inline-block;
     border-bottom: 2px solid black;
-    width: 100px; /* 모바일에 맞게 너비 조정 */
+    width: 50px; 
     height: 20px;
 
     @media (min-width: 768px) {
-        width: 150px; /* 데스크탑에서는 기존 크기 */
+        width: 150px; 
     }
 `;
 
 const DocumentContainer = styled.div`  
     padding: 40px;
-    width: 800px;
+    width: 100%; 
+    max-width: 800px;
     border: 2px solid #595959;
     border-radius: 20px;
     margin-bottom: 50px;
+    box-sizing: border-box; 
+
+    @media (max-width: 768px) {
+        padding: 20px; 
+        margin-bottom: 30px;
+    }
 `;
 
 const QuestionContainer = styled.div`
     margin-top: 40px;
-    margin-bottom: 0px;
+
+    @media (max-width: 768px) {
+        margin-top: 20px;
+    }
 `;
 
 const QuestionTitle = styled.div`
     margin-bottom: 10px;
     text-align: left;
+
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
 `;
 
 const IndexText = styled.p`
     font-size: 22px;
     margin-bottom: 10px;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
 `;
 
 const QuestionText = styled.p`
     font-size: 20px;
     margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+        font-size: 14px; 
+    }
 `;
 
 const ChoicesList = styled.div`
     margin: 20px 0px;
+
+    @media (max-width: 768px) {
+        font-size: 13px;
+    }
 `;
 
 const ChoiceItem = styled.div`
@@ -385,9 +446,28 @@ const ChoiceItem = styled.div`
     label {
         margin-left: 10px;
         font-size: 17px;
+
+        @media (max-width: 768px) {
+            font-size: 14px;
+        }
     }
 `;
 
+const StyledInput = styled.input`
+    width: 100%;
+    max-width: 500px; /* Set a max-width to prevent it from getting too large */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 8px;
+        max-width: 100%; 
+    }
+`;
 
 const TextInputContainer = styled.div`
     margin: 20px 0px;
@@ -398,6 +478,13 @@ const TextInputContainer = styled.div`
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+        input {
+            width: 100%;
+            font-size: 13px;
+        }
     }
 `;
 
@@ -422,6 +509,11 @@ const ShowAllButton  = styled.button`
         background-color: #568A35;
         color: white;
     }
+
+    @media (max-width: 768px) {
+        font-size: 13px;
+        padding: 10px 20px;
+    }
 `;
 
 const AnswerDetails = styled.div`
@@ -431,11 +523,21 @@ const AnswerDetails = styled.div`
     border: 2px dashed #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
+
+    @media (max-width: 768px) {
+        padding: 15px; 
+        margin-top: 15px; 
+    }
 `;
 
 const DetailsText = styled.p`
     margin-bottom: 3px;
     font-size: 17px;
+
+    @media (max-width: 768px) {
+        font-size: 14px; 
+        padding: 5px 0;  
+    }
 `;
 
 const DeleteButton = styled.button`
@@ -452,6 +554,11 @@ const DeleteButton = styled.button`
     &:hover {
         background-color: #C2C2C2;
 
+    }
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 8px 20px;
     }
 `;
 
@@ -471,4 +578,9 @@ const PageButton = styled.button`
     border: none;
     margin-right: 10px;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+        padding: 3px;
+        font-size: 13px;
+    }
 `;

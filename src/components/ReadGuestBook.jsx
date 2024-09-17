@@ -67,15 +67,17 @@ const ReadGuestBook = () => {
         <Wrapper>
             <h2 style={{ margin: "10px 0px 30px 0px" }}>🗣 방명록 목록</h2>
             {entries.length === 0 ? (
-                <p style={{ fontSize: "23px" }}>현재 작성된 방명록이 없습니다. <br /> 방명록을 작성해보세요.</p>
+                <NoEntriesMessage>
+                    현재 작성된 방명록이 없습니다. <br /> 방명록을 작성해보세요.
+                </NoEntriesMessage>
             ) : (
                 <>
                     <BookTable>
                         <BookThead>
                             <tr>
-                                <BookTh width="90px">이름</BookTh>
-                                <BookTh>메시지</BookTh>
-                                <BookTh width="110px">날짜</BookTh>
+                                <BookTh width="90px" mobileMinWidth="50px">이름</BookTh>
+                                <BookTh style={{ minWidth: '140px' }} mobileWidth="auto">메시지</BookTh>
+                                <BookTh width="120px" mobileWidth="70px">날짜</BookTh>
                             </tr>
                         </BookThead>
                         <tbody>
@@ -113,8 +115,12 @@ const Wrapper = styled.div`
 `;
 
 const BookTable = styled.table`
-    width: 850px;
+    width: 820px;
     border-collapse: collapse;
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
 `;
 
 const BookThead = styled.thead`
@@ -127,6 +133,11 @@ const BookTh = styled.th`
     text-align: center; 
     font-size: 18px;
     width: ${(props) => props.width || 'auto'}; 
+
+    @media (max-width: 768px) {
+        font-size: 15px;
+        min-width: ${(props) => props.mobileMinWidth || 'auto'};
+    }
 `;
 
 const BookTd = styled.td`
@@ -134,11 +145,20 @@ const BookTd = styled.td`
     padding: 15px;
     text-align: center; 
     font-size: 17px;
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 10px;
+    }
 `;
 
 const Pagination = styled.div`
     margin: 30px;
     text-align: center;
+
+    @media (max-width: 768px) {
+        margin: 20px 0;
+    }
 `;
 
 const PageButton = styled.button`
@@ -148,4 +168,17 @@ const PageButton = styled.button`
     border: none;
     margin-right: 10px;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+        padding: 3px 6px;
+    }
+`;
+
+const NoEntriesMessage = styled.p`
+    font-size: 23px;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
 `;

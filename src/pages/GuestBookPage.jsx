@@ -51,18 +51,31 @@ const InfoContainer = styled.div`
     display: flex;
     justify-content: center;
     margin: 30px;
+
+    @media (max-width: 768px) {
+        margin: 20px;
+    }
 `;
 
 const InfoBox = styled.div` 
-    width: 750px;
+    width: 770px;
     padding: 30px;
     background: #FFE4FA;
     border-radius: 12px;
+
+    @media (max-width: 768px) {
+        width: 90%;
+        padding: 20px;
+    }
 `; 
 
 const TextCustom = styled.p`
     font-size: 18px;
     margin-top: 10px;
+
+    @media (max-width: 768px) {
+        font-size: 16px;
+    }
 `;
 
 const WriteContainer = styled.div`
@@ -75,7 +88,7 @@ const WriteButton = styled.button`
     border: none;
     border-radius: 10px;
     margin-bottom: 20px;
-    width: 800px;
+    width: 820px;
     height: 50px;
     font-size: 20px;
     font-family: "Pretendard-Regular";
@@ -85,23 +98,41 @@ const WriteButton = styled.button`
     &:hover {
         background-color: #82CBC4;
     }
+
+    @media (max-width: 768px) {
+        width: 90%;
+        font-size: 18px;
+        height: 45px;
+    }
 `;
 
 const ReadContainer = styled.div`
     display: flex;
-    justify-content: center;       
+    justify-content: center;
+    width: 100%;
+    padding: 0 10px; 
+    box-sizing: border-box; 
+
+    @media (max-width: 768px) {
+        padding: 0; 
+    }
 `;
 
+
 const DivisionLine = styled.div`
-  border-top: 2px dashed #444444;
-  margin: 40px auto;
-  width: 400px;
-  height: 0px;
-  
-  &:after {
-    content: "◆";
-    position: relative;
-    top: -9px;
-    left: calc(50%, 7px);
-  }
+    border-top: 2px dashed #444444;
+    margin: 40px auto;
+    width: 700px;
+    height: 0px;
+    
+    &:after {
+        content: "◆";
+        position: relative;
+        top: -9px;
+        left: calc(50%, 7px);
+    }
+
+    @media (max-width: 768px) {
+        width: 90%;
+    }
 `;
