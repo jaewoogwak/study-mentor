@@ -19,7 +19,7 @@ const CheckListPage = () => {
             <Header />
             <InfoContainer>
                 <InfoBox>
-                    <h2>🌏 방명록</h2>
+                    <InfoText>🌏 방명록</InfoText>
                     <TextCustom>하고 싶은 이야기를 마음껏 남겨보세요! <br />※ 내용에 따라 검열의 대상이 될 수도 있습니다.</TextCustom>          
                 </InfoBox>
             </InfoContainer>
@@ -57,6 +57,7 @@ const InfoContainer = styled.div`
     }
 `;
 
+
 const InfoBox = styled.div` 
     width: 770px;
     padding: 30px;
@@ -68,6 +69,14 @@ const InfoBox = styled.div`
         padding: 20px;
     }
 `; 
+
+const InfoText = styled.h3`
+    font-size: 24px; 
+
+    @media (max-width: 768px) {
+        font-size: 16px; 
+    }
+`;
 
 const TextCustom = styled.p`
     font-size: 18px;

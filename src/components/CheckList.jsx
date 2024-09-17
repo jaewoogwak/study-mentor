@@ -217,7 +217,7 @@ const CheckList = () => {
                     </div>
                 ))
             ) : (
-                <WarningMessages>데이터가 없습니다. <br /> 시험문제를 먼저 생성해보세요. </WarningMessages>
+                <WarningMessages>👨‍💻 데이터가 없습니다. <br /> 시험문제를 먼저 생성해보세요. </WarningMessages>
             )}
 
             {/* 페이지 네비게이션 */}
@@ -559,6 +559,8 @@ const DeleteButton = styled.button`
 
 const WarningMessages = styled.p`
     font-size: 23px;
+    text-align: center;
+    margin: 100px;
 `;
 
 const Pagination = styled.div`

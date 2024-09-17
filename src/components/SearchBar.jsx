@@ -23,7 +23,7 @@ const Wrapper = styled.input`
 
 const WarningText = styled.p`
     font-size: 13px;
-    margin: 0px;
+    margin-top: 0px;
     color: #9E9E9E;
 
     @media (max-width: 768px) {

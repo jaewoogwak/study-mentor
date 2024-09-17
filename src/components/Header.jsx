@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import logo2 from '../assets/logo2.png';
 import { NavLink } from 'react-router-dom';
+import logo2 from '../assets/logo2.png';
 import { auth } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
-
-    const activeStyle = {
-        color: '#6392ff',
-    };
 
     const { user, login, logout } = useAuth();
 
@@ -34,39 +30,34 @@ const Header = () => {
             <NavLinksOverlay isOpen={isOpen} onClick={toggleMenu} />
 
             <NavLinks isOpen={isOpen}>
-                <FileUploadLink
+                <StyledNavLink
                     to='/upload'
-                    activeClassName='activeLink'
-                    style={({ isActive }) => (isActive ? activeStyle : {})}
+                    activeClassName='active'
                     onClick={toggleMenu}
                 >
                     파일 업로드
-                </FileUploadLink>
-                <ChatbotLink
+                </StyledNavLink>
+                <StyledNavLink
                     to='/chatbot'
-                    activeClassName='activeLink'
-                    style={({ isActive }) => (isActive ? activeStyle : {})}
+                    activeClassName='active'
                     onClick={toggleMenu}
                 >
                     챗봇
-                </ChatbotLink>
-                <CheckListLink
+                </StyledNavLink>
+                <StyledNavLink
                     to='/checklist'
-                    activeClassName='activeLink'
-                    style={({ isActive }) => (isActive ? activeStyle : {})}
+                    activeClassName='active'
                     onClick={toggleMenu}
                 >
                     오답목록
-                </CheckListLink>
-
-                <GuestBook
-                    
-                    onClick={() => {
-                        window.location.href = '/guestbook';
-                    }}
+                </StyledNavLink>
+                <StyledNavLink
+                    to='/guestbook'
+                    activeClassName='active'
+                    onClick={toggleMenu}
                 >
                     방명록
-                </GuestBook>
+                </StyledNavLink>
                 <Logout
                     onClick={() => {
                         auth.signOut();
@@ -93,7 +84,7 @@ const HeaderWrapper = styled.div`
     height: 80px;
     border-bottom: 1px solid #e0e0e0;
     background-color: white;
-    box-sizing: border-box; /* 요소의 너비와 높이를 포함하여 패딩과 테두리가 모두 포함되도록 설정 */
+    box-sizing: border-box;
 
     @media (max-width: 768px) {
         padding: 0 15px;
@@ -176,33 +167,19 @@ const NavLinks = styled.div`
     }
 `;
 
-const FileUploadLink = styled(NavLink)`
+const StyledNavLink = styled(NavLink)`
     font-size: 24px;
     color: black;
     text-decoration: none;
     font-weight: 600;
 
-    @media (max-width: 768px) {
-        font-size: 18px;
+    &.active {
+        color: #6392ff; /* Change to desired active color */
     }
-`;
 
-const ChatbotLink = styled(NavLink)`
-    font-size: 24px;
-    text-decoration: none;
-    color: black;
-    font-weight: 600;
-
-    @media (max-width: 768px) {
-        font-size: 18px;
+    &:hover {
+        color: #6392ff; /* Change to desired hover color */
     }
-`;
-
-const CheckListLink = styled(NavLink)`
-    font-size: 24px;
-    text-decoration: none;
-    color: black;
-    font-weight: 600;
 
     @media (max-width: 768px) {
         font-size: 18px;
@@ -214,21 +191,6 @@ const Logout = styled.div`
     color: black;
     cursor: pointer;
     font-weight: 600;
-
-    @media (max-width: 768px) {
-        font-size: 18px;
-    }
-`;
-
-const GuestBook = styled.div`
-    font-size: 24px;
-    color: black;
-    cursor: pointer;
-    font-weight: 600;
-
-    &:hover {
-        color: #6392ff;
-    }
 
     @media (max-width: 768px) {
         font-size: 18px;

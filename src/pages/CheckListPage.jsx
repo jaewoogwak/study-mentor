@@ -35,7 +35,8 @@ export default CheckListPage;
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    min-height: 100vh; 
+    margin: 0 auto;
+    height: 920px;
 `;
 
 const Content = styled.div`
@@ -47,7 +48,7 @@ const Content = styled.div`
 const InfoContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin: 10px;
+    margin: 30px;
 `;
 
 const InfoBox = styled.div` 
