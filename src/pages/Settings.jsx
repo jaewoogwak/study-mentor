@@ -10,10 +10,24 @@ const Settings = () => {
     const [code, setCode] = useState('');
     const [message, setMessage] = useState('');
     const [isCodeSent, setIsCodeSent] = useState(false);
+    const [isValidEmail, setIsValidEmail] = useState(false); // 이메일 유효성 상태
+    const [isEmailTouched, setIsEmailTouched] = useState(false); // 이메일 입력 여부 상태
 
     const { user, login, logout } = useAuth();
 
+    // 이메일이 @koreatech.ac.kr로 끝나는지 확인
+    const handleEmailChange = (e) => {
+        const inputEmail = e.target.value;
+        setEmail(inputEmail);
+        setIsEmailTouched(true); // 이메일을 입력하기 시작한 시점
+        setIsValidEmail(inputEmail.endsWith('@koreatech.ac.kr')); // 이메일이 유효하면 true
+    };
+
     const sendVerificationCode = async () => {
+        if (!isValidEmail) {
+            setMessage('학교 이메일(@koreatech.ac.kr)만 사용 가능합니다.');
+            return;
+        }
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/pdf/auth-email`,
@@ -58,10 +72,15 @@ const Settings = () => {
                     <InputField
                         type='email'
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
                         placeholder='@koreatech.ac.kr'
+                        isValid={isValidEmail}
+                        isTouched={isEmailTouched} // 유효성 검사를 위한 상태 전달
                     />
-                    <ActionButton onClick={sendVerificationCode}>
+                    <ActionButton
+                        onClick={sendVerificationCode}
+                        disabled={!isValidEmail} // 이메일 유효하지 않으면 버튼 비활성화
+                    >
                         인증 코드 발송
                     </ActionButton>
 
@@ -102,7 +121,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    /* background-color: #f4f6f8; */
 `;
 
 const MainWrapper = styled.div`
@@ -144,9 +162,21 @@ const InputField = styled.input`
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid
+        ${({ isTouched, isValid }) =>
+            !isTouched
+                ? '#ccc'
+                : isValid
+                ? '#4caf50'
+                : '#f44336'}; /* 이메일을 터치한 후 유효성에 따라 색상 변경 */
     font-size: 16px;
     outline: none;
+    background-color: ${({ isTouched, isValid }) =>
+        !isTouched
+            ? 'white'
+            : isValid
+            ? '#e8f5e9'
+            : '#ffebee'}; /* 이메일을 터치한 후 유효성에 따라 배경색 변경 */
 
     @media (max-width: 768px) {
         width: 90%;
@@ -163,6 +193,8 @@ const ActionButton = styled.button`
     border-radius: 20px;
     font-size: 16px;
     cursor: pointer;
+    opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
 
     &:hover,
     &:active {
@@ -181,7 +213,6 @@ const Message = styled.p`
 
 const LogoutButton = styled(ActionButton)`
     background-color: #f44336;
-    cursor: pointer;
 
     &:hover,
     &:active {

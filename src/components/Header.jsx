@@ -50,7 +50,7 @@ const Header = () => {
                     onClick={toggleMenu}
                 >
                     오답목록
-                </CheckListLink>
+                </StyledNavLink>
 
                 <GuestBook
                     onClick={() => {
