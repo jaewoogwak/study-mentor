@@ -65,15 +65,13 @@ const FullPageHeader = () => {
                 >
                     방명록
                 </GuestBook>
-                <Logout
+                <Settings
                     onClick={() => {
-                        auth.signOut();
-                        logout();
-                        window.location.href = '/login';
+                        window.location.href = '/settings';
                     }}
                 >
-                    로그아웃
-                </Logout>
+                    설정
+                </Settings>
             </NavLinks>
         </HeaderWrapper>
     );
@@ -237,6 +235,21 @@ const Logout = styled.div`
 `;
 
 const GuestBook = styled.div`
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
+const Settings = styled.div`
     font-size: 24px;
     color: black;
     cursor: pointer;

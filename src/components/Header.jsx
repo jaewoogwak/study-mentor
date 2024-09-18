@@ -50,23 +50,22 @@ const Header = () => {
                     onClick={toggleMenu}
                 >
                     오답목록
-                </StyledNavLink>
-                <StyledNavLink
-                    to='/guestbook'
-                    activeClassName='active'
-                    onClick={toggleMenu}
-                >
-                    방명록
-                </StyledNavLink>
-                <Logout
+                </CheckListLink>
+
+                <GuestBook
                     onClick={() => {
-                        auth.signOut();
-                        logout();
-                        window.location.href = '/login';
+                        window.location.href = '/guestbook';
                     }}
                 >
-                    로그아웃
-                </Logout>
+                    방명록
+                </GuestBook>
+                <Settings
+                    onClick={() => {
+                        window.location.href = '/settings';
+                    }}
+                >
+                    설정
+                </Settings>
             </NavLinks>
         </HeaderWrapper>
     );
@@ -191,6 +190,36 @@ const Logout = styled.div`
     color: black;
     cursor: pointer;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
+const GuestBook = styled.div`
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
+const Settings = styled.div`
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
 
     @media (max-width: 768px) {
         font-size: 18px;
