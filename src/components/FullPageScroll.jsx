@@ -29,7 +29,7 @@ const FullPageScroll = () => {
                         <PageWrapper>
                             <FirstContainer>
                                 <Text
-                                    fontsize='32px'
+                                    fontsize='26px'
                                     style={{ fontWeight: '500' }}
                                 >
                                     시험 문제는 스터디 멘토와 함께!<br />{' '}
@@ -58,21 +58,22 @@ const FullPageScroll = () => {
                             <Image
                                 src={example}
                                 alt='example'
-                                width='611px'
-                                height='421px'
+                                width='511px'
+                                height='341px'
                             />
                             <div>
                                 <Text
-                                    fontsize='35px'
+                                    fontsize='30px'
                                     style={{ fontWeight: 'bold' }}
                                 >
-                                    시험 문제 만들기
+                                    나만의 시험 문제 만들기
                                 </Text>
                                 <Text
-                                    fontsize='30px'
+                                    fontsize='25px'
                                     style={{
                                         fontWeight: '500',
                                         marginTop: '39px',
+                                        fontFamily: "Pretendard-Regular"
                                     }}
                                 >
                                     자신이 학습한 내용이 담긴 이미지 혹은 PDF
@@ -85,9 +86,10 @@ const FullPageScroll = () => {
                                     }}
                                     style={{
                                         textDecoration: 'none',
+                                        backgroundColor: '#FEEBB6',
                                     }}
                                 >
-                                    파일 업로드
+                                    파일 업로드 하기
                                 </FileUploadLink>
                             </div>
                         </SecondContainer>
@@ -103,16 +105,17 @@ const FullPageScroll = () => {
                         <SecondContainer>
                             <div>
                                 <Text
-                                    fontsize='35px'
+                                    fontsize='30px'
                                     style={{ fontWeight: 'bold' }}
                                 >
                                     1:1 질문하기
                                 </Text>
                                 <Text
-                                    fontsize='30px'
+                                    fontsize='25px'
                                     style={{
                                         fontWeight: '500',
                                         marginTop: '39px',
+                                        fontFamily: "Pretendard-Regular"
                                     }}
                                 >
                                     학습한 내용이 헷갈릴 때, <br />
@@ -124,16 +127,17 @@ const FullPageScroll = () => {
                                     }}
                                     style={{
                                         textDecoration: 'none',
+                                        backgroundColor: '#FDDED6',
                                     }}
                                 >
-                                    질문하기
+                                    질문하러 가기
                                 </FileUploadLink>
                             </div>
                             <Image
                                 src={question}
                                 alt='example'
-                                width='611px'
-                                height='421px'
+                                width='511px'
+                                height='321px'
                             />
                         </SecondContainer>
                     </FullpageSection>
@@ -148,6 +152,7 @@ export default FullPageScroll;
 const Wrapper = styled.div`
     width: 100%;
     height: 100%;
+    font-family: "GmarketSansMedium";
 `;
 
 /**********************************/
@@ -157,9 +162,9 @@ const Image = styled.img`
     height: ${(props) => props.height || '80%'};
 
     @media (max-width: 768px) {
-        width: 100%; /* 모바일에서 이미지가 화면에 맞게 조정 */
+        width: 80%; /* 모바일에서 이미지가 화면에 맞게 조정 */
         height: auto;
-        margin-top: 20px;
+        margin-top: 10px;
     }
 `;
 
@@ -169,7 +174,7 @@ const Text = styled.div`
 
     @media (max-width: 768px) {
         font-size: ${(props) =>
-            props.fontsize ? `calc(${props.fontsize} * 0.75)` : '14px'};
+            props.fontsize ? `calc(${props.fontsize} * 0.65)` : '12px'};
         text-align: center;
     }
 `;
@@ -194,7 +199,7 @@ const FirstContainer = styled.div`
 
     @media (max-width: 768px) {
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
     }
 `;
 
@@ -211,28 +216,26 @@ const SecondContainer = styled.div`
 
     @media (max-width: 768px) {
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
     }
 `;
 
 const FileUploadLink = styled.button`
     text-decoration: none;
-    font-size: 22px;
+    font-size: 18px;
     margin-top: 32px;
+    border: none;
     cursor: pointer;
-    border: 3px #fd9f28 dotted;
-    background-color: #ffcd4a;
     padding: 10px 25px;
     border-radius: 10px;
     font-family: 'Pretendard-Regular';
-    font-weight: bold;
 
     &:hover {
-        background-color: #fd9f28;
+       background-color: #FDCB8D !important;
     }
 
     @media (max-width: 768px) {
-        font-size: 18px;
+        font-size: 14px;
         padding: 8px 20px;
     }
 `;

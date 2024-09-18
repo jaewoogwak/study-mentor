@@ -561,6 +561,10 @@ const WarningMessages = styled.p`
     font-size: 23px;
     text-align: center;
     margin: 100px;
+
+    @media (max-width: 768px) {
+        font-size: 15px;
+    }
 `;
 
 const Pagination = styled.div`

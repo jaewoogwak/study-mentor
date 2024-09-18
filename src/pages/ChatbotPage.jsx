@@ -227,6 +227,9 @@ const NewChatbotPage = () => {
                             placeholder={'챗봇에게 물어볼 질문을 작성해주세요'}
                             onSend={handleSend}
                         />
+                        <WarningText>
+                            채팅에 있어, 실수가 발생할 가능성이 있습니다.
+                        </WarningText>
                     </Container>
                 )}
             </Main>
@@ -309,7 +312,7 @@ const MainText = styled.h2`
     font-size: 35px;
 
     @media (max-width: 768px) {
-        font-size: 24px; /* 모바일에서는 폰트 크기 조정 */
+        font-size: 20px; /* 모바일에서는 폰트 크기 조정 */
     }
 `;
 
@@ -320,9 +323,9 @@ const InfoText = styled.div`
     text-align: center;
 
     @media (max-width: 768px) {
-        font-size: 16px; /* 모바일에서는 폰트 크기 조정 */
+        font-size: 14px; /* 모바일에서는 폰트 크기 조정 */
         line-height: 24px; /* 모바일에서 줄 간격 조정 */
-        padding: 10px;
+        padding: 20px;
     }
 `;
 
@@ -378,5 +381,16 @@ const MainContainerWrapper = styled(MainContainer)`
     @media (max-width: 768px) {
         width: 100%; /* 모바일에서는 너비 100% */
         height: 60vh; /* 모바일에서는 높이 조정 */
+    }
+`;
+
+const WarningText = styled.p`
+    font-size: 13px;
+    margin-top: 0px;
+    color: #9E9E9E;
+
+    @media (max-width: 768px) {
+        margin-top: 5px;
+        font-size: 11px;
     }
 `;

@@ -179,6 +179,6 @@ const NoEntriesMessage = styled.p`
     font-size: 23px;
 
     @media (max-width: 768px) {
-        font-size: 18px;
+        font-size: 16px;
     }
 `;

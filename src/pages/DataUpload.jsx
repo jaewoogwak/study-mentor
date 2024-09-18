@@ -125,7 +125,7 @@ const DataUpload = () => {
                     onClose={closeModal}
                 />
 
-                <p style={{fontSize: "13px", margin: "12px 0px", color: "#9E9E9E"}}>수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에 일부 오류가 포함될 가능성도 있습니다.</p>
+                <WarningMessages>수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에 일부 오류가 포함될 가능성도 있습니다.</WarningMessages>
 
 
                 {!data && (
@@ -171,7 +171,7 @@ const Wrapper = styled.div`
 const MainWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding-top: 40px;
+    padding-top: 10px;
     padding-bottom: 20px;
     flex: 1;
     height: calc(100vh - 80px);
@@ -179,9 +179,19 @@ const MainWrapper = styled.div`
     margin-top: 30px;
 
     @media (max-width: 768px) {
-        padding-top: 20px;
+        padding-top: 5px;
         padding-bottom: 10px;
         height: auto; /* 모바일에서는 높이를 자동으로 조정 */
+    }
+`;
+
+const WarningMessages = styled.p`
+    font-size: 13px;
+    margin: 12px 0px;
+    color: #9E9E9E;
+
+    @media (max-width: 768px) {
+        font-size: 8px;
     }
 `;
 
@@ -202,8 +212,8 @@ const InfoImg = styled.img`
     width: 285px;
 
     @media (max-width: 768px) {
-        width: 100%; /* 모바일에서는 이미지를 가로 크기에 맞춤 */
-        max-width: 285px; /* 최대 너비 제한 */
+        width: 90%; /* 모바일에서는 이미지를 가로 크기에 맞춤 */
+        max-width: 250px; /* 최대 너비 제한 */
     }
 `;
 
@@ -214,6 +224,7 @@ const InfoText = styled.p`
     @media (max-width: 768px) {
         font-size: 18px; /* 모바일에서는 글자 크기 조정 */
         padding: 0 10px; /* 좌우 패딩 추가 */
+        margin-top: 10px;
     }
 `;
 
@@ -277,7 +288,9 @@ const SettingButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        width: 90%; /* 모바일에서는 너비를 부모 요소의 90%로 설정 */
+        width: 80%; /* 모바일에서는 너비를 부모 요소의 90%로 설정 */
         max-width: 680px; /* 최대 너비 제한 */
+        font-size: 14px;
+        margin: 5px 0 10px 0;
     }
 `;

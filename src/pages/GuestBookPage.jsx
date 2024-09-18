@@ -15,28 +15,32 @@ const CheckListPage = () => {
     };
 
     return (
-        <Wrapper>
-            <Header />
-            <InfoContainer>
-                <InfoBox>
-                    <InfoText>🌏 방명록</InfoText>
-                    <TextCustom>하고 싶은 이야기를 마음껏 남겨보세요! <br />※ 내용에 따라 검열의 대상이 될 수도 있습니다.</TextCustom>          
-                </InfoBox>
-            </InfoContainer>
-            <WriteContainer>
-                <h2 style={{margin: "20px 0px 30px 0px"}}>👣 방명록 작성하기</h2>
-                <p style = {{fontSize: "20px", marginBottom: "20px"}}>아래의 버튼을 눌러 방명록을 작성해주세요.</p>
-                <WriteButton onClick={handleButtonClick}>
-                    {showWriteGuestBook ? '방명록 작성 취소' : '방명록 작성하러 가기'}
-                </WriteButton>
-                {showWriteGuestBook && <WriteGuestBook />}
-            </WriteContainer>
-            <DivisionLine />
-            <ReadContainer>
-                <ReadGuestBook />
-            </ReadContainer>
+        <>
+            <Wrapper>
+                <Header />
+                <InfoContainer>
+                        <InfoBox>
+                            <InfoText>🌏 방명록</InfoText>
+                            <TextCustom>하고 싶은 이야기를 마음껏 남겨보세요! <br />※ 내용에 따라 검열의 대상이 될 수도 있습니다.</TextCustom>          
+                        </InfoBox>
+                </InfoContainer>
+                <MainWrapper>
+                    <WriteContainer>
+                        <WriteInfo>👣 방명록 작성하기</WriteInfo>
+                        <WriteText>아래의 버튼을 눌러 방명록을 작성해주세요.</WriteText>
+                        <WriteButton onClick={handleButtonClick}>
+                            {showWriteGuestBook ? '방명록 작성 취소' : '방명록 작성하러 가기'}
+                        </WriteButton>
+                        {showWriteGuestBook && <WriteGuestBook />}
+                    </WriteContainer>
+                    <DivisionLine />
+                    <ReadContainer>
+                        <ReadGuestBook />
+                    </ReadContainer>
+                </MainWrapper>
+            </Wrapper>
             <InfoFooter />
-        </Wrapper>
+        </>
     );
 }
 
@@ -45,6 +49,15 @@ export default CheckListPage;
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    min-height: 100vh;  /* Full page height */
+    margin: 0 auto;
+`;
+
+const MainWrapper = styled.div`
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
 `;
 
 const InfoContainer = styled.div`
@@ -56,7 +69,6 @@ const InfoContainer = styled.div`
         margin: 20px;
     }
 `;
-
 
 const InfoBox = styled.div` 
     width: 770px;
@@ -74,7 +86,7 @@ const InfoText = styled.h3`
     font-size: 24px; 
 
     @media (max-width: 768px) {
-        font-size: 16px; 
+        font-size: 18px; 
     }
 `;
 
@@ -83,7 +95,8 @@ const TextCustom = styled.p`
     margin-top: 10px;
 
     @media (max-width: 768px) {
-        font-size: 16px;
+        font-size: 14px;
+        margin-top: 10px;
     }
 `;
 
@@ -91,6 +104,23 @@ const WriteContainer = styled.div`
     display: flex;
     flex-direction: column; 
     align-items: center;
+`;
+
+const WriteInfo = styled.h2`
+    margin: 20px 0px 30px 0px;
+
+    @media (max-width: 768px) {
+        font-size: 20px;
+    }
+`;
+
+const WriteText = styled.p`
+    font-size: 23px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+        font-size: 16px;
+    }
 `;
 
 const WriteButton = styled.button`
@@ -109,8 +139,8 @@ const WriteButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        width: 90%;
-        font-size: 18px;
+        width: 70%;
+        font-size: 16px;
         height: 45px;
     }
 `;

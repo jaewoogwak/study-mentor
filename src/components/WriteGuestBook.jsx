@@ -150,7 +150,7 @@ const CustomText = styled.p`
     margin: 20px 0px;
 
     @media (max-width: 768px) {
-        font-size: 16px;
+        font-size: 14px;
     }
 `;
 
@@ -167,7 +167,7 @@ const StyledInput = styled.input`
 
     @media (max-width: 768px) {
         max-width: 100px;
-        font-size: 16px;
+        font-size: 14px;
         padding: 4px;
     }
 `;
@@ -191,7 +191,7 @@ const StyledTextarea = styled.textarea`
     max-width: 700px;
     height: 200px;
     font-size: 16px;
-    font-family: 'GmarketSansMedium', sans-serif;
+    font-family: 'GmarketSansMedium';
     padding: 20px;
     border-radius: 4px;
     border: 1px solid #ddd;
@@ -207,6 +207,10 @@ const WarningMessage = styled.p`
     font-size: 15px;
     margin-top: 20px;
     color: #D94925;
+
+    @media (max-width: 768px) {
+        font-size: 12px;
+    }
 `;
 
 const SubmitButton = styled.button`
