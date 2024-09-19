@@ -71,10 +71,11 @@ const NewChatbotPage = () => {
             import.meta.env.VITE_API_URL
         }/chatbot/question-answer`;
 
+        const token = await user.getIdToken();
         await fetch(address, {
             method: 'POST',
             headers: {
-                Authorization: 'Bearer ' + API_KEY,
+                Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
