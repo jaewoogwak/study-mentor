@@ -24,7 +24,7 @@ const BoxContainer = styled.div`
     justify-content: right; 
     align-items: center;
     padding: 25px;
-    background: rgba(238, 238, 238, 0.3);
+    background: #f0f0f0; 
     width: 100%; 
     box-sizing: border-box; 
     margin-top: 70px;

@@ -864,12 +864,12 @@ const Title = styled.div`
     line-height: normal;
 
     @media (min-width: 768px) {
-        font-size: 45px;
+        font-size: 45px; /* 데스크탑에서는 기존 크기 */
     }
 `;
 
 const LogoImg = styled.img`
-    height: 50px; 
+    height: 50px; /* 모바일에 맞게 로고 크기 조정 */
     width: auto;
     margin-right: 10px;
 

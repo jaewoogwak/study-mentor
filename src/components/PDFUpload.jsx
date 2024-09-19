@@ -214,17 +214,16 @@ const PDFUpload = ({
                     height: '144px',
                 }}
             >
-                <UploadContainer>
-                    <UploadIcon className='ant-upload-drag-icon'>
-                        <InboxOutlined />
-                    </UploadIcon>
-                    <UploadText className='ant-upload-text'>
-                        클릭하거나 이미지 또는 PDF 파일을 이곳으로 드래그하여 업로드하세요.
-                    </UploadText>
-                    <UploadHint className='ant-upload-hint'>
-                        파일은 한 번에 최대 10개까지 업로드할 수 있습니다.
-                    </UploadHint>
-                </UploadContainer>
+                <p className='ant-upload-drag-icon'>
+                    <InboxOutlined />
+                </p>
+                <p className='ant-upload-text'>
+                    클릭하거나 이미지 또는 PDF 파일을 이곳으로 드래그하여
+                    업로드하세요.
+                </p>
+                <p className='ant-upload-hint'>
+                    파일은 한 번에 최대 10개까지 업로드할 수 있습니다.
+                </p>
             </Dragger>
         </DraggerWrapper>
     );
@@ -277,40 +276,5 @@ const DraggerWrapper = styled.div`
         .ant-upload {
             height: 200px !important;
         }
-    }
-`;
-
-const UploadContainer = styled.div`
-    text-align: center;
-
-    @media (max-width: 768px) {
-        // padding: 10px;
-    }
-`;
-
-const UploadIcon = styled.p`
-    font-size: 40px !important; /* Force the icon size */
-    
-    @media (max-width: 768px) {
-        font-size: 32px !important; /* Force smaller icon size on mobile */
-    }
-`;
-
-const UploadText = styled.p`
-    font-size: 15px !important; /* Force the text size */
-    margin-top: 10px;
-
-    @media (max-width: 768px) {
-        font-size: 10px !important; /* Smaller text size on mobile */
-        // margin-top: 8px;
-    }
-`;
-
-const UploadHint = styled.p`
-    font-size: 12px !important; /* Force the hint text size */
-    color: gray;
-
-    @media (max-width: 768px) {
-        font-size: 10px !important; /* Smaller hint text on mobile */
     }
 `;

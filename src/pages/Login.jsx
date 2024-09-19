@@ -37,6 +37,7 @@ const NewLoginPage = () => {
                         await addDoc(collection(db, 'credits'), {
                             email: result.user.email,
                             credit: 3,
+                            isVerified: false,
                         });
                     }
 

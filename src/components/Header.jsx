@@ -51,20 +51,21 @@ const Header = () => {
                 >
                     오답목록
                 </StyledNavLink>
-                <StyledNavLink
-                    to='/guestbook'
-                    activeClassName='active'
-                    onClick={toggleMenu}
+
+                <GuestBook
+                    onClick={() => {
+                        window.location.href = '/guestbook';
+                    }}
                 >
                     방명록
-                </StyledNavLink>
-                <StyledNavLink
-                    to='/settings'
-                    activeClassName='active'
-                    onClick={toggleMenu}
+                </GuestBook>
+                <Settings
+                    onClick={() => {
+                        window.location.href = '/settings';
+                    }}
                 >
                     설정
-                </StyledNavLink>
+                </Settings>
             </NavLinks>
         </HeaderWrapper>
     );
@@ -172,11 +173,11 @@ const StyledNavLink = styled(NavLink)`
     font-weight: 600;
 
     &.active {
-        color: #1187CF;
+        color: #6392ff; /* Change to desired active color */
     }
 
     &:hover {
-        color: #1187CF; 
+        color: #6392ff; /* Change to desired hover color */
     }
 
     @media (max-width: 768px) {
@@ -189,6 +190,36 @@ const Logout = styled.div`
     color: black;
     cursor: pointer;
     font-weight: 600;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
+const GuestBook = styled.div`
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+`;
+
+const Settings = styled.div`
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        color: #6392ff;
+    }
 
     @media (max-width: 768px) {
         font-size: 18px;

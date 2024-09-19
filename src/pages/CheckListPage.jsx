@@ -11,19 +11,20 @@ const CheckListPage = () => {
         <>
             <Wrapper>
                 <Header />
-                <InfoContainer>
-                    <InfoBox>
-                        <InfoText>📰 오답 목록</InfoText>
-                        <TextCustom>문제를 다시 한 번 풀어보며 시험 내용을 복기해보세요. <br /> ※ 채점 기능은 따로 제공하지 않습니다.</TextCustom>      
-                    </InfoBox>
-                </InfoContainer>
-                <MainWrapper>
+                <Content>
+                    <InfoContainer>
+                        <InfoBox>
+                            <InfoText>🔶 이 페이지는 앞서 풀어본 문제에 대한 목록입니다.</InfoText>
+                            <TextCustom>다시 한 번 풀어보면서, 시험 내용을 복기해보세요.</TextCustom>        
+                            <TextCustom style={{color: "red",}}>※ 채점 기능은 따로 제공하지 않습니다.</TextCustom>      
+                        </InfoBox>
+                    </InfoContainer>
                     <ListContainer>
                         <CheckList />
                     </ListContainer>
-                </MainWrapper>
+                </Content>
+                <InfoFooter />
             </Wrapper>
-            <InfoFooter />
         </>
     );
 }
@@ -34,25 +35,20 @@ export default CheckListPage;
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    min-height: 100vh;  
     margin: 0 auto;
+    height: 920px;
 `;
 
-const MainWrapper = styled.div`
+const Content = styled.div`
     flex-grow: 1; 
     display: flex;
     flex-direction: column;
-    justify-content: center; 
 `;
 
 const InfoContainer = styled.div`
     display: flex;
     justify-content: center;
     margin: 30px;
-
-    @media (max-width: 768px) {
-        margin: 20px;
-    }
 `;
 
 const InfoBox = styled.div` 
@@ -62,8 +58,8 @@ const InfoBox = styled.div`
     border-radius: 12px;
 
     @media (max-width: 768px) {
-        width: 90%;
-        padding: 20px;
+        width: 100%; 
+        margin: 10px; 
     }
 `; 
 
@@ -71,7 +67,7 @@ const InfoText = styled.h3`
     font-size: 24px; 
 
     @media (max-width: 768px) {
-        font-size: 18px; 
+        font-size: 16px; 
     }
 `;
 
@@ -80,7 +76,7 @@ const TextCustom = styled.p`
     margin-top: 10px;
 
     @media (max-width: 768px) {
-        font-size: 14px;
+        font-size: 12px;
         margin-top: 10px;
     }
 `;
