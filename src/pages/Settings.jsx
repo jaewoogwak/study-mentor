@@ -2,31 +2,40 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Header from '../components/Header';
-import { auth } from '../services/firebase';
+import { auth, db } from '../services/firebase'; // firebase DB 가져오기
 import { useAuth } from '../contexts/AuthContext';
 import InfoFooter from '../components/InfoFooter';
+import {
+    doc,
+    updateDoc,
+    getDocs,
+    collection,
+    query,
+    where,
+} from 'firebase/firestore'; // Firestore 관련 함수 가져오기
 
 const Settings = () => {
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
     const [message, setMessage] = useState('');
+    const [isError, setIsError] = useState(false);
     const [isCodeSent, setIsCodeSent] = useState(false);
-    const [isValidEmail, setIsValidEmail] = useState(false); // 이메일 유효성 상태
-    const [isEmailTouched, setIsEmailTouched] = useState(false); // 이메일 입력 여부 상태
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const [isEmailTouched, setIsEmailTouched] = useState(false);
 
-    const { user, login, logout } = useAuth();
+    const { user, logout } = useAuth(); // AuthContext 사용
 
-    // 이메일이 @koreatech.ac.kr로 끝나는지 확인
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
         setEmail(inputEmail);
-        setIsEmailTouched(true); // 이메일을 입력하기 시작한 시점
-        setIsValidEmail(inputEmail.endsWith('@koreatech.ac.kr')); // 이메일이 유효하면 true
+        setIsEmailTouched(true);
+        setIsValidEmail(inputEmail.endsWith('@koreatech.ac.kr'));
     };
 
     const sendVerificationCode = async () => {
         if (!isValidEmail) {
             setMessage('학교 이메일(@koreatech.ac.kr)만 사용 가능합니다.');
+            setIsError(true);
             return;
         }
         try {
@@ -35,9 +44,11 @@ const Settings = () => {
                 { email: email }
             );
             setMessage(response.data.message);
+            setIsError(false);
             setIsCodeSent(true);
         } catch (error) {
             setMessage('Error sending verification code');
+            setIsError(true);
         }
     };
 
@@ -48,8 +59,44 @@ const Settings = () => {
                 { email: email, authnum: code }
             );
             setMessage(response.data.message);
+            setIsError(false);
+
+            // 이메일 인증 성공 시 Firebase에서 크레딧 업데이트 로직
+            if (response.data.success) {
+                await updateCredits(email, 10); // 인증 후 크레딧 10으로 업데이트
+            }
         } catch (error) {
             setMessage('Error verifying code');
+            setIsError(true);
+        }
+    };
+
+    // Firebase에서 해당 이메일 사용자의 크레딧을 10으로 업데이트하는 함수
+    const updateCredits = async (email, newCredit) => {
+        try {
+            const q = query(
+                collection(db, 'credits'),
+                where('email', '==', email)
+            );
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach(async (docSnapshot) => {
+                    const docRef = doc(db, 'credits', docSnapshot.id);
+                    await updateDoc(docRef, {
+                        credit: newCredit,
+                        isVerified: true, // 인증 상태도 true로 업데이트
+                    });
+                });
+                setMessage('Credits successfully updated to 10.');
+                setIsError(false);
+            } else {
+                setMessage('User not found in credits collection.');
+                setIsError(true);
+            }
+        } catch (error) {
+            setMessage('Error updating credits');
+            setIsError(true);
         }
     };
 
@@ -78,11 +125,11 @@ const Settings = () => {
                             onChange={handleEmailChange}
                             placeholder='@koreatech.ac.kr'
                             isValid={isValidEmail}
-                            isTouched={isEmailTouched} // 유효성 검사를 위한 상태 전달
+                            isTouched={isEmailTouched}
                         />
                         <ActionButton
                             onClick={sendVerificationCode}
-                            disabled={!isValidEmail} // 이메일 유효하지 않으면 버튼 비활성화
+                            disabled={!isValidEmail}
                         >
                             인증 코드 발송
                         </ActionButton>
@@ -101,7 +148,9 @@ const Settings = () => {
                             </>
                         )}
 
-                        {message && <Message>{message}</Message>}
+                        {message && (
+                            <Message isError={isError}>{message}</Message>
+                        )}
 
                         <LogoutButton
                             onClick={() => {
@@ -189,19 +238,11 @@ const InputField = styled.input`
     border-radius: 5px;
     border: 1px solid
         ${({ isTouched, isValid }) =>
-            !isTouched
-                ? '#ccc'
-                : isValid
-                ? '#4caf50'
-                : '#f44336'}; /* 이메일을 터치한 후 유효성에 따라 색상 변경 */
+            !isTouched ? '#ccc' : isValid ? '#4caf50' : '#f44336'};
     font-size: 16px;
     outline: none;
     background-color: ${({ isTouched, isValid }) =>
-        !isTouched
-            ? 'white'
-            : isValid
-            ? '#e8f5e9'
-            : '#ffebee'}; /* 이메일을 터치한 후 유효성에 따라 배경색 변경 */
+        !isTouched ? 'white' : isValid ? '#e8f5e9' : '#ffebee'};
 
     @media (max-width: 768px) {
         width: 80%;
@@ -235,7 +276,7 @@ const ActionButton = styled.button`
 `;
 
 const Message = styled.p`
-    color: #4caf50;
+    color: ${({ isError }) => (isError ? '#f44336' : '#4caf50')};
     margin: 15px;
 `;
 
