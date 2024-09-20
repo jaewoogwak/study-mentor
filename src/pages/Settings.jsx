@@ -22,7 +22,7 @@ const Settings = () => {
     const [isCodeSent, setIsCodeSent] = useState(false);
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [isEmailTouched, setIsEmailTouched] = useState(false);
-
+    const [isSendingCode, setIsSendingCode] = useState(false); // 로딩 상태 추가
     const { user, logout } = useAuth(); // AuthContext 사용
 
     const handleEmailChange = (e) => {
@@ -38,6 +38,9 @@ const Settings = () => {
             setIsError(true);
             return;
         }
+
+        setIsSendingCode(true); // 로딩 상태 시작
+
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/auth/email`,
@@ -47,8 +50,10 @@ const Settings = () => {
             setIsError(false);
             setIsCodeSent(true);
         } catch (error) {
-            setMessage('Error sending verification code');
+            setMessage('인증 코드를 보내는 중 오류가 발생했습니다.');
             setIsError(true);
+        } finally {
+            setIsSendingCode(false); // 로딩 상태 종료
         }
     };
 
@@ -56,8 +61,6 @@ const Settings = () => {
         try {
             // 먼저 이미 인증된 사용자인지 확인
             const user = auth.currentUser;
-
-            // 유저의 이메일
             const userEmail = user.email;
             const q = query(
                 collection(db, 'credits'),
@@ -68,7 +71,6 @@ const Settings = () => {
             if (!querySnapshot.empty) {
                 querySnapshot.forEach((docSnapshot) => {
                     const docData = docSnapshot.data();
-                    // isVerified가 true이거나 isVerified 필드가 없으면 이미 인증된 사용자로 판단
                     if (docData.isVerified) {
                         setMessage('이미 인증된 사용자입니다.');
                         setIsError(true);
@@ -79,22 +81,20 @@ const Settings = () => {
 
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/auth/num`,
-                { email: userEmail, authnum: code }
+                { email: email, authnum: code }
             );
 
             setMessage(response.data.message);
             setIsError(false);
 
-            // 이메일 인증 성공 시 Firebase에서 크레딧 업데이트 로직
             if (response.status === 200) {
-                console.log('updateCredits');
                 await updateCredits(userEmail, 10); // 인증 후 크레딧 10으로 업데이트
             }
         } catch (error) {
             if (error.message === '이미 인증된 사용자') {
                 setMessage('이미 인증된 사용자입니다.');
             } else {
-                console.log(error);
+                console.error(error);
                 setMessage(
                     '인증 코드 확인 중 오류가 발생했습니다. 다시 시도해주세요.'
                 );
@@ -103,7 +103,6 @@ const Settings = () => {
         }
     };
 
-    // Firebase에서 해당 이메일 사용자의 크레딧을 10으로 업데이트하는 함수
     const updateCredits = async (email, newCredit) => {
         try {
             const q = query(
@@ -117,18 +116,17 @@ const Settings = () => {
                     const docRef = doc(db, 'credits', docSnapshot.id);
                     await updateDoc(docRef, {
                         credit: newCredit,
-                        isVerified: true, // 인증 상태도 true로 업데이트
+                        isVerified: true,
                     });
                 });
-                console.log('Credits successfully updated to 10.');
-                setMessage('Credits successfully updated to 10.');
+                setMessage('크레딧이 성공적으로 업데이트되었습니다.');
                 setIsError(false);
             } else {
-                setMessage('User not found in credits collection.');
+                setMessage('해당 유저를 찾을 수 없습니다.');
                 setIsError(true);
             }
         } catch (error) {
-            setMessage('Error updating credits');
+            setMessage('크레딧 업데이트 중 오류가 발생했습니다.');
             setIsError(true);
         }
     };
@@ -162,9 +160,9 @@ const Settings = () => {
                         />
                         <ActionButton
                             onClick={sendVerificationCode}
-                            disabled={!isValidEmail}
+                            disabled={!isValidEmail || isSendingCode} // 전송 중이면 버튼 비활성화
                         >
-                            인증 코드 발송
+                            {isSendingCode ? '발송 중...' : '인증 코드 발송'}
                         </ActionButton>
 
                         {isCodeSent && (
