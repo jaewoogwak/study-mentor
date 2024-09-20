@@ -94,6 +94,7 @@ const Settings = () => {
             if (error.message === '이미 인증된 사용자') {
                 setMessage('이미 인증된 사용자입니다.');
             } else {
+                console.log(error);
                 setMessage(
                     '인증 코드 확인 중 오류가 발생했습니다. 다시 시도해주세요.'
                 );
