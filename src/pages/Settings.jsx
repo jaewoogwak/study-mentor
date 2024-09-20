@@ -54,19 +54,50 @@ const Settings = () => {
 
     const verifyCode = async () => {
         try {
+            // 먼저 이미 인증된 사용자인지 확인
+            const user = auth.currentUser;
+
+            // 유저의 이메일
+            const userEmail = user.email;
+            const q = query(
+                collection(db, 'credits'),
+                where('email', '==', userEmail)
+            );
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((docSnapshot) => {
+                    const docData = docSnapshot.data();
+                    // isVerified가 true이거나 isVerified 필드가 없으면 이미 인증된 사용자로 판단
+                    if (docData.isVerified) {
+                        setMessage('이미 인증된 사용자입니다.');
+                        setIsError(true);
+                        throw new Error('이미 인증된 사용자');
+                    }
+                });
+            }
+
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/auth/num`,
-                { email: email, authnum: code }
+                { email: userEmail, authnum: code }
             );
+
             setMessage(response.data.message);
             setIsError(false);
 
             // 이메일 인증 성공 시 Firebase에서 크레딧 업데이트 로직
-            if (response.data.success) {
-                await updateCredits(email, 10); // 인증 후 크레딧 10으로 업데이트
+            if (response.status === 200) {
+                console.log('updateCredits');
+                await updateCredits(userEmail, 10); // 인증 후 크레딧 10으로 업데이트
             }
         } catch (error) {
-            setMessage('Error verifying code');
+            if (error.message === '이미 인증된 사용자') {
+                setMessage('이미 인증된 사용자입니다.');
+            } else {
+                setMessage(
+                    '인증 코드 확인 중 오류가 발생했습니다. 다시 시도해주세요.'
+                );
+            }
             setIsError(true);
         }
     };
@@ -88,6 +119,7 @@ const Settings = () => {
                         isVerified: true, // 인증 상태도 true로 업데이트
                     });
                 });
+                console.log('Credits successfully updated to 10.');
                 setMessage('Credits successfully updated to 10.');
                 setIsError(false);
             } else {
