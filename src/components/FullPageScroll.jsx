@@ -29,7 +29,7 @@ const FullPageScroll = () => {
                         <PageWrapper>
                             <FirstContainer>
                                 <Text
-                                    fontsize='26px'
+                                    fontsize='28px'
                                     style={{ fontWeight: '500' }}
                                 >
                                     시험 문제는 스터디 멘토와 함께!

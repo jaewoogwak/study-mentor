@@ -21,17 +21,6 @@ const Wrapper = styled.input`
     }
 `;
 
-const WarningText = styled.p`
-    font-size: 13px;
-    margin-top: 0px;
-    color: #9E9E9E;
-
-    @media (max-width: 768px) {
-        margin-top: 5px;
-        font-size: 11px;
-    }
-`;
-
 const SearchBar = ({ placeholder, onSend }) => {
     const [search, setSearch] = useState('');
 
@@ -51,9 +40,6 @@ const SearchBar = ({ placeholder, onSend }) => {
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={handleKeyDown}
             />
-            <WarningText>
-                채팅에 있어, 실수가 발생할 가능성이 있습니다.
-            </WarningText>
         </>
     );
 };

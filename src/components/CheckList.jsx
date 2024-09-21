@@ -494,15 +494,15 @@ const ShowAllButton  = styled.button`
     padding: 15px 25px;
     border: none;
     border-radius: 10px;
-    background-color: #AFD485;
+    background-color: #FEEBB6;
     cursor: pointer;
     font-size: 16px;
     display: block;      
     margin-left: auto;
 
     &:hover {
-        background-color: #568A35;
-        color: white;
+        background-color: #FFDD81;
+        // color: white;
     }
 
     @media (max-width: 768px) {
