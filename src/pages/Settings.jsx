@@ -23,7 +23,7 @@ const Settings = () => {
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [isEmailTouched, setIsEmailTouched] = useState(false);
     const [isSendingCode, setIsSendingCode] = useState(false); // 로딩 상태 추가
-    const { user, logout } = useAuth(); // AuthContext 사용
+    const { logout } = useAuth(); // AuthContext 사용
 
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
