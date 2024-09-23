@@ -25,6 +25,7 @@ const Settings = () => {
     const [isSendingCode, setIsSendingCode] = useState(false); // 로딩 상태 추가
     const { user, logout } = useAuth(); // AuthContext 사용
 
+    //
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
         setEmail(inputEmail);
