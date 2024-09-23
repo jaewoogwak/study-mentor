@@ -19,7 +19,13 @@ import { Spin } from 'antd';
 import Spinner from './Spinner';
 
 import { useChatStore } from '../contexts/store';
-import { collection, setDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
+import {
+    collection,
+    setDoc,
+    doc,
+    getDocs,
+    updateDoc,
+} from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -65,7 +71,7 @@ const CreateExam = ({ data, setData, credits }) => {
     const [submitHovering, setSubmitHovering] = useState(false);
 
     const [isGrading, setIsGrading] = useState(false);
-    
+
     const [generatedExamId, setGeneratedExamId] = useState(() => {
         return localStorage.getItem('generatedExamId') || null;
     });
@@ -103,17 +109,17 @@ const CreateExam = ({ data, setData, credits }) => {
                 question: item.question,
                 intent: item.intent,
             }));
-    
+
             setQuestions(filteredQuestions);
-    
+
             const loadedRadioAnswers =
                 JSON.parse(localStorage.getItem('radioAnswers')) || {};
             const loadedTextAnswers =
                 JSON.parse(localStorage.getItem('textAnswers')) || {};
-    
+
             const initialRadioAnswers = {};
             const initialTextAnswers = {};
-    
+
             filteredQuestions.forEach((question) => {
                 if (question.type === 0) {
                     initialRadioAnswers[question.id] =
@@ -123,12 +129,11 @@ const CreateExam = ({ data, setData, credits }) => {
                         loadedTextAnswers[question.id] || '';
                 }
             });
-    
+
             setRadioAnswers(initialRadioAnswers);
             setTextAnswers(initialTextAnswers);
         }
     }, [data]);
-    
 
     // 2. Loacal Storage 저장
     useEffect(() => {
@@ -153,10 +158,7 @@ const CreateExam = ({ data, setData, credits }) => {
             'feedbackMessages',
             JSON.stringify(feedbackMessages)
         );
-        localStorage.setItem(
-            'generatedExamId',
-            generatedExamId
-        );
+        localStorage.setItem('generatedExamId', generatedExamId);
     }, [
         radioAnswers,
         textAnswers,
@@ -176,11 +178,11 @@ const CreateExam = ({ data, setData, credits }) => {
                 console.error('User is not authenticated');
                 return;
             }
-    
+
             const userId = user.uid;
             let docId;
 
-            if (!generatedExamId || generatedExamId === "null") {
+            if (!generatedExamId || generatedExamId === 'null') {
                 const newExamId = uuidv4();
                 docId = `exam_${newExamId}`;
                 localStorage.setItem('generatedExamId', newExamId);
@@ -188,11 +190,11 @@ const CreateExam = ({ data, setData, credits }) => {
             } else {
                 docId = `exam_${generatedExamId}`;
             }
-    
+
             console.log('Generated Document ID:', docId);
-    
+
             const userDocRef = doc(db, 'users', userId, 'exams', docId);
-    
+
             const docContent = {
                 examData: {
                     ...examData,
@@ -202,30 +204,34 @@ const CreateExam = ({ data, setData, credits }) => {
                 },
                 timestamp: new Date(),
             };
-    
+
             await setDoc(userDocRef, docContent, { merge: true });
-            console.log('Exam and feedback saved for user ID:', userId, 'Document ID:', docId);
-    
+            console.log(
+                'Exam and feedback saved for user ID:',
+                userId,
+                'Document ID:',
+                docId
+            );
         } catch (e) {
             console.error('Error adding document:', e.message);
         }
     };
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         setIsSubmitted(true);
-    
+
         const testResults = [];
-       
+
         questions.forEach((question, index) => {
             const answer = data[`question_${index}`];
             let user_answers;
-    
+
             if (question.type === 0) {
-                user_answers = parseInt(answer.split('')[0]);  
+                user_answers = parseInt(answer.split('')[0]);
             } else if (question.type === 1) {
                 user_answers = data[`question_${index}`];
             }
-    
+
             const questionInfo = {
                 index: index,
                 question: question.question,
@@ -235,7 +241,7 @@ const CreateExam = ({ data, setData, credits }) => {
                 explanation: question.explanation,
                 intent: question.intent,
             };
-    
+
             if (question.type === 0) {
                 setRadioAnswers((prevRadioAnswers) => ({
                     ...prevRadioAnswers,
@@ -247,14 +253,17 @@ const CreateExam = ({ data, setData, credits }) => {
                     [question.id]: user_answers,
                 }));
             }
-    
+
             testResults.push(questionInfo);
         });
-    
+
         const feedbackResults = {
             FeedBackResults: testResults,
         };
-    
+
+        // 토큰 발급
+        const token = await user.getIdToken();
+
         // 서버 통신
         axios({
             url: `${import.meta.env.VITE_API_URL}/feedback/`,
@@ -262,22 +271,22 @@ const CreateExam = ({ data, setData, credits }) => {
             responseType: 'json',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             data: feedbackResults,
         })
-        .then((response) => {
-            setIsGrading(false);
-            getScore(response.data);
-            // filteredQuestions와 response.data를 함께 저장
-            saveDataToFirebase(questions, response.data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('An error occurred while submitting Exam.');
-        });
+            .then((response) => {
+                setIsGrading(false);
+                getScore(response.data);
+                // filteredQuestions와 response.data를 함께 저장
+                saveDataToFirebase(questions, response.data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting Exam.');
+            });
     };
-    
-      
+
     // server에서 받은 정답과 비교해야 함
     const getScore = (AnswerJson) => {
         let correctCount = 0;
@@ -402,9 +411,9 @@ const CreateExam = ({ data, setData, credits }) => {
 
     const handlePDFGenerateClick = () => {
         setGeneratedExamId(null);
-        setData(null);  
-        localStorage.removeItem('examData');  
-        clearAllLocalStorage();  
+        setData(null);
+        localStorage.removeItem('examData');
+        clearAllLocalStorage();
     };
 
     const clearAllLocalStorage = () => {
@@ -466,14 +475,14 @@ const CreateExam = ({ data, setData, credits }) => {
                     </div>
                 </div>
             )}
-            
+
             {data?.length > 0 && (
                 <>
                     <DivisionLine />
                     <ButtonWrapper>
                         <PDFGenerateButton
                             text={'문제 새로 생성하기'}
-                            onClickHandle={handlePDFGenerateClick} 
+                            onClickHandle={handlePDFGenerateClick}
                         ></PDFGenerateButton>
                         <PDFDownloadButton
                             text={'문제 다운로드 하기'}
@@ -512,9 +521,11 @@ const CreateExam = ({ data, setData, credits }) => {
                                         <QuestionText>
                                             {question.question}
                                             {errors[`question_${index}`] && (
-                                                <span style={{ color: 'green' }}>
-                                                {' '}
-                                                입력되지 않았습니다.
+                                                <span
+                                                    style={{ color: 'green' }}
+                                                >
+                                                    {' '}
+                                                    입력되지 않았습니다.
                                                 </span>
                                             )}
                                         </QuestionText>
@@ -621,9 +632,11 @@ const CreateExam = ({ data, setData, credits }) => {
                                                                           question
                                                                               .id
                                                                       ] ===
-                                                                      parseInt(choice.split(
-                                                                          ''
-                                                                      )[0])
+                                                                      parseInt(
+                                                                          choice.split(
+                                                                              ''
+                                                                          )[0]
+                                                                      )
                                                                     : null
                                                             }
                                                             {...register(
@@ -813,17 +826,17 @@ const CreateExam = ({ data, setData, credits }) => {
 export default CreateExam;
 
 const DivisionLine = styled.div`
-  border-top: 2px dashed #444444;
-  margin: 40px auto;
-  width: 400px;
-  height: 0px;
-  
-  &:after {
-    content: "◆";
-    position: relative;
-    top: -9px;
-    left: calc(50%, 7px);
-  }
+    border-top: 2px dashed #444444;
+    margin: 40px auto;
+    width: 400px;
+    height: 0px;
+
+    &:after {
+        content: '◆';
+        position: relative;
+        top: -9px;
+        left: calc(50%, 7px);
+    }
 `;
 
 const Wrapper = styled.div`
@@ -1033,7 +1046,7 @@ const SubmitButton = styled.button`
     font-family: 'Pretendard-Regular';
     margin-right: 30px;
     margin-left: 10px;
-    
+
     &:hover {
         background: #c2c2c2;
     }
