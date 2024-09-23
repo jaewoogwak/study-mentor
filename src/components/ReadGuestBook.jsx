@@ -96,7 +96,10 @@ const ReadGuestBook = () => {
                             <PageButton
                                 key={index + 1}
                                 onClick={() => handlePageChange(index + 1)}
-                                style={{ backgroundColor: currentPage === index + 1 ? '#ddd' : 'white' }}
+                                style={{ 
+                                    backgroundColor: currentPage === index + 1 ? '#ddd' : 'white',
+                                    color: 'black',
+                                 }}
                             >
                                 {index + 1}
                             </PageButton>

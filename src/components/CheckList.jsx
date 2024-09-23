@@ -276,6 +276,7 @@ const DocButton = styled.button`
     cursor: pointer; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     transition: all 0.3s ease; 
+    color: black;
 
     &:hover {
         box-shadow: 0 7px 13px rgba(0, 0, 0, 0.3); 
@@ -293,6 +294,7 @@ const DocButton = styled.button`
 
     p {
         font-size: 20px; 
+        color: black;
         
         @media (max-width: 768px) {
             font-size: 12px;
@@ -499,10 +501,10 @@ const ShowAllButton  = styled.button`
     font-size: 16px;
     display: block;      
     margin-left: auto;
+    color: black;
 
     &:hover {
         background-color: #FFDD81;
-        // color: white;
     }
 
     @media (max-width: 768px) {
@@ -543,8 +545,9 @@ const DeleteButton = styled.button`
     background-color: #EEEEE;
     cursor: pointer;
     font-size: 16px;
-     margin-left: auto; 
-    display: block;     
+    margin-left: auto; 
+    display: block;  
+    color: black;   
 
     &:hover {
         background-color: #C2C2C2;

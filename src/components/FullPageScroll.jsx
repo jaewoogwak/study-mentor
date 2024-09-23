@@ -87,6 +87,7 @@ const FullPageScroll = () => {
                                     style={{
                                         textDecoration: 'none',
                                         backgroundColor: '#FEEBB6',
+                                        color: 'black',
                                     }}
                                 >
                                     파일 업로드 하기
@@ -106,7 +107,10 @@ const FullPageScroll = () => {
                             <div>
                                 <Text
                                     fontsize='30px'
-                                    style={{ fontWeight: 'bold' }}
+                                    style={{ 
+                                        fontWeight: 'bold',
+                                        color: 'black',
+                                     }}
                                 >
                                     1:1 질문하기
                                 </Text>
