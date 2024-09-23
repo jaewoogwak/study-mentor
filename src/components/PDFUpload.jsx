@@ -209,6 +209,7 @@ const PDFUpload = ({
         <DraggerWrapper>
             <Dragger
                 {...props}
+                className="custom-dragger" // Add custom className here
                 style={{
                     fontFamily: 'Pretendard-Regular',
                     padding: '0px 100px',
@@ -272,11 +273,21 @@ const DraggerWrapper = styled.div`
     @media (max-width: 768px) {
         width: 90%;
         padding: 0 10px;
-    }
 
-    @media (max-width: 768px) {
-        .ant-upload {
-            height: 200px !important;
+        .custom-dragger {
+            height: 250px !important; 
+
+            .ant-upload-drag-icon {
+                font-size: 20px !important;
+            }
+
+            .ant-upload-text {
+                font-size: 12px !important;
+            }
+
+            .ant-upload-hint {
+                font-size: 10px !important; 
+            }
         }
     }
 `;

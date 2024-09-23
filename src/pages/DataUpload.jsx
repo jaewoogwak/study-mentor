@@ -125,7 +125,7 @@ const DataUpload = () => {
                     onClose={closeModal}
                 />
 
-                <p style={{fontSize: "13px", margin: "12px 0px", color: "#9E9E9E"}}>수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에 일부 오류가 포함될 가능성도 있습니다.</p>
+                <WarningText>수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에 일부 오류가 포함될 가능성도 있습니다.</WarningText>
 
 
                 {!data && (
@@ -277,7 +277,17 @@ const SettingButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        width: 90%; /* 모바일에서는 너비를 부모 요소의 90%로 설정 */
-        max-width: 680px; /* 최대 너비 제한 */
+        width: 90%; 
+        max-width: 680px;
+    }
+`;
+
+const WarningText = styled.p`
+    font-size: 13px;
+    margin: 12px 0px;
+    color: #9e9e9e;
+
+    @media (max-width: 768px) {
+        font-size: 9px; 
     }
 `;
