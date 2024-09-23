@@ -407,7 +407,7 @@ const CreateExam = ({ data, setData, credits }) => {
     };
 
     const handleGoToChatBot = () => {
-        // window.open(`/chatbot`, '_blank');
+        navigate('/chatbot');
     };
 
     const handlePDFGenerateClick = () => {
@@ -806,7 +806,7 @@ const CreateExam = ({ data, setData, credits }) => {
                             {showQuestionButton && (
                                 <QuestButton
                                     type='button'
-                                    onClick={handleGoToChatBot_withQuest}
+                                    onClick={handleGoToChatBot}
                                 >
                                     질문하기
                                 </QuestButton>

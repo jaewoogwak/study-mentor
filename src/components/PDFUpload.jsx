@@ -108,7 +108,7 @@ const PDFUpload = ({
         },
         async beforeUpload(file) {
             const formData = new FormData();
-            console.log('file size', file.size);
+
             if (file.size > 50000000) {
                 message.error('파일 크기는 50MB 이하여야 합니다.');
                 setFileState('error');
@@ -209,7 +209,7 @@ const PDFUpload = ({
         <DraggerWrapper>
             <Dragger
                 {...props}
-                className="custom-dragger" // Add custom className here
+                className='custom-dragger' // Add custom className here
                 style={{
                     fontFamily: 'Pretendard-Regular',
                     padding: '0px 100px',
@@ -275,7 +275,7 @@ const DraggerWrapper = styled.div`
         padding: 0 10px;
 
         .custom-dragger {
-            height: 250px !important; 
+            height: 250px !important;
 
             .ant-upload-drag-icon {
                 font-size: 20px !important;
@@ -286,7 +286,7 @@ const DraggerWrapper = styled.div`
             }
 
             .ant-upload-hint {
-                font-size: 10px !important; 
+                font-size: 10px !important;
             }
         }
     }

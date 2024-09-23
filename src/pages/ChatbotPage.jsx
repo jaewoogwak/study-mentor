@@ -26,8 +26,6 @@ import InfoFooter from '../components/InfoFooter';
 import { useChatStore } from '../contexts/store';
 import ChatMentor from '../assets/chat_mentor.png';
 
-const API_KEY = import.meta.env.VITE_API_KEY;
-
 const NewChatbotPage = () => {
     const {
         messages,
@@ -73,7 +71,6 @@ const NewChatbotPage = () => {
 
         const token = (await user.getIdToken()) || tk;
 
-        console.log('token', token);
         await fetch(address, {
             method: 'POST',
             headers: {
