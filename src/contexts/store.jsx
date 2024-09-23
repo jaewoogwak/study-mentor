@@ -100,13 +100,15 @@ export const useChatStore = create((set) => ({
 
     setIsTyping: (newIsTyping) => set({ isTyping: newIsTyping }),
     sendMessage: async (text) => {
+        // token 가져오기
+        const token = localStorage.getItem('token');
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/chatbot/question-answer`,
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     question: text,

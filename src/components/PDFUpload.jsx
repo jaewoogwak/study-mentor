@@ -130,7 +130,9 @@ const PDFUpload = ({
                 file.type === 'application/pdf'
                     ? '/upload/pdf'
                     : '/upload/image';
-            const token = await user.getIdToken();
+            const token =
+                (await user.getIdToken()) || localStorage.getItem('token');
+
             axios({
                 url: `${import.meta.env.VITE_API_URL}${type}`,
                 method: 'POST',

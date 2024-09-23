@@ -66,12 +66,14 @@ const NewChatbotPage = () => {
         return chats[0];
     };
 
-    async function sendTextToServer(text) {
+    async function sendTextToServer(text, tk) {
         const address = `${
             import.meta.env.VITE_API_URL
         }/chatbot/question-answer`;
 
-        const token = await user.getIdToken();
+        const token = (await user.getIdToken()) || tk;
+
+        console.log('token', token);
         await fetch(address, {
             method: 'POST',
             headers: {
@@ -388,7 +390,7 @@ const MainContainerWrapper = styled(MainContainer)`
 const WarningText = styled.p`
     font-size: 13px;
     margin-top: 0px;
-    color: #9E9E9E;
+    color: #9e9e9e;
 
     @media (max-width: 768px) {
         margin-top: 5px;

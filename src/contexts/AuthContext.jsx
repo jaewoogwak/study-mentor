@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = (userData) => {
         // You can set user information here after successful login
+        localStorage.setItem('token', userData.accessToken);
         setUser(userData);
     };
 

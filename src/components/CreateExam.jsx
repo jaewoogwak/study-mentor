@@ -262,7 +262,8 @@ const CreateExam = ({ data, setData, credits }) => {
         };
 
         // 토큰 발급
-        const token = await user.getIdToken();
+        const token =
+            (await user.getIdToken()) || localStorage.getItem('token');
 
         // 서버 통신
         axios({
@@ -406,7 +407,7 @@ const CreateExam = ({ data, setData, credits }) => {
     };
 
     const handleGoToChatBot = () => {
-        window.open(`/chatbot`, '_blank');
+        // window.open(`/chatbot`, '_blank');
     };
 
     const handlePDFGenerateClick = () => {
@@ -805,7 +806,7 @@ const CreateExam = ({ data, setData, credits }) => {
                             {showQuestionButton && (
                                 <QuestButton
                                     type='button'
-                                    onClick={handleGoToChatBot}
+                                    onClick={handleGoToChatBot_withQuest}
                                 >
                                     질문하기
                                 </QuestButton>

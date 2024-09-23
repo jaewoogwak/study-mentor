@@ -45,7 +45,14 @@ const Settings = () => {
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/auth/email`,
-                { email: email }
+                { email: email },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            'token'
+                        )}`,
+                    },
+                }
             );
             setMessage(response.data.message);
             setIsError(false);
@@ -82,7 +89,14 @@ const Settings = () => {
 
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/auth/num`,
-                { email: email, authnum: code }
+                { email: email, authnum: code },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            'token'
+                        )}`,
+                    },
+                }
             );
 
             setMessage(response.data.message);
@@ -186,6 +200,8 @@ const Settings = () => {
 
                         <LogoutButton
                             onClick={() => {
+                                // token 삭제 후 로그아웃
+                                localStorage.removeItem('token');
                                 auth.signOut();
                                 logout();
                                 window.location.href = '/login';
