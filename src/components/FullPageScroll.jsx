@@ -105,15 +105,15 @@ const FullPageScroll = () => {
                     >
                         <SecondContainer>
                             <div>
-                                <Text
-                                    fontsize='30px'
-                                    style={{ 
-                                        fontWeight: 'bold',
-                                        color: 'black',
-                                     }}
-                                >
-                                    1:1 질문하기
-                                </Text>
+                            <Text
+                                fontsize='30px'
+                                color='black'
+                                style={{ 
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                1:1 질문하기
+                            </Text>
                                 <Text
                                     fontsize='25px'
                                     style={{
