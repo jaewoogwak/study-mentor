@@ -32,32 +32,6 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 
-## Installation
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/study-mentor.git
-```
-
-2. Navigate to the project directory
-
-```bash
-cd study-mentor
-```
-
-3. Install dependencies using npm
-
-```bash
-npm install
-```
-
-4. Run
-
-```bash
-npm run dev
-```
-
 ## 👨🏻‍💻 Member
 
 | Name   | Role       |
@@ -73,14 +47,5 @@ npm run dev
 | Client            | Server        | AI              | Infra             | Database        |
 | ----------------- | ------------- | --------------- | ----------------- | --------------- |
 | React(Javascript) | Flask(Python) | GPT-4o          | Ubuntu (server)   | Google Firebase |
-|                   |               | GPT3.5-turbo    | AWS S3 (web)      |                 |
-|                   |               | Embedding model | Netlify (hosting) |                 |
-
-## React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+|                   |               | GPT3.5-turbo    | Netlify (hosting) |                 |
+|                   |               | Embedding model |                   |                 |
