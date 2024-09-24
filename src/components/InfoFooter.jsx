@@ -13,7 +13,7 @@ const InfoFooter = () => {
                 </FooterContent>
                 <FooterContent>
                     Contact Us:{' '}
-                    <a href='mailto:info@company.com'>
+                    <a href='mailto:study.mentor.link@gmail.com'>
                         study.mentor.link@gmail.com
                     </a>
                 </FooterContent>
