@@ -8,11 +8,13 @@ import styled from 'styled-components';
 import study_two_people from '../assets/study_two_people.png';
 import example from '../assets/example.svg';
 import question from '../assets/question.svg';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../services/firebase';
 
 const FullPageScroll = () => {
+    const navigate = useNavigate();
+
     return (
         <Wrapper>
             <Fullpage>
@@ -105,14 +107,14 @@ const FullPageScroll = () => {
                     >
                         <SecondContainer>
                             <div>
-                            <Text
-                                fontsize='30px'
-                                style={{ 
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                1:1 질문하기
-                            </Text>
+                                <Text
+                                    fontsize='30px'
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    1:1 질문하기
+                                </Text>
                                 <Text
                                     fontsize='25px'
                                     style={{
@@ -126,7 +128,7 @@ const FullPageScroll = () => {
                                 </Text>
                                 <FileUploadLink
                                     onClick={() => {
-                                        window.location.href = '/chatbot';
+                                        navigate('/chatbot');
                                     }}
                                     style={{
                                         textDecoration: 'none',
