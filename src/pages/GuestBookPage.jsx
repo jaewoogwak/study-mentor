@@ -20,12 +20,12 @@ const CheckListPage = () => {
             <InfoContainer>
                 <InfoBox>
                     <InfoText>🌏 방명록</InfoText>
-                    <TextCustom>하고 싶은 이야기를 마음껏 남겨보세요! <br />※ 내용에 따라 검열의 대상이 될 수도 있습니다.</TextCustom>          
+                    <TextCustom>하고 싶은 이야기를 마음껏 남겨보세요! <br />※ 내용에 따라 검열 대상이 될 수도 있습니다.</TextCustom>          
                 </InfoBox>
             </InfoContainer>
             <WriteContainer>
-                <h2 style={{margin: "20px 0px 30px 0px"}}>👣 방명록 작성하기</h2>
-                <p style = {{fontSize: "20px", marginBottom: "20px"}}>아래의 버튼을 눌러 방명록을 작성해주세요.</p>
+                <Title>👣 방명록 작성하기</Title>
+                <Paragraph >아래의 버튼을 눌러 방명록을 작성해주세요.</Paragraph>
                 <WriteButton onClick={handleButtonClick}>
                     {showWriteGuestBook ? '방명록 작성 취소' : '방명록 작성하러 가기'}
                 </WriteButton>
@@ -65,8 +65,8 @@ const InfoBox = styled.div`
     border-radius: 12px;
 
     @media (max-width: 768px) {
-        width: 90%;
-        padding: 20px;
+        width: 100%; 
+        margin: 10px; 
     }
 `; 
 
@@ -74,7 +74,7 @@ const InfoText = styled.h3`
     font-size: 24px; 
 
     @media (max-width: 768px) {
-        font-size: 16px; 
+        font-size: 20px; 
     }
 `;
 
@@ -83,7 +83,8 @@ const TextCustom = styled.p`
     margin-top: 10px;
 
     @media (max-width: 768px) {
-        font-size: 16px;
+        font-size: 14px;
+        margin-top: 10px;
     }
 `;
 
@@ -91,6 +92,26 @@ const WriteContainer = styled.div`
     display: flex;
     flex-direction: column; 
     align-items: center;
+`;
+
+const Title = styled.h2`
+    margin: 20px 0px 30px 0px;
+    font-size: 24px;
+
+    @media (max-width: 768px) {
+        font-size: 20px;
+        margin: 15px 0px 25px 0px;
+    }
+`;
+
+const Paragraph = styled.p`
+    font-size: 20px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
 `;
 
 const WriteButton = styled.button`
@@ -109,8 +130,8 @@ const WriteButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        width: 90%;
-        font-size: 18px;
+        width: 80%;
+        font-size: 16px;
         height: 45px;
     }
 `;

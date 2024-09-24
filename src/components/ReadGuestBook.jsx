@@ -50,8 +50,8 @@ const ReadGuestBook = () => {
     
     
 
-    if (loading) return <h2>Loading...</h2>;
-    if (error) return <h2>{error}</h2>;
+    if (loading) return <NoEntriesMessage>Loading...</NoEntriesMessage>;
+    if (error) return <NoEntriesMessage>{error}</NoEntriesMessage>;
 
     const totalPages = Math.ceil(entries.length / entriesPerPage);
 
@@ -65,7 +65,7 @@ const ReadGuestBook = () => {
 
     return (
         <Wrapper>
-            <h2 style={{ margin: "10px 0px 30px 0px" }}>🗣 방명록 목록</h2>
+            <Title>🗣 방명록 목록</Title>
             {entries.length === 0 ? (
                 <NoEntriesMessage>
                     현재 작성된 방명록이 없습니다. <br /> 방명록을 작성해보세요.
@@ -115,6 +115,16 @@ export default ReadGuestBook;
 
 const Wrapper = styled.div`
     padding: 10px 35px;
+`;
+
+const Title = styled.h2`
+    margin: 20px 0px 30px 0px;
+    font-size: 24px;
+
+    @media (max-width: 768px) {
+        font-size: 20px;
+        margin: 15px 0px 25px 0px;
+    }
 `;
 
 const BookTable = styled.table`

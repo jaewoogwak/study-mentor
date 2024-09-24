@@ -836,7 +836,11 @@ const DivisionLine = styled.div`
         content: '◆';
         position: relative;
         top: -9px;
-        left: calc(50%, 7px);
+        left: calc(50% + 7px); /* 수정된 부분 */
+    }
+
+    @media (max-width: 768px) {
+        width: 80%;
     }
 `;
 
@@ -1034,7 +1038,7 @@ const ButtonContainer = styled.div`
 `;
 
 const SubmitButton = styled.button`
-    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    width: 90%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
     max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
@@ -1047,6 +1051,7 @@ const SubmitButton = styled.button`
     font-family: 'Pretendard-Regular';
     margin-right: 30px;
     margin-left: 10px;
+    color: black;
 
     &:hover {
         background: #c2c2c2;
@@ -1084,7 +1089,7 @@ const WarningMessage = styled.div`
 `;
 
 const AnswerButton = styled.button`
-    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    width: 90%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
     max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
@@ -1095,6 +1100,7 @@ const AnswerButton = styled.button`
     cursor: pointer;
     font-family: 'Pretendard-Regular';
     margin-left: 20px;
+    color: black;
 
     &:hover {
         background: #ffc67e;
@@ -1110,7 +1116,7 @@ const AnswerButton = styled.button`
 `;
 
 const QuestButton = styled.button`
-    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    width: 90%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
     max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
@@ -1122,6 +1128,7 @@ const QuestButton = styled.button`
     transition: background-color 0.3s;
     margin-left: 10px;
     font-family: 'Pretendard-Regular';
+    color: black;
 
     &:hover {
         background: #ffab93;

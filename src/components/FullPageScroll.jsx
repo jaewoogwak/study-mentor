@@ -107,7 +107,6 @@ const FullPageScroll = () => {
                             <div>
                             <Text
                                 fontsize='30px'
-                                color='black'
                                 style={{ 
                                     fontWeight: 'bold',
                                 }}
@@ -132,6 +131,7 @@ const FullPageScroll = () => {
                                     style={{
                                         textDecoration: 'none',
                                         backgroundColor: '#FDDED6',
+                                        color: 'black',
                                     }}
                                 >
                                     질문하러 가기

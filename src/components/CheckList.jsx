@@ -270,7 +270,6 @@ const DocButton = styled.button`
     height: 60px;
     border-radius: 10px;
     border: none;
-    font-size: 17px; 
     font-family: "GmarketSansMedium";
     background-color: #FFEAE4;
     cursor: pointer; 
@@ -293,7 +292,7 @@ const DocButton = styled.button`
     }
 
     p {
-        font-size: 20px; 
+        font-size: 19px; 
         color: black;
         
         @media (max-width: 768px) {

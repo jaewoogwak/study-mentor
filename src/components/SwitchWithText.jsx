@@ -44,4 +44,9 @@ const StyledButton = styled.button`
         background-color: #00C1AE; 
         color: white;
     }
+
+    @media (max-width: 768px) {
+        padding: 8px 16px;
+        font-size: 14px; 
+    }
 `;

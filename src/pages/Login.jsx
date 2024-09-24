@@ -104,11 +104,11 @@ const Title = styled.div`
     color: #fd9f28;
     text-align: center;
     margin-top: 20px;
-    font-size: 60px;
+    font-size: 65px;
     font-weight: 900;
 
     @media (max-width: 768px) {
-        font-size: 40px;
+        font-size: 45px;
         margin-top: 10px;
     }
 `;
@@ -117,11 +117,11 @@ const Description = styled.div`
     margin-top: 10px;
     color: #000;
     text-align: center;
-    font-size: 24px;
+    font-size: 27px;
     font-weight: 600;
 
     @media (max-width: 768px) {
-        font-size: 18px;
+        font-size: 20px;
     }
 `;
 
@@ -133,6 +133,8 @@ const LoginButton = styled.button`
     border: 1px solid #fd9f28;
     background: rgba(253, 159, 40, 0.5);
     font-size: 18px;
+    color: black;
+    font-family: "Pretendard-Regular";
     cursor: pointer;
     &:hover {
         background: #fd9f28;
@@ -160,7 +162,7 @@ const LoginImageContainer = styled.div`
 `;
 
 const LoginImage = styled.img`
-    width: 300px;
+    width: 500px;
     object-fit: contain;
     z-index: 3;
     position: relative;

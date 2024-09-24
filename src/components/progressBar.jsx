@@ -134,10 +134,18 @@ const LoadingText = styled.div`
     font-size: 22px;
     font-family: 'Pretendard-Regular';
     padding-bottom: 5px;
+
+    @media (max-width: 768px){
+        font-size: 18px;
+    }
 `;
 
 const LoadingSubText = styled.div`
     font-size: 22px;
     font-family: 'Pretendard-Regular';
     margin-bottom: 30px;
+
+    @media (max-width: 768px){
+        font-size: 18px;
+    }
 `;

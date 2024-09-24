@@ -83,37 +83,42 @@ const ExamSetting2 = ({
         <Modal
             isOpen={isOpen}
             onRequestClose={onClose}
-            contentLabel='Exam Setting Options'
+            contentLabel="Exam Setting Options"
             style={{
                 content: {
+                    position: 'absolute',
                     top: '50%',
                     left: '50%',
                     right: 'auto',
                     bottom: 'auto',
-                    marginRight: '-50%',
                     transform: 'translate(-50%, -50%)',
                     width: '500px',
-                    height: '520px',
+                    height: '560px',
                     textAlign: 'center',
                     border: '2px solid',
                     borderRadius: '10px',
                     fontFamily: 'Pretendard-Regular',
                     padding: '20px',
-                    maxWidth: '80%', // 모바일에서 화면 너비의 90%로 제한
+                    maxWidth: '90%',
+                    maxHeight: '90%',
+                    boxSizing: 'border-box',
                 },
                 overlay: {
                     backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center', // 중앙 정렬
                 },
             }}
         >
             <InfoWrapper>
                 <InfoImg src={ExamSheetImg} alt='ExamSheetImg' />
-                <h2>Exam Setting Options</h2>
+                <InfoText>Exam Setting Options</InfoText>
             </InfoWrapper>
             <SettingWrapper>
                 <TextSetting>몇 개의 문제를 생성하고 싶으신가요?</TextSetting>
                 <SwitchWrapper>
-                    객관식
+                    <TextSetting>객관식</TextSetting>
                     <SwitchInput
                         type='number'
                         min={1}
@@ -121,7 +126,7 @@ const ExamSetting2 = ({
                         value={multipleChoice}
                         onChange={handleMultipleChoiceChange}
                     />
-                    주관식
+                    <TextSetting>주관식</TextSetting>
                     <SwitchInput
                         type='number'
                         min={1}
@@ -167,30 +172,29 @@ const InfoWrapper = styled.div`
     flex-direction: row;
     margin-top: 10px;
     align-items: center; 
-    margin-top: 5px;
-    align-items: center;
     justify-content: center;
     text-align: center;
+`;
 
+const InfoText = styled.h2`
     @media (max-width: 768px) {
-        flex-direction: column;
+        font-size: 20px;
     }
 `;
 
 const InfoImg = styled.img`
-    width: 80px;
+    width: 75px;
     margin-right: 10px;
 
     @media (max-width: 768px) {
-        margin-right: 0;
-        margin-bottom: 10px;
+        width: 40px;
     }
 `;
 
 const SettingWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     padding: 20px;
     justify-content: center;
     align-items: center;
@@ -201,10 +205,10 @@ const SettingWrapper = styled.div`
 `;
 
 const TextSetting = styled.p`
-    margin-top: 10px;
+    margin: 10px 0px;
 
     @media (max-width: 768px) {
-        font-size: 14px;
+        font-size: 15px;
     }
 `;
 
@@ -213,7 +217,6 @@ const TextSettingV2 = styled.p`
 
     @media (max-width: 768px) {
         font-size: 14px;
-        margin-bottom: 15px;
     }
 `;
 
@@ -224,7 +227,7 @@ const SwitchWrapper = styled.div`
     align-items: center;
 
     @media (max-width: 768px) {
-        flex-direction: column;
+        flex-direction: row;
         gap: 5px;
     }
 `;
@@ -236,8 +239,8 @@ const SwitchInput = styled.input`
     border: 2px solid;
 
     @media (max-width: 768px) {
-        width: 50px;
-        height: 30px;
+        width: 30px;
+        height: 10px;
     }
 `;
 

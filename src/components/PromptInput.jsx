@@ -24,10 +24,10 @@ const PromptInput = ({
             </InfoText>
             <CustomPromptRecommandWrapper>
                 <CustomPromptRecommand>
-                    이론 기반의 계산 문제를 만들어줘
+                    <CustomPromptText>이론 기반의 계산 문제를 만들어줘</CustomPromptText>
                 </CustomPromptRecommand>
                 <CustomPromptRecommand>
-                    매우 어려운 난이도로 출제해줘
+                    <CustomPromptText>매우 어려운 난이도로 출제해줘</CustomPromptText>
                 </CustomPromptRecommand>
             </CustomPromptRecommandWrapper>
             <InfoText>
@@ -71,6 +71,10 @@ export default PromptInput;
 
 const InfoText = styled.p`
     font-size: 17px;
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
 `;
 
 const CustomPromptRecommandWrapper = styled.div`
@@ -99,3 +103,10 @@ const CustomPromptRecommand = styled.div`
     // margin-bottom: 20px;
 `;
 
+const CustomPromptText = styled.p`
+    font-size: 15px;
+
+    @media (max-width: 768px) {
+        font-size: 13px;
+    }
+`;

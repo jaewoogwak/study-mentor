@@ -248,6 +248,10 @@ const StatusWrapper = styled.div`
     justify-content: center;
     font-size: 24px;
     margin-top: 30px;
+
+    @media (max-width: 768px){
+        font-size: 18px;
+    }
 `;
 
 const GeneratePDFBtn = styled.button`

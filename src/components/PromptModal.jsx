@@ -28,7 +28,7 @@ const PromptModal = ({
                 스타일 설정
             </StyleButton>
             <Modal
-                title={<span style={{ fontSize: '24px' }}>시험문제 스타일 설정하기</span>}
+                title={<ModalTitle>시험문제 스타일 설정하기</ModalTitle>}
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
@@ -37,7 +37,6 @@ const PromptModal = ({
                 style={{
                     top: '10%',
                     fontFamily: 'Pretendard-Regular',
-                    
                 }}
             >
                 <PromptInput
@@ -53,20 +52,6 @@ const PromptModal = ({
 };
 export default PromptModal;
 
-// const StyleButton = styled.button`
-//     padding: 7px 12px;
-//     border-radius: 5px;
-//     border: 3px #58CCFF solid;
-//     font-size: 16px;
-//     font-family: 'pretendard-Regular';
-//     // font-weight: bold;
-//     color: black;
-//     background: #B8E9FF;
-//     &:hover {
-//         background-color: #1187cf;
-//     }
-// `;
-
 const StyleButton = styled.button`
     padding: 10px 20px;
     font-size: 16px;
@@ -74,10 +59,24 @@ const StyleButton = styled.button`
     border: 2px solid #2FA599;
     border-radius: 5px;
     background-color: white;
+    color: black;
 
     &:hover,
     &:active {
         background-color: #2FA599; 
         color: white;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+`;
+
+const ModalTitle = styled.span`
+    font-size: 24px;
+    font-family: 'Pretendard-Regular';
+
+    @media (max-width: 768px) {
+        font-size: 20px; // 태블릿이나 작은 화면에서 폰트 크기 줄이기
     }
 `;

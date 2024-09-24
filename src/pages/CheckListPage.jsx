@@ -14,8 +14,8 @@ const CheckListPage = () => {
                 <Content>
                     <InfoContainer>
                         <InfoBox>
-                            <InfoText>🔶 이 페이지는 앞서 풀어본 문제에 대한 목록입니다.</InfoText>
-                            <TextCustom>다시 한 번 풀어보면서, 시험 내용을 복기해보세요.</TextCustom>        
+                            <InfoText> 📑 오답노트</InfoText>
+                            <TextCustom>다시 한 번 문제를 풀어보면서, <br /> 시험 내용을 복습해보세요.</TextCustom>        
                             <TextCustom style={{color: "red",}}>※ 채점 기능은 따로 제공하지 않습니다.</TextCustom>      
                         </InfoBox>
                     </InfoContainer>
@@ -67,7 +67,7 @@ const InfoText = styled.h3`
     font-size: 24px; 
 
     @media (max-width: 768px) {
-        font-size: 16px; 
+        font-size: 20px; 
     }
 `;
 
@@ -76,7 +76,7 @@ const TextCustom = styled.p`
     margin-top: 10px;
 
     @media (max-width: 768px) {
-        font-size: 12px;
+        font-size: 14px;
         margin-top: 10px;
     }
 `;
