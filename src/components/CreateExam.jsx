@@ -836,7 +836,7 @@ const DivisionLine = styled.div`
         content: '◆';
         position: relative;
         top: -9px;
-        left: calc(50% + 7px); /* 수정된 부분 */
+        left: calc(50% - 0.5em); /* 중앙 정렬 수정 */
     }
 
     @media (max-width: 768px) {
@@ -1038,20 +1038,19 @@ const ButtonContainer = styled.div`
 `;
 
 const SubmitButton = styled.button`
-    width: 90%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
     max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
     border: 3px solid #787878;
     background: #eeeeee;
-    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
     font-family: 'Pretendard-Regular';
     margin-right: 30px;
     margin-left: 10px;
-    color: black;
 
     &:hover {
         background: #c2c2c2;
@@ -1089,13 +1088,13 @@ const WarningMessage = styled.div`
 `;
 
 const AnswerButton = styled.button`
-    width: 90%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
     max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
     border: 3px solid #ffc67e;
     background: #feebb6;
-    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
     font-family: 'Pretendard-Regular';
@@ -1116,13 +1115,13 @@ const AnswerButton = styled.button`
 `;
 
 const QuestButton = styled.button`
-    width: 90%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
+    width: 100%; /* 모바일에서 버튼이 화면 전체 너비를 차지하도록 설정 */
     max-width: 120px; /* 데스크탑에서는 최대 너비 설정 */
     height: 50px;
     border-radius: 10px;
     border: 3px solid #ffab93;
     background: #ffe1d9;
-    font-size: 16px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -1173,6 +1172,10 @@ const ClearText = styled.button`
     color: black;
     font-weight: bold;
     font-family: 'Pretendard-Regular';
+
+     @media (max-width: 768px) {
+        font-size: 14px; 
+    }
 `;
 
 const GoChatBot = styled.div`
@@ -1190,7 +1193,7 @@ const ChatBotButton = styled.button`
         background-color: #c2c2c2;
     }
     font-family: 'Pretendard-Regular';
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
 
     @media (min-width: 768px) {
