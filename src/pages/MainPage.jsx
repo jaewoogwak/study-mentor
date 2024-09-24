@@ -12,15 +12,6 @@ const MainPage = () => {
     const { user, login, logout } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        auth.onAuthStateChanged((usr) => {
-            login(usr);
-
-            if (!usr) {
-                navigate('/login');
-            }
-        });
-    }, []);
     return (
         <Wrapper>
             <FullPageHeader />

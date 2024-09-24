@@ -59,13 +59,6 @@ const DataUpload = () => {
     };
 
     useEffect(() => {
-        auth.onAuthStateChanged((usr) => {
-            login(usr);
-            if (!usr) {
-                navigate('/login');
-            }
-        });
-
         const findCreditsId = async () => {
             const currentUser = user.email;
             const credits = [];
@@ -125,8 +118,10 @@ const DataUpload = () => {
                     onClose={closeModal}
                 />
 
-                <WarningText>수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에 일부 오류가 포함될 가능성도 있습니다.</WarningText>
-
+                <WarningText>
+                    수학 문제 생성 과정에서 어려움이 있을 수 있으며, 시험 문제에
+                    일부 오류가 포함될 가능성도 있습니다.
+                </WarningText>
 
                 {!data && (
                     <PDFUpload
@@ -277,7 +272,7 @@ const SettingButton = styled.button`
     }
 
     @media (max-width: 768px) {
-        width: 90%; 
+        width: 90%;
         max-width: 680px;
     }
 `;
@@ -288,6 +283,6 @@ const WarningText = styled.p`
     color: #9e9e9e;
 
     @media (max-width: 768px) {
-        font-size: 9px; 
+        font-size: 9px;
     }
 `;

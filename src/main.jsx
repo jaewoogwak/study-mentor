@@ -26,6 +26,7 @@ import DataUpload from './pages/DataUpload.jsx';
 
 import CheckListPage from './pages/CheckListPage.jsx';
 import Settings from './pages/Settings.jsx';
+import { ProtectedRoute } from './routes/ProtectedRoute.jsx';
 
 const queryClient = new QueryClient();
 
@@ -37,17 +38,29 @@ const router = createBrowserRouter([
     },
     {
         path: '/upload',
-        element: <DataUpload />,
+        element: (
+            <ProtectedRoute>
+                <DataUpload />
+            </ProtectedRoute>
+        ),
         errorElement: <ErrorPage />,
     },
     {
         path: '/chatbot',
-        element: <ChatbotPage />,
+        element: (
+            <ProtectedRoute>
+                <ChatbotPage />
+            </ProtectedRoute>
+        ),
         errorElement: <ErrorPage />,
     },
     {
         path: '/checklist',
-        element: <CheckListPage />,
+        element: (
+            <ProtectedRoute>
+                <CheckListPage />
+            </ProtectedRoute>
+        ),
         errorElement: <ErrorPage />,
     },
     {

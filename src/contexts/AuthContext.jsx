@@ -1,29 +1,31 @@
-// AuthContext.js
-import { createContext, useContext, useState } from 'react';
+// contexts/AuthContext.jsx
+import { createContext, useContext, useEffect, useState } from 'react';
+import { auth } from '../services/firebase';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function useAuth() {
+    return useContext(AuthContext);
+}
+
+export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
-    const login = (userData) => {
-        // You can set user information here after successful login
-        localStorage.setItem('token', userData.accessToken);
-        setUser(userData);
-    };
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            setUser(user);
+            setLoading(false); // 인증 상태를 불러온 후 로딩 종료
+        });
 
-    const logout = () => {
-        // Clear user information on logout
-        setUser(null);
-    };
+        return unsubscribe;
+    }, []);
+
+    const value = { user, loading };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
+        <AuthContext.Provider value={value}>
+            {!loading && children}
         </AuthContext.Provider>
     );
-};
-
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+}

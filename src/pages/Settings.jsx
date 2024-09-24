@@ -25,7 +25,7 @@ const Settings = () => {
     const [isSendingCode, setIsSendingCode] = useState(false); // 로딩 상태 추가
     const { user, logout } = useAuth(); // AuthContext 사용
 
-    //
+    // 이메일 입력 시 처리
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
         setEmail(inputEmail);
@@ -67,7 +67,6 @@ const Settings = () => {
 
     const verifyCode = async () => {
         try {
-            // 먼저 이미 인증된 사용자인지 확인
             const user = auth.currentUser;
             const userEmail = user.email;
             const q = query(
@@ -146,6 +145,26 @@ const Settings = () => {
         }
     };
 
+    // 로그인이 되지 않은 경우 로그인 버튼을 보여줌
+    if (!user) {
+        return (
+            <Wrapper>
+                <Header />
+                <MainWrapper>
+                    <ContentWrapper>
+                        <h2>로그인이 필요합니다.</h2>
+                        <ActionButton
+                            onClick={() => (window.location.href = '/login')}
+                        >
+                            로그인
+                        </ActionButton>
+                    </ContentWrapper>
+                </MainWrapper>
+            </Wrapper>
+        );
+    }
+
+    // 로그인이 된 경우 기존 화면을 보여줌
     return (
         <>
             <Wrapper>
@@ -161,7 +180,7 @@ const Settings = () => {
                 </InfoContainer>
                 <MainWrapper>
                     <ContentWrapper>
-                        <h2 style={{ margin: '-30px 0px 20px 0px' }}>
+                        <h2 style={{ margin: '20px 0px 20px 0px' }}>
                             이메일 인증
                         </h2>
 
@@ -200,7 +219,6 @@ const Settings = () => {
 
                         <LogoutButton
                             onClick={() => {
-                                // token 삭제 후 로그아웃
                                 localStorage.removeItem('token');
                                 auth.signOut();
                                 logout();
@@ -231,6 +249,12 @@ const MainWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+`;
+
+const ContentWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const InfoContainer = styled.div`
@@ -273,12 +297,6 @@ const TextCustom = styled.p`
     }
 `;
 
-const ContentWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
 const InputField = styled.input`
     width: 400px;
     padding: 10px;
@@ -291,10 +309,6 @@ const InputField = styled.input`
     outline: none;
     background-color: ${({ isTouched, isValid }) =>
         !isTouched ? 'white' : isValid ? '#e8f5e9' : '#ffebee'};
-
-    @media (max-width: 768px) {
-        width: 80%;
-    }
 `;
 
 const ActionButton = styled.button`
@@ -314,12 +328,6 @@ const ActionButton = styled.button`
     &:hover,
     &:active {
         background-color: #5d6dbe;
-    }
-
-    @media (max-width: 768px) {
-        width: 90%;
-        font-size: 12px;
-        width: 200px;
     }
 `;
 
