@@ -6,11 +6,16 @@ const InfoFooter = () => {
         <BoxContainer>
             <FooterInfo>
                 <FooterContent>
-                    © 2024 Graduation Work Project In KoreaTech. All rights reserved.
-                    <br /> Members: JaeWoo Gwak, KunWoo Kim, JunGon Kim, AHyeon Yoon, KyeongHo Kim
+                    © 2024 Graduation Work Project In KoreaTech. All rights
+                    reserved.
+                    <br /> Members: JaeWoo Gwak, KunWoo Kim, JunGon Kim, AHyeon
+                    Yoon, KyeongHo Kim
                 </FooterContent>
                 <FooterContent>
-                    Contact Us: <a href="mailto:info@company.com">studymentor@koreatech.ac.kr</a>
+                    Contact Us:{' '}
+                    <a href='mailto:info@company.com'>
+                        study.mentor.link@gmail.com
+                    </a>
                 </FooterContent>
             </FooterInfo>
         </BoxContainer>
@@ -21,22 +26,23 @@ export default InfoFooter;
 
 const BoxContainer = styled.div`
     display: flex;
-    justify-content: right; 
+    justify-content: right;
     align-items: center;
     padding: 25px;
-    background: #f0f0f0; 
-    width: 100%; 
-    box-sizing: border-box; 
+    background: #f0f0f0;
+    width: 100%;
+    box-sizing: border-box;
     margin-top: 70px;
 
-    @media (max-width: 768px) { /* Adjust this breakpoint as needed */
+    @media (max-width: 768px) {
+        /* Adjust this breakpoint as needed */
         padding: 10px;
         margin-top: 50px;
     }
 `;
 
 const FooterInfo = styled.div`
-    text-align: right; 
+    text-align: right;
 `;
 
 const FooterContent = styled.h3`
