@@ -107,7 +107,7 @@ const ExamSetting2 = ({
                     backgroundColor: 'rgba(0, 0, 0, 0.65)',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center', // 중앙 정렬
+                    alignItems: 'center',
                 },
             }}
         >
@@ -227,7 +227,7 @@ const SwitchWrapper = styled.div`
     align-items: center;
 
     @media (max-width: 768px) {
-        flex-direction: row;
+        flex-direction: column;
         gap: 5px;
     }
 `;
