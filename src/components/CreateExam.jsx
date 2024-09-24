@@ -476,7 +476,7 @@ const CreateExam = ({ data, setData, credits }) => {
                     </div>
                 </div>
             )}
-
+        
             {data?.length > 0 && (
                 <>
                     <DivisionLine />
@@ -836,11 +836,10 @@ const DivisionLine = styled.div`
         content: '◆';
         position: relative;
         top: -9px;
-        left: calc(50% - 0.5em); /* 중앙 정렬 수정 */
     }
 
     @media (max-width: 768px) {
-        width: 80%;
+        width: 200px;
     }
 `;
 
@@ -876,7 +875,7 @@ const ExamTitle = styled.div`
 const Title = styled.div`
     color: #000;
     text-align: center;
-    font-size: 32px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 28px; /* 모바일에 맞게 폰트 크기 조정 */
     font-style: normal;
     font-weight: bold;
     line-height: normal;
@@ -887,7 +886,7 @@ const Title = styled.div`
 `;
 
 const LogoImg = styled.img`
-    height: 50px; /* 모바일에 맞게 로고 크기 조정 */
+    height: 30px; /* 모바일에 맞게 로고 크기 조정 */
     width: auto;
     margin-right: 10px;
 
@@ -903,7 +902,7 @@ const Info = styled.div`
     align-items: center;
     gap: 10px;
     margin: 25px 0 20px 10px;
-    font-size: 18px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 15px; /* 모바일에 맞게 폰트 크기 조정 */
 
     @media (min-width: 768px) {
         font-size: 20px; /* 데스크탑에서는 기존 크기 */
@@ -913,7 +912,7 @@ const Info = styled.div`
 const InfoLine = styled.div`
     display: inline-block;
     border-bottom: 2px solid black;
-    width: 100px; /* 모바일에 맞게 너비 조정 */
+    width: 80px; /* 모바일에 맞게 너비 조정 */
     height: 20px;
 
     @media (min-width: 768px) {
@@ -1047,10 +1046,11 @@ const SubmitButton = styled.button`
     font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s; /* 추가: color 변화에 대한 전환 효과 */
     font-family: 'Pretendard-Regular';
     margin-right: 30px;
     margin-left: 10px;
+    color: black; /* 기본 글씨 색상 설정 */
 
     &:hover {
         background: #c2c2c2;
@@ -1058,6 +1058,7 @@ const SubmitButton = styled.button`
 
     &:active {
         background: #9e9e9e;
+        color: white; /* active 상태에서 글씨 색상 변경 */
     }
 
     @media (min-width: 768px) {
