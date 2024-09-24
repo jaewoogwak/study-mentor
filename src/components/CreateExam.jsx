@@ -1144,7 +1144,7 @@ const QuestButton = styled.button`
 `;
 
 const ExplainHelp = styled.p`
-    font-size: 14px; /* 모바일에 맞게 폰트 크기 조정 */
+    font-size: 12px; /* 모바일에 맞게 폰트 크기 조정 */
     text-align: left;
     padding: 15px;
     margin: 15px 0;
