@@ -8,8 +8,8 @@ const InfoFooter = () => {
                 <FooterContent>
                     © 2024 Graduation Work Project In KoreaTech. All rights
                     reserved.
-                    <br /> Members: JaeWoo Gwak, KunWoo Kim, JunGon Kim, AHyeon
-                    Yoon, KyeongHo Kim
+                    {/* <br /> Members: JaeWoo Gwak, KunWoo Kim, JunGon Kim, AHyeon
+                    Yoon, KyeongHo Kim */}
                 </FooterContent>
                 <FooterContent>
                     Contact Us:{' '}
