@@ -4,7 +4,7 @@ import login_main from '../assets/login_main.png';
 
 import google from '../assets/google.png';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebase';
@@ -15,6 +15,10 @@ const NewLoginPage = () => {
     const auth = getAuth();
     const navigate = useNavigate();
     const { user, login } = useAuth();
+
+    if (user) {
+        return <Navigate to='/' />;
+    }
 
     const handleGoogleLogin = () => {
         signInWithPopup(auth, provider)
@@ -134,7 +138,7 @@ const LoginButton = styled.button`
     background: rgba(253, 159, 40, 0.5);
     font-size: 18px;
     color: black;
-    font-family: "Pretendard-Regular";
+    font-family: 'Pretendard-Regular';
     cursor: pointer;
     &:hover {
         background: #fd9f28;
