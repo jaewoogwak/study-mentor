@@ -9,9 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import InfoFooter from '../components/InfoFooter';
 
 const MainPage = () => {
-    const { user, login, logout } = useAuth();
-    const navigate = useNavigate();
-
     return (
         <Wrapper>
             <FullPageHeader />

@@ -33,7 +33,11 @@ const queryClient = new QueryClient();
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <MainPage />,
+        element: (
+            <ProtectedRoute>
+                <MainPage />
+            </ProtectedRoute>
+        ),
         errorElement: <ErrorPage />,
     },
     {
