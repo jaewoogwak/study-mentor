@@ -20,10 +20,12 @@ const FullPageHeader = () => {
 
     return (
         <HeaderWrapper>
-            <TitleWrapper onClick={() => (window.location.href = '/')}>
-                <LogoSvgWrapper src={logo2} alt='logo' />
-                <Title>Study Mentor</Title>
-            </TitleWrapper>
+            <StyledNavLink to='/'>
+                <TitleWrapper>
+                    <LogoSvgWrapper src={logo2} alt='logo' />
+                    <Title>Study Mentor</Title>
+                </TitleWrapper>
+            </StyledNavLink>
 
             <MenuIcon onClick={toggleMenu}>
                 <div />
@@ -103,6 +105,10 @@ const TitleWrapper = styled.div`
     gap: 10px;
     align-items: center;
     cursor: pointer;
+`;
+
+const StyledNavLink = styled(NavLink)`
+    text-decoration: none;
 `;
 
 const LogoSvgWrapper = styled.img`

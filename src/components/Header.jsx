@@ -16,10 +16,12 @@ const Header = () => {
 
     return (
         <HeaderWrapper>
-            <TitleWrapper onClick={() => (window.location.href = '/')}>
-                <LogoSvgWrapper src={logo2} alt='logo' />
-                <Title>Study Mentor</Title>
-            </TitleWrapper>
+            <StyledNavLink to='/'>
+                <TitleWrapper>
+                    <LogoSvgWrapper src={logo2} alt='logo' />
+                    <Title>Study Mentor</Title>
+                </TitleWrapper>
+            </StyledNavLink>
 
             <MenuIcon onClick={toggleMenu}>
                 <div />
