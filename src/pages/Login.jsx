@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import login_main from '../assets/login_main.png';
 
@@ -15,10 +15,13 @@ const NewLoginPage = () => {
     const auth = getAuth();
     const navigate = useNavigate();
     const { user, login } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
 
-    if (user) {
-        return <Navigate to='/' />;
-    }
+    useEffect(() => {
+        if (user) {
+            navigate('/');
+        }
+    }, [user]);
 
     const handleGoogleLogin = () => {
         signInWithPopup(auth, provider)
@@ -48,18 +51,26 @@ const NewLoginPage = () => {
                     navigate('/');
                 } catch (err) {
                     console.log('[Err]', err);
+                } finally {
+                    setIsLoading(false);
                 }
             })
             .catch((error) => {
                 console.log(error);
+                setIsLoading(false);
             });
     };
 
     useEffect(() => {
-        auth.onAuthStateChanged((user) => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
             login(user);
         });
+        return () => unsubscribe();
     }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <OuterContainer>
