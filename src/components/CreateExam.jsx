@@ -191,7 +191,7 @@ const CreateExam = ({ data, setData, credits }) => {
                 docId = `exam_${generatedExamId}`;
             }
 
-            console.log('Generated Document ID:', docId);
+            // console.log('Generated Document ID:', docId);
 
             const userDocRef = doc(db, 'users', userId, 'exams', docId);
 
@@ -262,8 +262,7 @@ const CreateExam = ({ data, setData, credits }) => {
         };
 
         // 토큰 발급
-        const token =
-            (await user.getIdToken()) || localStorage.getItem('token');
+        const token = await user.getIdToken();
 
         // 서버 통신
         axios({
@@ -333,7 +332,7 @@ const CreateExam = ({ data, setData, credits }) => {
 
     // fb chats에서 현재 유저의 이메일과 일치하는 컬렉션 id를 찾는 함수
     const findChatId = async () => {
-        console.log('USER info', user);
+        // console.log('USER info', user);
         const currentUser = user.email;
         const chats = [];
         const messageSnapshot = await getDocs(collection(db, 'chats'));
@@ -375,7 +374,8 @@ const CreateExam = ({ data, setData, credits }) => {
         navigate('/chatbot');
         setIsTyping(true);
 
-        const res = await sendMessage(prompt);
+        const token = await user.getIdToken();
+        const res = await sendMessage(prompt, token);
 
         setIncomingMessage(res);
 
@@ -476,7 +476,7 @@ const CreateExam = ({ data, setData, credits }) => {
                     </div>
                 </div>
             )}
-        
+
             {data?.length > 0 && (
                 <>
                     <DivisionLine />
@@ -1174,8 +1174,8 @@ const ClearText = styled.button`
     font-weight: bold;
     font-family: 'Pretendard-Regular';
 
-     @media (max-width: 768px) {
-        font-size: 14px; 
+    @media (max-width: 768px) {
+        font-size: 14px;
     }
 `;
 

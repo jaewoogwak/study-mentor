@@ -49,7 +49,7 @@ const NewChatbotPage = () => {
 
         setIsTyping(true);
 
-        await sendTextToServer(message);
+        await sendTextToServer(message, user.token);
     };
 
     const findChatId = async () => {
@@ -64,12 +64,14 @@ const NewChatbotPage = () => {
         return chats[0];
     };
 
-    async function sendTextToServer(text, tk) {
+    async function sendTextToServer(text) {
         const address = `${
             import.meta.env.VITE_API_URL
         }/chatbot/question-answer`;
 
-        const token = (await user.getIdToken()) || tk;
+        const token = await user.getIdToken();
+
+        console.log('token in sendTextToserver', token);
 
         await fetch(address, {
             method: 'POST',

@@ -99,9 +99,9 @@ export const useChatStore = create((set) => ({
         })),
 
     setIsTyping: (newIsTyping) => set({ isTyping: newIsTyping }),
-    sendMessage: async (text) => {
+    sendMessage: async (text, token) => {
         // token 가져오기
-        const token = localStorage.getItem('token');
+
         const response = await fetch(
             `${import.meta.env.VITE_API_URL}/chatbot/question-answer`,
             {
