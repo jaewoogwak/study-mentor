@@ -102,7 +102,21 @@ const Settings = () => {
             setIsError(false);
 
             if (response.status === 200) {
-                await updateCredits(userEmail, 10); // 인증 후 크레딧 10으로 업데이트
+                // 현재 사용자 크레딧에 10 추가
+                // firestore credits 컬렉션에서 크레딧 정보를 가져와서 업데이트
+                const q = query(
+                    collection(db, 'credits'),
+                    where('email', '==', userEmail)
+                );
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((docSnapshot) => {
+                        const docData = docSnapshot.data();
+                        const newCredit = docData.credit + 10;
+                        updateCredits(userEmail, newCredit);
+                    });
+                }
             }
         } catch (error) {
             if (error.message === '이미 인증된 사용자') {
